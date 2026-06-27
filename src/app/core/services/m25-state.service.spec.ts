@@ -3,6 +3,8 @@ import { vi } from 'vitest';
 import { M25StateService } from './m25-state.service';
 import { M25FeedbackService } from './m25-feedback.service';
 
+const NEGATIVE_PROMPT_THRESHOLD_MS = 20 * 60 * 1000;
+
 describe('M25StateService', () => {
 	function flushEffects(): void {
 		TestBed.flushEffects();
@@ -187,6 +189,57 @@ describe('M25StateService', () => {
 		expect(service.activeSession()?.status).toBe('cancelled');
 		expect(service.activeSession()?.finishedAtMs).toBe(Date.now());
 		expect(service.activeSession()?.activeElapsedMs).toBe(2_500);
+	});
+
+	it('should open the negative coaching prompt after 20 active minutes below zero', () => {
+		const service = createService();
+		startM25Session(service);
+
+		service.decrement();
+		expect(service.m25Count()).toBe(-1);
+
+		vi.advanceTimersByTime(NEGATIVE_PROMPT_THRESHOLD_MS - 1_000);
+		expect(service.negativeCoachingPromptOpen()).toBe(false);
+
+		vi.advanceTimersByTime(1_000);
+		expect(service.negativeCoachingPromptOpen()).toBe(true);
+	});
+
+	it('should not count paused time toward the negative coaching prompt', () => {
+		const service = createService();
+		startM25Session(service);
+
+		service.decrement();
+		vi.advanceTimersByTime(10 * 60 * 1000);
+		service.pauseSession();
+
+		vi.advanceTimersByTime(15 * 60 * 1000);
+		expect(service.negativeCoachingPromptOpen()).toBe(false);
+
+		service.resumeSession();
+		vi.advanceTimersByTime((10 * 60 * 1000) - 1_000);
+		expect(service.negativeCoachingPromptOpen()).toBe(false);
+
+		vi.advanceTimersByTime(1_000);
+		expect(service.negativeCoachingPromptOpen()).toBe(true);
+	});
+
+	it('should reset continuous negative time after returning to zero', () => {
+		const service = createService();
+		startM25Session(service);
+
+		service.decrement();
+		vi.advanceTimersByTime(10 * 60 * 1000);
+		service.increment();
+		expect(service.m25Count()).toBe(0);
+		expect(service.negativeCoachingPromptOpen()).toBe(false);
+
+		service.decrement();
+		vi.advanceTimersByTime(10 * 60 * 1000);
+		expect(service.negativeCoachingPromptOpen()).toBe(false);
+
+		vi.advanceTimersByTime(10 * 60 * 1000);
+		expect(service.negativeCoachingPromptOpen()).toBe(true);
 	});
 
 	it('should save a completed m25 session exactly once', () => {

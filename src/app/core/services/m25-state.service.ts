@@ -41,16 +41,45 @@ import {
 import { M25StorageService } from './m25-storage.service';
 import { M25FeedbackService } from './m25-feedback.service';
 
+interface CoachingState {
+	negativePeriodStartedAtActiveMs: number | null;
+	negativeInterventionShown: boolean;
+	positiveStreak: number;
+	positiveStreakMessageShown: boolean;
+	recoveryMinimumValue: number | null;
+	recoveryStartedAtActiveMs: number | null;
+	recoveryPositiveStreak: number;
+	recoveryMessageShown: boolean;
+}
+
+const NEGATIVE_COACHING_THRESHOLD_MS = 20 * 60 * 1000;
+
+function createDefaultCoachingState(): CoachingState {
+	return {
+		negativePeriodStartedAtActiveMs: null,
+		negativeInterventionShown: false,
+		positiveStreak: 0,
+		positiveStreakMessageShown: false,
+		recoveryMinimumValue: null,
+		recoveryStartedAtActiveMs: null,
+		recoveryPositiveStreak: 0,
+		recoveryMessageShown: false,
+	};
+}
+
 @Injectable({ providedIn: 'root' })
 export class M25StateService {
 	private readonly storage = inject(M25StorageService);
 	private readonly feedback = inject(M25FeedbackService);
 	private readonly initialHistory = this.loadPracticeHistory();
 	private readonly initialState = this.loadPersistedState();
+	private readonly coachingState = signal<CoachingState>(createDefaultCoachingState());
+	private negativeCoachingTimer: ReturnType<typeof setTimeout> | null = null;
 
 	readonly activeSession = signal<PracticeSession | null>(this.initialState.activeSession);
 	readonly cancelConfirmOpen = signal(false);
 	readonly completionOverlay = signal<CompletionOverlayState | null>(null);
+	readonly negativeCoachingPromptOpen = signal(false);
 	readonly currentScreen = signal<AppScreen>(this.resolveInitialScreen(this.initialState));
 	readonly screenHistory = signal<AppScreen[]>([]);
 	readonly settingsOpen = signal(false);
@@ -326,6 +355,7 @@ export class M25StateService {
 				...session,
 				items: session.items.map((item) => ({ ...item, count: clampToZero(item.count) })),
 			}));
+			this.resetNegativeCoachingPeriod();
 		}
 	}
 
@@ -354,6 +384,7 @@ export class M25StateService {
 	}
 
 	prepareSession(mode: AppMode, title = '', bpm: number | null = null): PracticeSession {
+		this.resetCoachingState();
 		const initialValue = this.currentPracticeValueForMode(mode);
 		const session: PracticeSession = {
 			id: createId('session'),
@@ -401,6 +432,8 @@ export class M25StateService {
 			this.updateRhythmSession((session) => ({ ...session, status: 'running' }));
 		}
 
+		this.syncNegativeCoachingTimer();
+
 		this.feedback.notify('success', 'practiceStarted');
 	}
 
@@ -419,6 +452,7 @@ export class M25StateService {
 			lastResumedAtMs: null,
 			pausedAtMs: now,
 		});
+		this.clearNegativeCoachingTimer();
 	}
 
 	resumeSession(): void {
@@ -436,6 +470,7 @@ export class M25StateService {
 			pausedAtMs: null,
 			lastResumedAtMs: now,
 		});
+		this.syncNegativeCoachingTimer();
 	}
 
 	finishSession(status: Extract<PracticeSessionStatus, 'completed' | 'cancelled'>): void {
@@ -466,6 +501,7 @@ export class M25StateService {
 		this.activeSession.set(completedSession);
 		this.appendPracticeRecord(this.createPracticeRecord(completedSession));
 		this.cancelConfirmOpen.set(false);
+		this.resetCoachingState();
 	}
 
 	increment(): void {
@@ -482,6 +518,7 @@ export class M25StateService {
 			const nextCount = Math.min(previousCount + 1, this.settings().target);
 			this.m25Count.set(nextCount);
 			this.recordPositiveAction(nextCount);
+			this.handlePracticeValueChange(previousCount, nextCount, 'positive');
 
 			if (previousCount < this.settings().target && nextCount >= this.settings().target) {
 				this.openM25CompletionOverlay(nextCount);
@@ -489,6 +526,7 @@ export class M25StateService {
 			return;
 		}
 
+		const previousCount = this.currentRhythmItem()?.count ?? null;
 		const overlayRef: { value: CompletionOverlayState | null } = { value: null };
 		const incrementedCountRef: { value: number | null } = { value: null };
 		this.updateRhythmSession((session) => {
@@ -533,6 +571,7 @@ export class M25StateService {
 		const completedOverlay = overlayRef.value;
 		if (incrementedCountRef.value !== null) {
 			this.recordPositiveAction(incrementedCountRef.value);
+			this.handlePracticeValueChange(previousCount, incrementedCountRef.value, 'positive');
 		}
 
 		if (completedOverlay !== null) {
@@ -553,12 +592,15 @@ export class M25StateService {
 		}
 
 		if (this.currentMode() === 'm25') {
+			const previousCount = this.m25Count();
 			const nextCount = this.applyErrorBehavior(this.m25Count(), this.settings().m25ErrorBehavior);
 			this.m25Count.set(Math.min(nextCount, this.settings().target));
 			this.recordErrorAction(Math.min(nextCount, this.settings().target));
+			this.handlePracticeValueChange(previousCount, Math.min(nextCount, this.settings().target), 'error');
 			return;
 		}
 
+		const previousCount = this.currentRhythmItem()?.count ?? null;
 		const nextCountRef: { value: number | null } = { value: null };
 		this.updateRhythmSession((session) => {
 			if (session.status !== 'running') {
@@ -584,6 +626,7 @@ export class M25StateService {
 		});
 		if (nextCountRef.value !== null) {
 			this.recordErrorAction(nextCountRef.value);
+			this.handlePracticeValueChange(previousCount, nextCountRef.value, 'error');
 		}
 	}
 
@@ -643,12 +686,14 @@ export class M25StateService {
 
 	resetM25Practice(): void {
 		this.m25Count.set(0);
+		this.resetNegativeCoachingPeriod();
 	}
 
 	resetRhythmPractice(): void {
 		this.closeCompletionOverlay();
 		this.closeCancelConfirm();
 		this.activeRhythmSession.set(null);
+		this.resetNegativeCoachingPeriod();
 		if (this.currentMode() === 'rhythms' && this.currentScreen() === 'practice') {
 			this.navigateTo('practice', true);
 		}
@@ -1239,6 +1284,120 @@ export class M25StateService {
 			errorCount: session.errorCount + 1,
 			minimumValue: Math.min(session.minimumValue, nextValue),
 		}));
+	}
+
+	private handlePracticeValueChange(previousValue: number | null, nextValue: number, action: 'positive' | 'error'): void {
+		if (previousValue === null) {
+			return;
+		}
+
+		if (action === 'positive') {
+			this.coachingState.update((state) => ({
+				...state,
+				positiveStreak: state.positiveStreak + 1,
+			}));
+		} else {
+			this.coachingState.update((state) => ({
+				...state,
+				positiveStreak: 0,
+			}));
+		}
+
+		if (nextValue < 0 && previousValue >= 0 && this.coachingState().negativePeriodStartedAtActiveMs === null) {
+			this.coachingState.update((state) => ({
+				...state,
+				negativePeriodStartedAtActiveMs: this.currentActiveElapsedMs(),
+				negativeInterventionShown: false,
+			}));
+		}
+
+		if (nextValue >= 0) {
+			this.resetNegativeCoachingPeriod();
+			return;
+		}
+
+		this.syncNegativeCoachingTimer();
+	}
+
+	private resetNegativeCoachingPeriod(): void {
+		this.clearNegativeCoachingTimer();
+		this.negativeCoachingPromptOpen.set(false);
+		this.coachingState.update((state) => ({
+			...state,
+			negativePeriodStartedAtActiveMs: null,
+			negativeInterventionShown: false,
+		}));
+	}
+
+	private syncNegativeCoachingTimer(): void {
+		this.clearNegativeCoachingTimer();
+
+		const session = this.activeSession();
+		const coaching = this.coachingState();
+		if (!session || session.status !== 'running' || coaching.negativePeriodStartedAtActiveMs === null || coaching.negativeInterventionShown) {
+			return;
+		}
+
+		if (this.currentPracticeValueForMode(session.mode) >= 0) {
+			return;
+		}
+
+		const elapsedNegativeMs = this.currentActiveElapsedMs() - coaching.negativePeriodStartedAtActiveMs;
+		const remainingMs = NEGATIVE_COACHING_THRESHOLD_MS - elapsedNegativeMs;
+		if (remainingMs <= 0) {
+			this.openNegativeCoachingPrompt();
+			return;
+		}
+
+		this.negativeCoachingTimer = setTimeout(() => this.openNegativeCoachingPrompt(), remainingMs);
+	}
+
+	private openNegativeCoachingPrompt(): void {
+		const session = this.activeSession();
+		const coaching = this.coachingState();
+		if (!session || session.status !== 'running' || coaching.negativePeriodStartedAtActiveMs === null || coaching.negativeInterventionShown) {
+			return;
+		}
+
+		if (this.currentPracticeValueForMode(session.mode) >= 0) {
+			this.resetNegativeCoachingPeriod();
+			return;
+		}
+
+		this.clearNegativeCoachingTimer();
+		this.coachingState.update((state) => ({
+			...state,
+			negativeInterventionShown: true,
+		}));
+		this.negativeCoachingPromptOpen.set(true);
+	}
+
+	private clearNegativeCoachingTimer(): void {
+		if (this.negativeCoachingTimer === null) {
+			return;
+		}
+
+		clearTimeout(this.negativeCoachingTimer);
+		this.negativeCoachingTimer = null;
+	}
+
+	private currentActiveElapsedMs(): number {
+		const session = this.activeSession();
+		if (!session) {
+			return 0;
+		}
+
+		if (session.status !== 'running' || session.lastResumedAtMs === null) {
+			return session.activeElapsedMs;
+		}
+
+		return session.activeElapsedMs + (Date.now() - session.lastResumedAtMs);
+	}
+
+	private resetCoachingState(): void {
+		this.clearNegativeCoachingTimer();
+		this.negativeCoachingPromptOpen.set(false);
+		this.coachingState.set(createDefaultCoachingState());
 	}
 
 	private updateActiveSession(transform: (session: PracticeSession) => PracticeSession): void {
