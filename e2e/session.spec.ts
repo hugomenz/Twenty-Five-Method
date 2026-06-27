@@ -55,7 +55,7 @@ test.describe('Session lifecycle', () => {
 		await plus.click();
 		await expect(page.getByTestId('m25-count')).toHaveText('1');
 
-		await page.getByRole('button', { name: 'Practice paused' }).click();
+		await page.getByTestId('pause-action').click();
 		const pauseOverlay = page.getByTestId('session-pause-overlay');
 		await expect(pauseOverlay).toBeVisible();
 		await expect(plus).toBeDisabled();

@@ -12,21 +12,15 @@
 	<div class="top-chrome">
 		@if (showBackButton()) {
 			<button class="back-button" type="button" (click)="onBackClick()" [attr.aria-label]="dictionary().aria.goBack">
-				← <span>{{ dictionary().actions.goBack }}</span>
+				<span aria-hidden="true">←</span>
 			</button>
 		} @else {
 			<span class="back-button back-button--spacer" aria-hidden="true"></span>
 		}
 
-		<p class="corner-mark">{{ dictionary().app.name }}</p>
+		<p class="header-title" data-testid="header-title" [attr.title]="headerTitle()" [attr.aria-label]="headerTitle()">{{ headerTitle() }}</p>
 
-		<div class="utility-actions">
-			@if (showPauseAction()) {
-				<button class="utility-button" type="button" (click)="state.pauseSession()" aria-label="{{ dictionary().pause.heading }}">Ⅱ</button>
-			}
-			@if (showCancelAction()) {
-				<button class="utility-button utility-button--danger" type="button" (click)="state.openCancelConfirm()" aria-label="{{ dictionary().cancel.heading }}">×</button>
-			}
+		<div class="header-actions">
 			<button
 				class="settings-button"
 				type="button"
@@ -51,6 +45,43 @@
 			<m25-pattern-studio />
 		} @else {
 			<section class="practice-stage">
+				<section class="center-column">
+					<section class="center-panel">
+						@if (isM25Mode()) {
+							<m25-practice-view />
+						} @else {
+							<m25-rhythm-practice-view />
+						}
+					</section>
+
+					@if (showPracticeUtilities()) {
+						<div class="practice-utilities">
+							@if (showPauseAction()) {
+								<button
+									class="utility-button utility-button--stage"
+									type="button"
+									data-testid="pause-action"
+									(click)="state.pauseSession()"
+									[attr.aria-label]="dictionary().actions.pause"
+								>
+									<span aria-hidden="true">Ⅱ</span>
+								</button>
+							}
+							@if (showCancelAction()) {
+								<button
+									class="utility-button utility-button--stage utility-button--danger"
+									type="button"
+									data-testid="cancel-action"
+									(click)="state.openCancelConfirm()"
+									[attr.aria-label]="dictionary().cancel.heading"
+								>
+									<span aria-hidden="true">×</span>
+								</button>
+							}
+						</div>
+					}
+				</section>
+
 				<button
 					class="control-button control-button--minus control-button--contrast"
 					type="button"
@@ -60,14 +91,6 @@
 				>
 					−
 				</button>
-
-				<section class="center-panel">
-					@if (isM25Mode()) {
-						<m25-practice-view />
-					} @else {
-						<m25-rhythm-practice-view />
-					}
-				</section>
 
 				<button
 					class="control-button control-button--plus control-button--contrast"

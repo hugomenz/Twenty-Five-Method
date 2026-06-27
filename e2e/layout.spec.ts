@@ -123,7 +123,7 @@ test.describe('Layout, heights, and overflow', () => {
 	test('back button returns to the main view from routine studio opened directly', async ({ page }, testInfo) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: 'Prepare routine' }).click();
-		await expect(page.getByText('Routine studio')).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Routine studio' })).toBeVisible();
 
 		await page.getByRole('button', { name: 'Go back' }).click();
 
@@ -134,7 +134,7 @@ test.describe('Layout, heights, and overflow', () => {
 	test('back button returns to the main view from pattern studio opened directly', async ({ page }, testInfo) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: 'Build rhythm' }).click();
-		await expect(page.getByText('Rhythm workshop')).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Rhythm workshop' })).toBeVisible();
 
 		await page.getByRole('button', { name: 'Go back' }).click();
 
@@ -146,7 +146,7 @@ test.describe('Layout, heights, and overflow', () => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^Rhythms$/ }).click();
 		await page.getByRole('button', { name: 'Prepare routine' }).click();
-		await expect(page.getByText('Routine studio')).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Routine studio' })).toBeVisible();
 
 		await page.getByRole('button', { name: 'Go back' }).click();
 
@@ -158,7 +158,7 @@ test.describe('Layout, heights, and overflow', () => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^Rhythms$/ }).click();
 		await page.getByRole('button', { name: 'Build rhythm' }).click();
-		await expect(page.getByText('Rhythm workshop')).toBeVisible();
+		await expect(page.getByRole('heading', { name: 'Rhythm workshop' })).toBeVisible();
 
 		await page.getByRole('button', { name: 'Go back' }).click();
 

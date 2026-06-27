@@ -47,6 +47,31 @@ export class PracticeShellComponent {
 	protected readonly isHomeScreen = computed(() => this.state.currentScreen() === 'home');
 	protected readonly isPracticeScreen = computed(() => this.state.currentScreen() === 'practice');
 	protected readonly showBackButton = computed(() => this.state.currentScreen() !== 'home');
+	protected readonly headerTitle = computed(() => {
+		switch (this.state.currentScreen()) {
+			case 'home':
+				return this.dictionary().app.name;
+			case 'routine-studio':
+				return this.dictionary().studio.routineTitle;
+			case 'pattern-studio':
+				return this.dictionary().studio.patternTitle;
+			case 'history-list':
+				return this.dictionary().history.title;
+			case 'history-detail': {
+				const record = this.state.selectedPracticeRecord();
+				return record ? this.labels.practiceRecordTitle(record) : this.dictionary().history.title;
+			}
+			case 'practice':
+				if (this.isM25Mode()) {
+					const title = this.state.activeSession()?.title.trim() ?? '';
+					return title || this.dictionary().modes.m25;
+				}
+
+				return this.labels.patternName(this.state.currentRhythmItem()) || this.dictionary().modes.rhythms;
+			default:
+				return this.dictionary().app.name;
+		}
+	});
 	protected readonly progressTheme = computed(() => {
 		const value = this.isM25Mode()
 			? this.state.m25Count()
@@ -64,6 +89,7 @@ export class PracticeShellComponent {
 	protected readonly showCancelDialog = computed(() => this.state.currentScreen() === 'practice' && this.state.cancelConfirmOpen());
 	protected readonly showPauseAction = computed(() => this.state.currentScreen() === 'practice' && this.state.activeSessionStatus() === 'running');
 	protected readonly showCancelAction = computed(() => this.state.currentScreen() === 'practice' && (this.state.activeSessionStatus() === 'ready' || this.state.activeSessionStatus() === 'running' || this.state.activeSessionStatus() === 'paused'));
+	protected readonly showPracticeUtilities = computed(() => this.showPauseAction() || this.showCancelAction());
 
 	protected onBackClick(): void {
 		this.state.goBack();
