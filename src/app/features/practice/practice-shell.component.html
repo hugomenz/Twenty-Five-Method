@@ -36,6 +36,10 @@
 	<div class="screen-area" [class.screen-area--practice]="isPracticeScreen()">
 		@if (isHomeScreen()) {
 			<m25-home-screen />
+		} @else if (state.currentScreen() === 'history-list') {
+			<m25-history-list-view />
+		} @else if (state.currentScreen() === 'history-detail') {
+			<m25-history-detail-view />
 		} @else if (state.currentScreen() === 'routine-studio') {
 			<m25-routine-studio />
 		} @else if (state.currentScreen() === 'pattern-studio') {

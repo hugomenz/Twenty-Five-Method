@@ -61,6 +61,7 @@ export class M25StateService {
 	readonly routines = signal<Routine[]>(this.initialState.routines);
 	readonly customPatterns = signal<RhythmPattern[]>(this.initialState.customPatterns);
 	readonly practiceHistory = signal<PracticeRecord[]>(this.initialHistory);
+	readonly selectedHistoryRecordId = signal<string | null>(null);
 	readonly routineDraftName = signal('');
 	readonly routineDraftItems = signal<RoutineItem[]>([]);
 	readonly editingRoutineId = signal<string | null>(null);
@@ -70,6 +71,14 @@ export class M25StateService {
 
 	readonly currentMode = computed(() => this.recentMode());
 	readonly activeSessionStatus = computed(() => this.activeSession()?.status ?? null);
+	readonly selectedPracticeRecord = computed(() => {
+		const selectedId = this.selectedHistoryRecordId();
+		if (!selectedId) {
+			return null;
+		}
+
+		return this.practiceHistory().find((record) => record.id === selectedId) ?? null;
+	});
 	readonly allPatterns = computed(() => [...BUILT_IN_RHYTHM_PATTERNS, ...this.customPatterns()]);
 	readonly m25Completed = computed(() => this.m25Count() >= this.settings().target);
 	readonly currentRhythmItem = computed(() => {
@@ -209,6 +218,53 @@ export class M25StateService {
 
 	openPatternStudio(): void {
 		this.navigateTo('pattern-studio');
+	}
+
+	openHistory(): void {
+		this.settingsOpen.set(false);
+		this.selectedHistoryRecordId.set(null);
+		this.navigateTo('history-list');
+	}
+
+	openPracticeRecord(recordId: string): void {
+		if (!this.practiceHistory().some((record) => record.id === recordId)) {
+			return;
+		}
+
+		this.settingsOpen.set(false);
+		this.selectedHistoryRecordId.set(recordId);
+		this.navigateTo('history-detail');
+	}
+
+	deletePracticeRecord(recordId: string): void {
+		const nextHistory = this.practiceHistory().filter((record) => record.id !== recordId);
+		if (nextHistory.length === this.practiceHistory().length) {
+			return;
+		}
+
+		this.practiceHistory.set(nextHistory);
+		this.persistPracticeHistory(nextHistory);
+
+		if (this.selectedHistoryRecordId() === recordId) {
+			this.selectedHistoryRecordId.set(null);
+			if (this.currentScreen() === 'history-detail') {
+				this.navigateTo('history-list', true);
+			}
+		}
+	}
+
+	clearPracticeHistory(): void {
+		if (this.practiceHistory().length === 0) {
+			return;
+		}
+
+		this.practiceHistory.set([]);
+		this.persistPracticeHistory([]);
+		this.selectedHistoryRecordId.set(null);
+
+		if (this.currentScreen() === 'history-detail') {
+			this.navigateTo('history-list', true);
+		}
 	}
 
 	openCancelConfirm(): void {

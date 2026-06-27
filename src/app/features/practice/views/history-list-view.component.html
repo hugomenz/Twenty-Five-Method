@@ -1,0 +1,52 @@
+<section class="history-screen">
+	<header class="history-header">
+		<p class="history-kicker">{{ dictionary().actions.openHistory }}</p>
+		<h1 class="history-title">{{ dictionary().history.title }}</h1>
+		@if (hasRecords()) {
+			<p class="history-copy">{{ dictionary().history.recentFirst }}</p>
+		} @else {
+			<p class="history-copy">{{ dictionary().history.emptyDescription }}</p>
+		}
+	</header>
+
+	@if (hasRecords()) {
+		<div class="history-actions">
+			<button class="history-button history-button--danger" type="button" (click)="clearAll()">{{ dictionary().actions.deleteAll }}</button>
+		</div>
+
+		<div class="history-list">
+			@for (record of records(); track record.id) {
+				<button class="history-row" type="button" (click)="openRecord(record.id)" [attr.aria-label]="title(record)">
+					<div class="history-row__header">
+						<p class="history-row__title">{{ title(record) }}</p>
+						<p class="history-row__date">{{ labels.formatDate(record.startedAtMs) }}</p>
+					</div>
+
+					<div class="history-row__meta">
+						<div class="history-row__pair">
+							<span>{{ dictionary().history.mode }}</span>
+							<span>{{ mode(record) }}</span>
+						</div>
+						<div class="history-row__pair">
+							<span>{{ dictionary().completion.duration }}</span>
+							<span>{{ duration(record) }}</span>
+						</div>
+						<div class="history-row__pair">
+							<span>{{ dictionary().fields.practiceBpm }}</span>
+							<span>{{ bpm(record) }}</span>
+						</div>
+						<div class="history-row__pair">
+							<span>{{ dictionary().completion.result }}</span>
+							<span>{{ result(record) }}</span>
+						</div>
+					</div>
+				</button>
+			}
+		</div>
+	} @else {
+		<section class="history-empty">
+			<h2 class="history-title">{{ dictionary().history.emptyTitle }}</h2>
+			<p>{{ dictionary().history.emptyDescription }}</p>
+		</section>
+	}
+</section>

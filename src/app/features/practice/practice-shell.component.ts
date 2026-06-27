@@ -4,6 +4,8 @@ import { M25StateService } from '../../core/services/m25-state.service';
 import { CompletionOverlayComponent } from '../completion/completion-overlay.component';
 import { HomeScreenComponent } from '../home/home-screen.component';
 import { FeedbackToastsComponent } from '../feedback/feedback-toasts.component';
+import { HistoryDetailViewComponent } from './views/history-detail-view.component';
+import { HistoryListViewComponent } from './views/history-list-view.component';
 import { M25PracticeViewComponent } from './views/m25-practice-view.component';
 import { RhythmPracticeViewComponent } from './views/rhythm-practice-view.component';
 import { SessionCancelDialogComponent } from '../session/session-cancel-dialog.component';
@@ -19,6 +21,8 @@ import { SettingsSheetComponent } from '../settings/settings-sheet.component';
 	imports: [
 		CompletionOverlayComponent,
 		HomeScreenComponent,
+		HistoryDetailViewComponent,
+		HistoryListViewComponent,
 		M25PracticeViewComponent,
 		RhythmPracticeViewComponent,
 		SessionCancelDialogComponent,

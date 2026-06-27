@@ -62,6 +62,7 @@
 	"actions": {
 		"goBack": "Back",
 		"openSettings": "Open settings",
+		"openHistory": "Practice history",
 		"pause": "Pause",
 		"resume": "Resume",
 		"nextRhythm": "Next rhythm",
@@ -81,7 +82,8 @@
 		"clear": "Clear",
 		"load": "Load",
 		"start": "Start",
-		"delete": "Delete"
+		"delete": "Delete",
+		"deleteAll": "Delete all"
 	},
 	"sections": {
 		"general": "General",
@@ -180,5 +182,22 @@
 		"patternIncomplete": "Add a name and at least one block first.",
 		"practiceStarted": "Practice started.",
 		"practiceReset": "Practice reset."
+	},
+	"history": {
+		"title": "Practice history",
+		"recentFirst": "Most recent sessions appear first.",
+		"emptyTitle": "No saved sessions yet",
+		"emptyDescription": "Completed and cancelled sessions will appear here.",
+		"date": "Date",
+		"mode": "Mode",
+		"startedAt": "Started",
+		"finishedAt": "Finished",
+		"status": "Status",
+		"target": "Target",
+		"pausedDuration": "Paused",
+		"errors": "Errors",
+		"positivePresses": "Successful presses",
+		"deleteConfirm": "Delete this saved session?",
+		"clearAllConfirm": "Delete all {count} saved sessions? This cannot be undone."
 	}
 }

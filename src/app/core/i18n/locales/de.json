@@ -62,6 +62,7 @@
 	"actions": {
 		"goBack": "Zurück",
 		"openSettings": "Einstellungen öffnen",
+		"openHistory": "Übungsverlauf",
 		"pause": "Pausieren",
 		"resume": "Fortsetzen",
 		"nextRhythm": "Nächster Rhythmus",
@@ -81,7 +82,8 @@
 		"clear": "Leeren",
 		"load": "Laden",
 		"start": "Starten",
-		"delete": "Löschen"
+		"delete": "Löschen",
+		"deleteAll": "Alles löschen"
 	},
 	"sections": {
 		"general": "Allgemein",
@@ -180,5 +182,22 @@
 		"patternIncomplete": "Gib zuerst einen Namen und mindestens einen Block ein.",
 		"practiceStarted": "Übung gestartet.",
 		"practiceReset": "Übung zurückgesetzt."
+	},
+	"history": {
+		"title": "Übungsverlauf",
+		"recentFirst": "Die neuesten Sitzungen stehen zuerst.",
+		"emptyTitle": "Noch keine gespeicherten Sitzungen",
+		"emptyDescription": "Abgeschlossene und abgebrochene Sitzungen erscheinen hier.",
+		"date": "Datum",
+		"mode": "Modus",
+		"startedAt": "Beginn",
+		"finishedAt": "Ende",
+		"status": "Status",
+		"target": "Ziel",
+		"pausedDuration": "Pause",
+		"errors": "Fehler",
+		"positivePresses": "Erfolgreiche Tasten",
+		"deleteConfirm": "Diese gespeicherte Sitzung löschen?",
+		"clearAllConfirm": "Alle {count} gespeicherten Sitzungen löschen? Das kann nicht rückgängig gemacht werden."
 	}
 }

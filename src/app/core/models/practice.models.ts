@@ -1,5 +1,5 @@
 export type AppMode = 'm25' | 'rhythms';
-export type AppScreen = 'home' | 'practice' | 'routine-studio' | 'pattern-studio';
+export type AppScreen = 'home' | 'practice' | 'routine-studio' | 'pattern-studio' | 'history-list' | 'history-detail';
 export type ErrorBehavior = 'decrement' | 'reset' | 'ignore';
 export type BlockKind = 'quarter' | 'eighth' | 'sixteenth' | 'triplet';
 export type RhythmSessionStatus = 'running' | 'paused' | 'complete';

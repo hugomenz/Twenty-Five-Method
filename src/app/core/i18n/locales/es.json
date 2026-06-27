@@ -62,6 +62,7 @@
 	"actions": {
 		"goBack": "Volver",
 		"openSettings": "Abrir configuración",
+		"openHistory": "Historial de práctica",
 		"pause": "Pausar",
 		"resume": "Continuar",
 		"nextRhythm": "Siguiente ritmo",
@@ -81,7 +82,8 @@
 		"clear": "Limpiar",
 		"load": "Cargar",
 		"start": "Iniciar",
-		"delete": "Eliminar"
+		"delete": "Eliminar",
+		"deleteAll": "Eliminar todo"
 	},
 	"sections": {
 		"general": "General",
@@ -180,5 +182,22 @@
 		"patternIncomplete": "Añade un nombre y al menos un bloque.",
 		"practiceStarted": "Práctica iniciada.",
 		"practiceReset": "Práctica reiniciada."
+	},
+	"history": {
+		"title": "Historial de práctica",
+		"recentFirst": "Las sesiones más recientes aparecen primero.",
+		"emptyTitle": "Todavía no hay sesiones guardadas",
+		"emptyDescription": "Las sesiones completadas y canceladas aparecerán aquí.",
+		"date": "Fecha",
+		"mode": "Modo",
+		"startedAt": "Inicio",
+		"finishedAt": "Fin",
+		"status": "Estado",
+		"target": "Objetivo",
+		"pausedDuration": "Pausa",
+		"errors": "Errores",
+		"positivePresses": "Pulsaciones correctas",
+		"deleteConfirm": "¿Eliminar esta sesión guardada?",
+		"clearAllConfirm": "¿Eliminar las {count} sesiones guardadas? Esta acción no se puede deshacer."
 	}
 }

@@ -1,0 +1,83 @@
+@if (record(); as saved) {
+	<section class="history-screen">
+		<section class="history-detail">
+			<div class="history-detail__header">
+				<div>
+					<p class="history-kicker">{{ dictionary().history.title }}</p>
+					<h1 class="history-detail__title">{{ title() }}</h1>
+				</div>
+				<p class="history-detail__date">{{ labels.formatDate(saved.startedAtMs) }}</p>
+			</div>
+
+			<dl class="history-detail__grid">
+				<div class="history-detail__row">
+					<dt>{{ dictionary().history.mode }}</dt>
+					<dd>{{ labels.practiceRecordMode(saved.mode) }}</dd>
+				</div>
+				<div class="history-detail__row">
+					<dt>{{ dictionary().history.status }}</dt>
+					<dd>{{ labels.practiceRecordStatus(saved.status) }}</dd>
+				</div>
+				<div class="history-detail__row">
+					<dt>{{ dictionary().history.startedAt }}</dt>
+					<dd>{{ labels.formatDateTime(saved.startedAtMs) }}</dd>
+				</div>
+				<div class="history-detail__row">
+					<dt>{{ dictionary().history.finishedAt }}</dt>
+					<dd>{{ labels.formatDateTime(saved.finishedAtMs) }}</dd>
+				</div>
+				<div class="history-detail__row">
+					<dt>{{ dictionary().completion.duration }}</dt>
+					<dd>{{ labels.formatDuration(saved.activeDurationMs) }}</dd>
+				</div>
+				<div class="history-detail__row">
+					<dt>{{ dictionary().history.pausedDuration }}</dt>
+					<dd>{{ labels.formatDuration(saved.pausedDurationMs) }}</dd>
+				</div>
+				@if (saved.bpm !== null) {
+					<div class="history-detail__row">
+						<dt>{{ dictionary().fields.practiceBpm }}</dt>
+						<dd>{{ saved.bpm }}</dd>
+					</div>
+				}
+				<div class="history-detail__row">
+					<dt>{{ dictionary().history.target }}</dt>
+					<dd>{{ saved.target }}</dd>
+				</div>
+				<div class="history-detail__row">
+					<dt>{{ dictionary().completion.result }}</dt>
+					<dd>{{ result() }}</dd>
+				</div>
+				<div class="history-detail__row">
+					<dt>{{ dictionary().completion.minimum }}</dt>
+					<dd>{{ labels.formatCount(saved.minimumValue) }}</dd>
+				</div>
+				<div class="history-detail__row">
+					<dt>{{ dictionary().history.errors }}</dt>
+					<dd>{{ saved.errorCount }}</dd>
+				</div>
+				<div class="history-detail__row">
+					<dt>{{ dictionary().history.positivePresses }}</dt>
+					<dd>{{ saved.positivePressCount }}</dd>
+				</div>
+				@if (exercise()) {
+					<div class="history-detail__row">
+						<dt>{{ dictionary().completion.exercise }}</dt>
+						<dd>{{ exercise() }}</dd>
+					</div>
+				}
+			</dl>
+		</section>
+
+		<div class="history-actions">
+			<button class="history-button history-button--danger" type="button" (click)="deleteRecord()">{{ dictionary().actions.delete }}</button>
+		</div>
+	</section>
+} @else {
+	<section class="history-screen">
+		<section class="history-empty">
+			<h1 class="history-title">{{ dictionary().history.emptyTitle }}</h1>
+			<p>{{ dictionary().history.emptyDescription }}</p>
+		</section>
+	</section>
+}

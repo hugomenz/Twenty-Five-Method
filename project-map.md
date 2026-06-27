@@ -89,6 +89,11 @@ All visible labels should come from these files through `M25LabelsService`.
   - Center panel for M25 mode.
 - `src/app/features/practice/views/rhythm-practice-view.component.*`
   - Center panel for Rhythms mode.
+- `src/app/features/practice/views/history-list-view.component.*`
+  - Simple saved-session list opened from settings.
+  - Shows the latest records first and opens individual record details.
+- `src/app/features/practice/views/history-detail-view.component.*`
+  - Full saved-session detail view with deletion.
 - `src/app/features/studio/routine-studio.component.*`
   - Full-screen routine preparation flow.
 - `src/app/features/studio/pattern-studio.component.*`
@@ -100,7 +105,7 @@ All visible labels should come from these files through `M25LabelsService`.
   - Native modal `<dialog>` (top-layer, Escape/focus handled by the platform, jsdom fallback).
   - Contains general settings plus mode-specific settings only.
 - `src/app/features/settings/sections/appearance-settings-section.component.*`
-  - General settings: language, theme, button tone, button shape.
+  - General settings: language, theme, button tone, button shape, session-start defaults, history entry point.
 - `src/app/features/settings/sections/m25-settings-section.component.*`
   - M25-specific controls.
 - `src/app/features/settings/sections/rhythm-settings-section.component.*`

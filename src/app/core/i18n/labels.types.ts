@@ -64,6 +64,7 @@ export interface LabelDictionary {
 	actions: {
 		goBack: string;
 		openSettings: string;
+		openHistory: string;
 		pause: string;
 		resume: string;
 		nextRhythm: string;
@@ -84,6 +85,7 @@ export interface LabelDictionary {
 		load: string;
 		start: string;
 		delete: string;
+		deleteAll: string;
 	};
 	sections: {
 		general: string;
@@ -151,5 +153,22 @@ export interface LabelDictionary {
 		patternIncomplete: string;
 		practiceStarted: string;
 		practiceReset: string;
+	};
+	history: {
+		title: string;
+		recentFirst: string;
+		emptyTitle: string;
+		emptyDescription: string;
+		date: string;
+		mode: string;
+		startedAt: string;
+		finishedAt: string;
+		status: string;
+		target: string;
+		pausedDuration: string;
+		errors: string;
+		positivePresses: string;
+		deleteConfirm: string;
+		clearAllConfirm: string;
 	};
 }

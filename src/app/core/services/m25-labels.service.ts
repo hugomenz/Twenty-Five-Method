@@ -8,6 +8,9 @@ import {
 	BlockKind,
 	BlockOption,
 	LanguageCode,
+	PracticeRecord,
+	PracticeRecordMode,
+	PracticeRecordStatus,
 	RhythmPattern,
 	RhythmSessionItem,
 } from '../models/practice.models';
@@ -17,6 +20,12 @@ const LOCALES: Record<LanguageCode, LabelDictionary> = {
 	en: enLabels as LabelDictionary,
 	es: esLabels as LabelDictionary,
 	de: deLabels as LabelDictionary,
+};
+
+const INTL_LOCALES: Record<LanguageCode, string> = {
+	en: 'en-US',
+	es: 'es-ES',
+	de: 'de-DE',
 };
 
 @Injectable({ providedIn: 'root' })
@@ -76,6 +85,70 @@ export class M25LabelsService {
 		return `${minutes}:${String(seconds).padStart(2, '0')}`;
 	}
 
+	formatDate(timestampMs: number): string {
+		return new Intl.DateTimeFormat(this.intlLocale(), {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+		}).format(timestampMs);
+	}
+
+	formatDateTime(timestampMs: number): string {
+		return new Intl.DateTimeFormat(this.intlLocale(), {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit',
+		}).format(timestampMs);
+	}
+
+	practiceRecordMode(mode: PracticeRecordMode): string {
+		return mode === 'm25' ? this.dictionary().modes.m25 : this.dictionary().modes.rhythms;
+	}
+
+	practiceRecordStatus(status: PracticeRecordStatus): string {
+		return status === 'completed' ? this.dictionary().status.practiceCompleted : this.dictionary().status.practiceCancelled;
+	}
+
+	practiceRecordExerciseName(record: Pick<PracticeRecord, 'exerciseName' | 'exerciseBuiltIn'>): string {
+		if (!record.exerciseName) {
+			return '';
+		}
+
+		if (!record.exerciseBuiltIn) {
+			return record.exerciseName;
+		}
+
+		return this.dictionary().patterns.presets[record.exerciseName] ?? record.exerciseName;
+	}
+
+	practiceRecordTitle(record: Pick<PracticeRecord, 'mode' | 'title' | 'exerciseName' | 'exerciseBuiltIn'>): string {
+		const title = record.title.trim();
+		if (title) {
+			return title;
+		}
+
+		const exerciseName = this.practiceRecordExerciseName(record);
+		if (exerciseName) {
+			return exerciseName;
+		}
+
+		return this.practiceRecordMode(record.mode);
+	}
+
+	practiceRecordResult(record: Pick<PracticeRecord, 'mode' | 'finalValue' | 'target'>): string {
+		if (record.mode === 'm25') {
+			return this.formatCount(record.finalValue);
+		}
+
+		return `${this.formatCount(record.finalValue)} / ${record.target}`;
+	}
+
+	historyClearAllConfirm(count: number): string {
+		return this.interpolate(this.dictionary().history.clearAllConfirm, { count });
+	}
+
 	/** Human-readable rhythm description for accessible labels (no music glyphs). */
 	patternDescription(blocks: readonly BlockKind[]): string {
 		if (blocks.length === 0) {
@@ -103,5 +176,9 @@ export class M25LabelsService {
 			nextText = nextText.replaceAll(`{${key}}`, String(value));
 		}
 		return nextText;
+	}
+
+	private intlLocale(): string {
+		return INTL_LOCALES[this.state.settings().language];
 	}
 }
