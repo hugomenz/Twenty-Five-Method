@@ -11,12 +11,17 @@ export type FeedbackKey =
 	| 'patternDeleted'
 	| 'patternIncomplete'
 	| 'practiceStarted'
-	| 'practiceReset';
+	| 'practiceReset'
+	| 'recovery'
+	| 'positiveStreak';
+
+export type FeedbackParams = Record<string, number | string>;
 
 export interface FeedbackMessage {
 	id: number;
 	kind: FeedbackKind;
 	key: FeedbackKey;
+	params?: FeedbackParams;
 }
 
 const DEFAULT_DURATION_MS = 3200;
@@ -34,10 +39,10 @@ export class M25FeedbackService {
 	private nextId = 1;
 	private readonly timers = new Map<number, ReturnType<typeof setTimeout>>();
 
-	notify(kind: FeedbackKind, key: FeedbackKey, durationMs = DEFAULT_DURATION_MS): void {
+	notify(kind: FeedbackKind, key: FeedbackKey, durationMs = DEFAULT_DURATION_MS, params?: FeedbackParams): void {
 		const id = this.nextId;
 		this.nextId += 1;
-		this.messageList.update((list) => [...list, { id, kind, key }]);
+		this.messageList.update((list) => [...list, { id, kind, key, params }]);
 
 		if (typeof setTimeout === 'function' && durationMs > 0) {
 			this.timers.set(

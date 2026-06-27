@@ -165,6 +165,8 @@ export interface LabelDictionary {
 		patternIncomplete: string;
 		practiceStarted: string;
 		practiceReset: string;
+		recovery: string;
+		positiveStreak: string;
 	};
 	history: {
 		title: string;

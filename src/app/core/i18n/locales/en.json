@@ -193,7 +193,9 @@
 		"patternDeleted": "Rhythm deleted.",
 		"patternIncomplete": "Add a name and at least one block first.",
 		"practiceStarted": "Practice started.",
-		"practiceReset": "Practice reset."
+		"practiceReset": "Practice reset.",
+		"recovery": "You recovered {points} points. Good control.",
+		"positiveStreak": "{count} clean repetitions in a row."
 	},
 	"history": {
 		"title": "Practice history",

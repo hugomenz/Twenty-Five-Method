@@ -193,7 +193,9 @@
 		"patternDeleted": "Ritmo eliminado.",
 		"patternIncomplete": "Añade un nombre y al menos un bloque.",
 		"practiceStarted": "Práctica iniciada.",
-		"practiceReset": "Práctica reiniciada."
+		"practiceReset": "Práctica reiniciada.",
+		"recovery": "Has recuperado {points} puntos. Buen control.",
+		"positiveStreak": "{count} repeticiones limpias seguidas."
 	},
 	"history": {
 		"title": "Historial de práctica",

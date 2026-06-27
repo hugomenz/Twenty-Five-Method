@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { M25LabelsService } from '../../core/services/m25-labels.service';
-import { FeedbackKey, M25FeedbackService } from '../../core/services/m25-feedback.service';
+import { FeedbackMessage, M25FeedbackService } from '../../core/services/m25-feedback.service';
 
 /**
  * Renders transient feedback messages. The live region announces successes and
@@ -14,7 +14,7 @@ import { FeedbackKey, M25FeedbackService } from '../../core/services/m25-feedbac
 		<div class="toasts" role="status" aria-live="polite">
 			@for (message of feedback.messages(); track message.id) {
 				<div class="toast" [class]="'toast toast--' + message.kind" data-testid="toast">
-					<span class="toast__text">{{ text(message.key) }}</span>
+					<span class="toast__text">{{ text(message) }}</span>
 					<button
 						class="toast__close"
 						type="button"
@@ -34,7 +34,12 @@ export class FeedbackToastsComponent {
 	protected readonly labels = inject(M25LabelsService);
 	protected readonly dictionary = this.labels.dictionary;
 
-	protected text(key: FeedbackKey): string {
-		return this.dictionary().feedback[key];
+	protected text(message: FeedbackMessage): string {
+		let text = this.dictionary().feedback[message.key];
+		for (const [key, value] of Object.entries(message.params ?? {})) {
+			text = text.replaceAll(`{${key}}`, String(value));
+		}
+
+		return text;
 	}
 }

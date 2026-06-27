@@ -273,6 +273,45 @@ describe('M25StateService', () => {
 		expect(service.negativeCoachingPromptOpen()).toBe(false);
 	});
 
+	it('should show a single recovery message after climbing back from minus five', () => {
+		const service = createService();
+		const feedback = TestBed.inject(M25FeedbackService);
+		startM25Session(service);
+
+		for (let index = 0; index < 5; index += 1) {
+			service.decrement();
+		}
+		expect(service.m25Count()).toBe(-5);
+
+		for (let index = 0; index < 5; index += 1) {
+			service.increment();
+		}
+
+		const recoveryMessages = feedback.messages().filter((message) => message.key === 'recovery');
+		expect(recoveryMessages).toHaveLength(1);
+		expect(recoveryMessages[0]).toMatchObject({ kind: 'success', params: { points: 5 } });
+
+		service.increment();
+		expect(feedback.messages().filter((message) => message.key === 'recovery')).toHaveLength(1);
+	});
+
+	it('should show the positive streak message only once per session', () => {
+		const service = createService();
+		const feedback = TestBed.inject(M25FeedbackService);
+		startM25Session(service);
+
+		for (let index = 0; index < 10; index += 1) {
+			service.increment();
+		}
+
+		const streakMessages = feedback.messages().filter((message) => message.key === 'positiveStreak');
+		expect(streakMessages).toHaveLength(1);
+		expect(streakMessages[0]).toMatchObject({ kind: 'success', params: { count: 10 } });
+
+		service.increment();
+		expect(feedback.messages().filter((message) => message.key === 'positiveStreak')).toHaveLength(1);
+	});
+
 	it('should save a completed m25 session exactly once', () => {
 		const service = createService();
 

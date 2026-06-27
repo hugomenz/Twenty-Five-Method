@@ -53,6 +53,9 @@ interface CoachingState {
 }
 
 const NEGATIVE_COACHING_THRESHOLD_MS = 20 * 60 * 1000;
+const RECOVERY_WINDOW_MS = 10 * 60 * 1000;
+const RECOVERY_STREAK_THRESHOLD = 5;
+const POSITIVE_STREAK_MESSAGE_THRESHOLD = 10;
 
 function createDefaultCoachingState(): CoachingState {
 	return {
@@ -1346,16 +1349,75 @@ export class M25StateService {
 			return;
 		}
 
+		const activeElapsedMs = this.currentActiveElapsedMs();
+		const coaching = this.coachingState();
+
 		if (action === 'positive') {
-			this.coachingState.update((state) => ({
-				...state,
-				positiveStreak: state.positiveStreak + 1,
-			}));
+			const nextPositiveStreak = coaching.positiveStreak + 1;
+			let recoveryPositiveStreak = coaching.recoveryPositiveStreak;
+			let recoveryMinimumValue = coaching.recoveryMinimumValue;
+			let recoveryStartedAtActiveMs = coaching.recoveryStartedAtActiveMs;
+			let recoveryMessageShown = coaching.recoveryMessageShown;
+
+			if (recoveryMinimumValue !== null && recoveryStartedAtActiveMs !== null) {
+				if (activeElapsedMs - recoveryStartedAtActiveMs <= RECOVERY_WINDOW_MS) {
+					recoveryPositiveStreak += 1;
+				} else {
+					recoveryMinimumValue = null;
+					recoveryStartedAtActiveMs = null;
+					recoveryPositiveStreak = 0;
+				}
+			}
+
+			if (!coaching.positiveStreakMessageShown && nextPositiveStreak >= POSITIVE_STREAK_MESSAGE_THRESHOLD) {
+				this.feedback.notify('success', 'positiveStreak', undefined, { count: POSITIVE_STREAK_MESSAGE_THRESHOLD });
+			}
+
+			const canShowRecovery = recoveryMinimumValue !== null
+				&& recoveryStartedAtActiveMs !== null
+				&& recoveryMinimumValue <= -RECOVERY_STREAK_THRESHOLD
+				&& nextValue >= 0
+				&& recoveryPositiveStreak >= RECOVERY_STREAK_THRESHOLD
+				&& activeElapsedMs - recoveryStartedAtActiveMs <= RECOVERY_WINDOW_MS
+				&& !recoveryMessageShown;
+
+			if (canShowRecovery && recoveryMinimumValue !== null) {
+				const recoveredPoints = nextValue - recoveryMinimumValue;
+				this.feedback.notify('success', 'recovery', undefined, { points: recoveredPoints });
+				recoveryMessageShown = true;
+			}
+
+			if (nextValue >= 0) {
+				recoveryMinimumValue = null;
+				recoveryStartedAtActiveMs = null;
+				recoveryPositiveStreak = 0;
+			}
+
+			this.coachingState.set({
+				...coaching,
+				positiveStreak: nextPositiveStreak,
+				positiveStreakMessageShown: coaching.positiveStreakMessageShown || nextPositiveStreak >= POSITIVE_STREAK_MESSAGE_THRESHOLD,
+				recoveryMinimumValue,
+				recoveryStartedAtActiveMs,
+				recoveryPositiveStreak,
+				recoveryMessageShown,
+			});
 		} else {
-			this.coachingState.update((state) => ({
-				...state,
+			const nextRecoveryMinimumValue = nextValue <= -RECOVERY_STREAK_THRESHOLD
+				&& (coaching.recoveryMinimumValue === null || nextValue < coaching.recoveryMinimumValue)
+					? nextValue
+					: coaching.recoveryMinimumValue;
+			const nextRecoveryStartedAtActiveMs = nextRecoveryMinimumValue !== coaching.recoveryMinimumValue
+				? activeElapsedMs
+				: coaching.recoveryStartedAtActiveMs;
+
+			this.coachingState.set({
+				...coaching,
 				positiveStreak: 0,
-			}));
+				recoveryMinimumValue: nextRecoveryMinimumValue,
+				recoveryStartedAtActiveMs: nextRecoveryStartedAtActiveMs,
+				recoveryPositiveStreak: 0,
+			});
 		}
 
 		if (nextValue < 0 && previousValue >= 0 && this.coachingState().negativePeriodStartedAtActiveMs === null) {

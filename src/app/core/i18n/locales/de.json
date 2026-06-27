@@ -193,7 +193,9 @@
 		"patternDeleted": "Rhythmus gelöscht.",
 		"patternIncomplete": "Gib zuerst einen Namen und mindestens einen Block ein.",
 		"practiceStarted": "Übung gestartet.",
-		"practiceReset": "Übung zurückgesetzt."
+		"practiceReset": "Übung zurückgesetzt.",
+		"recovery": "Du hast {points} Punkte zurückgeholt. Gute Kontrolle.",
+		"positiveStreak": "{count} saubere Wiederholungen in Folge."
 	},
 	"history": {
 		"title": "Übungsverlauf",
