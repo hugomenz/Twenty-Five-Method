@@ -1,6 +1,36 @@
 import { expect, test } from '@playwright/test';
 import { expectNoGlobalScroll, gotoClean } from './helpers';
 
+async function rectOf(locator: import('@playwright/test').Locator) {
+	return locator.evaluate((element) => {
+		const rect = element.getBoundingClientRect();
+		return {
+			top: rect.top,
+			left: rect.left,
+			right: rect.right,
+			bottom: rect.bottom,
+			width: rect.width,
+			height: rect.height,
+			scrollWidth: element.scrollWidth,
+			clientWidth: element.clientWidth,
+			textOverflow: window.getComputedStyle(element).textOverflow,
+			whiteSpace: window.getComputedStyle(element).whiteSpace,
+		};
+	});
+}
+
+function rectsOverlap(a: { top: number; left: number; right: number; bottom: number }, b: { top: number; left: number; right: number; bottom: number }) {
+	return !(a.right <= b.left || a.left >= b.right || a.bottom <= b.top || a.top >= b.bottom);
+}
+
+async function startRhythmPractice(page: import('@playwright/test').Page): Promise<void> {
+	await page.getByRole('button', { name: 'Prepare routine' }).click();
+	await page.getByLabel('Name').fill('Pause flow');
+	await page.getByRole('button', { name: 'Eighths then sixteenths' }).click();
+	await page.getByRole('button', { name: 'Start current routine' }).click();
+	await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
+}
+
 test.describe('Layout, heights, and overflow', () => {
 	test('home screen has no global scroll', async ({ page }, testInfo) => {
 		await gotoClean(page);
@@ -176,5 +206,97 @@ test.describe('Layout, heights, and overflow', () => {
 		await page.getByRole('button', { name: 'Save routine' }).click();
 
 		await expectNoGlobalScroll(page, testInfo);
+	});
+
+	test('a long practice title truncates without overlapping back or settings', async ({ page }, testInfo) => {
+		test.skip(testInfo.project.name !== 'chromium-desktop');
+
+		await page.setViewportSize({ width: 390, height: 844 });
+		await gotoClean(page);
+		await page.getByRole('button', { name: /^M25$/ }).click();
+		const title = 'A very very very long practice title that must stay inside the header';
+		await page.getByTestId('session-start-dialog').getByLabel('Practice title').fill(title);
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
+
+		const header = page.getByTestId('header-title');
+		const back = page.getByRole('button', { name: 'Go back' });
+		const settings = page.getByRole('button', { name: 'Open settings' });
+		const headerRect = await rectOf(header);
+		const backRect = await rectOf(back);
+		const settingsRect = await rectOf(settings);
+
+		expect(await header.getAttribute('title')).toBe(title);
+		expect(headerRect.textOverflow).toBe('ellipsis');
+		expect(headerRect.whiteSpace).toBe('nowrap');
+		expect(headerRect.scrollWidth).toBeGreaterThan(headerRect.clientWidth);
+		expect(rectsOverlap(headerRect, backRect)).toBe(false);
+		expect(rectsOverlap(headerRect, settingsRect)).toBe(false);
+	});
+
+	test('pause button is visible and clickable in M25 portrait and its hitbox does not overlap plus or minus', async ({ page }, testInfo) => {
+		test.skip(testInfo.project.name !== 'chromium-desktop');
+
+		await page.setViewportSize({ width: 390, height: 844 });
+		await gotoClean(page);
+		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
+
+		const pause = page.getByTestId('pause-action');
+		const minus = page.getByRole('button', { name: 'Record mistake' });
+		const plus = page.getByRole('button', { name: 'Record successful repetition' });
+		await expect(pause).toBeVisible();
+		await expect(pause).toBeInViewport();
+
+		const pauseRect = await rectOf(pause);
+		const minusRect = await rectOf(minus);
+		const plusRect = await rectOf(plus);
+		expect(rectsOverlap(pauseRect, minusRect)).toBe(false);
+		expect(rectsOverlap(pauseRect, plusRect)).toBe(false);
+
+		await pause.click();
+		await expect(page.getByTestId('session-pause-overlay')).toBeVisible();
+	});
+
+	test('pause button is visible and clickable in M25 landscape', async ({ page }, testInfo) => {
+		test.skip(testInfo.project.name !== 'chromium-desktop');
+
+		await page.setViewportSize({ width: 844, height: 390 });
+		await gotoClean(page);
+		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
+
+		const pause = page.getByTestId('pause-action');
+		await expect(pause).toBeVisible();
+		await expect(pause).toBeInViewport();
+		await pause.click();
+		await expect(page.getByTestId('session-pause-overlay')).toBeVisible();
+	});
+
+	test('pause button is visible and clickable in rhythms portrait', async ({ page }, testInfo) => {
+		test.skip(testInfo.project.name !== 'chromium-desktop');
+
+		await page.setViewportSize({ width: 390, height: 844 });
+		await gotoClean(page);
+		await startRhythmPractice(page);
+
+		const pause = page.getByTestId('pause-action');
+		await expect(pause).toBeVisible();
+		await expect(pause).toBeInViewport();
+		await pause.click();
+		await expect(page.getByTestId('session-pause-overlay')).toBeVisible();
+	});
+
+	test('pause button is visible and clickable in rhythms landscape', async ({ page }, testInfo) => {
+		test.skip(testInfo.project.name !== 'chromium-desktop');
+
+		await page.setViewportSize({ width: 844, height: 390 });
+		await gotoClean(page);
+		await startRhythmPractice(page);
+
+		const pause = page.getByTestId('pause-action');
+		await expect(pause).toBeVisible();
+		await expect(pause).toBeInViewport();
+		await pause.click();
+		await expect(page.getByTestId('session-pause-overlay')).toBeVisible();
 	});
 });

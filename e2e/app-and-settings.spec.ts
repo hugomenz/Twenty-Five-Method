@@ -51,6 +51,40 @@ test.describe('App shell and settings', () => {
 		await expect(page.getByRole('dialog')).toBeHidden();
 	});
 
+	test('opening settings from home shows only General', async ({ page }) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: 'Open settings' }).click();
+
+		const dialog = page.getByRole('dialog');
+		await expect(dialog.getByRole('heading', { name: 'General' })).toBeVisible();
+		await expect(dialog.getByRole('heading', { name: 'M25' })).toHaveCount(0);
+		await expect(dialog.getByRole('heading', { name: 'Rhythms' })).toHaveCount(0);
+		await expect(dialog.getByLabel('Target')).toHaveCount(0);
+	});
+
+	test('opening settings from rhythms shows General and Rhythms', async ({ page }) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: /^Rhythms$/ }).click();
+		await page.getByRole('button', { name: 'Open settings' }).click();
+
+		const dialog = page.getByRole('dialog');
+		await expect(dialog.getByRole('heading', { name: 'General' })).toBeVisible();
+		await expect(dialog.getByRole('heading', { name: 'Rhythms' })).toBeVisible();
+		await expect(dialog.getByRole('heading', { name: 'M25' })).toHaveCount(0);
+	});
+
+	test('opening settings from M25 shows General and M25', async ({ page }) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
+		await page.getByRole('button', { name: 'Open settings' }).click();
+
+		const dialog = page.getByRole('dialog');
+		await expect(dialog.getByRole('heading', { name: 'General' })).toBeVisible();
+		await expect(dialog.getByRole('heading', { name: 'M25' })).toBeVisible();
+		await expect(dialog.getByRole('heading', { name: 'Rhythms' })).toHaveCount(0);
+	});
+
 	test('changes the target and persists it across reload', async ({ page }) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^M25$/ }).click();

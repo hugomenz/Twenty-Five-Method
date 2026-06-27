@@ -1,6 +1,23 @@
 import { expect, test } from '@playwright/test';
 import { gotoClean, readPersistedState } from './helpers';
 
+async function notationMetrics(page: import('@playwright/test').Page) {
+	const notation = page.locator('.card-notation').first();
+	await expect(notation.locator('svg')).toBeVisible();
+
+	return notation.evaluate((element) => {
+		const rect = element.getBoundingClientRect();
+		const svg = element.querySelector('svg');
+		return {
+			width: rect.width,
+			height: rect.height,
+			svgWidth: Number(svg?.getAttribute('width') ?? 0),
+			svgHeight: Number(svg?.getAttribute('height') ?? 0),
+			svgCount: element.querySelectorAll('svg').length,
+		};
+	});
+}
+
 test.describe('Rhythm building and routines', () => {
 	test('builds a custom rhythm and renders real notation with feedback', async ({ page }) => {
 		await gotoClean(page);
@@ -89,5 +106,46 @@ test.describe('Rhythm building and routines', () => {
 		const state = await readPersistedState(page);
 		expect(state?.['activeRhythmSession']).not.toBeNull();
 		await expect(page.getByTestId('rhythm-count')).toBeVisible();
+	});
+
+	test('routine preview notation grows when the container grows', async ({ page }, testInfo) => {
+		test.skip(testInfo.project.name !== 'chromium-desktop');
+
+		await page.setViewportSize({ width: 480, height: 800 });
+		await gotoClean(page);
+		await page.getByRole('button', { name: 'Prepare routine' }).click();
+		await page.getByLabel('Name').fill('Resize check');
+		await page.getByRole('button', { name: 'Eighths then sixteenths' }).click();
+
+		const before = await notationMetrics(page);
+
+		await page.setViewportSize({ width: 900, height: 800 });
+		const after = await notationMetrics(page);
+
+		expect(after.width).toBeGreaterThan(before.width);
+		expect(after.height).toBeGreaterThanOrEqual(before.height);
+		expect(after.svgCount).toBe(1);
+	});
+
+	test('changing orientation re-renders the routine preview notation', async ({ page }, testInfo) => {
+		test.skip(testInfo.project.name !== 'chromium-desktop');
+
+		await page.setViewportSize({ width: 390, height: 844 });
+		await gotoClean(page);
+		await page.getByRole('button', { name: 'Prepare routine' }).click();
+		await page.getByLabel('Name').fill('Orientation check');
+		await page.getByRole('button', { name: 'Eighths then sixteenths' }).click();
+
+		const portrait = await notationMetrics(page);
+
+		await page.setViewportSize({ width: 844, height: 390 });
+		const landscape = await notationMetrics(page);
+
+		expect(landscape.svgCount).toBe(1);
+		expect(
+			landscape.svgWidth !== portrait.svgWidth
+			|| landscape.svgHeight !== portrait.svgHeight
+			|| landscape.height !== portrait.height,
+		).toBe(true);
 	});
 });

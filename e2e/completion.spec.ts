@@ -1,6 +1,16 @@
 import { expect, test } from '@playwright/test';
 import { gotoClean } from './helpers';
 
+async function expectWithinViewport(locator: import('@playwright/test').Locator): Promise<void> {
+	const fits = await locator.evaluate((element) => {
+		const rect = element.getBoundingClientRect();
+		return {
+			inside: rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth,
+		};
+	});
+	expect(fits.inside).toBe(true);
+}
+
 test.describe('Completion overlay', () => {
 	test('reaching the target in M25 opens the overlay and allows repeating the practice', async ({ page }) => {
 		await gotoClean(page);
@@ -55,14 +65,17 @@ test.describe('Completion overlay', () => {
 
 		await page.getByRole('button', { name: 'Record successful repetition' }).click();
 		const overlay = page.getByTestId('completion-overlay');
+		await expect(overlay.getByText(/^preset\./)).toHaveCount(0);
+		await expect(overlay.getByText('Eighths then sixteenths')).toBeVisible();
 		await expect(overlay.getByRole('button', { name: 'Repeat routine' })).toBeVisible();
 		await overlay.getByRole('button', { name: 'Repeat routine' }).click();
 		await expect(page.getByTestId('rhythm-count')).toContainText('0 / 1');
 	});
 
-	test('in mobile landscape every overlay action stays visible and tappable', async ({ page }, testInfo) => {
-		test.skip(testInfo.project.name !== 'mobile-landscape');
+	test('in a vertical mobile viewport every completion action stays visible and tappable', async ({ page }, testInfo) => {
+		test.skip(testInfo.project.name !== 'chromium-desktop');
 
+		await page.setViewportSize({ width: 390, height: 844 });
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^M25$/ }).click();
 		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
@@ -78,9 +91,38 @@ test.describe('Completion overlay', () => {
 		const newPractice = overlay.getByRole('button', { name: 'New practice' });
 		const finish = overlay.getByRole('button', { name: 'Finish' });
 
-		await expect(repeat).toBeInViewport();
-		await expect(newPractice).toBeInViewport();
-		await expect(finish).toBeInViewport();
+		await expectWithinViewport(overlay);
+		await expectWithinViewport(repeat);
+		await expectWithinViewport(newPractice);
+		await expectWithinViewport(finish);
+
+		await finish.click();
+		await expect(page.locator('.home-screen')).toBeVisible();
+	});
+
+	test('in an 844 by 390 viewport every completion action stays visible and tappable', async ({ page }, testInfo) => {
+		test.skip(testInfo.project.name !== 'chromium-desktop');
+
+		await page.setViewportSize({ width: 844, height: 390 });
+		await gotoClean(page);
+		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
+		await page.getByRole('button', { name: 'Open settings' }).click();
+		const dialog = page.getByRole('dialog');
+		await dialog.getByLabel('Target').fill('1');
+		await dialog.getByLabel('Target').blur();
+		await dialog.getByRole('button', { name: 'Close settings' }).click();
+
+		await page.getByRole('button', { name: 'Record successful repetition' }).click();
+		const overlay = page.getByTestId('completion-overlay');
+		const repeat = overlay.getByRole('button', { name: 'Repeat' });
+		const newPractice = overlay.getByRole('button', { name: 'New practice' });
+		const finish = overlay.getByRole('button', { name: 'Finish' });
+
+		await expectWithinViewport(overlay);
+		await expectWithinViewport(repeat);
+		await expectWithinViewport(newPractice);
+		await expectWithinViewport(finish);
 
 		await finish.click();
 		await expect(page.locator('.home-screen')).toBeVisible();
