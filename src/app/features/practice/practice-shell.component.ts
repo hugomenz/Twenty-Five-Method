@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { M25LabelsService } from '../../core/services/m25-labels.service';
 import { M25StateService } from '../../core/services/m25-state.service';
+import { CompletionOverlayComponent } from '../completion/completion-overlay.component';
 import { HomeScreenComponent } from '../home/home-screen.component';
 import { FeedbackToastsComponent } from '../feedback/feedback-toasts.component';
 import { M25PracticeViewComponent } from './views/m25-practice-view.component';
@@ -13,6 +14,7 @@ import { SettingsSheetComponent } from '../settings/settings-sheet.component';
 	selector: 'm25-practice-shell',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
+		CompletionOverlayComponent,
 		HomeScreenComponent,
 		M25PracticeViewComponent,
 		RhythmPracticeViewComponent,
@@ -32,6 +34,7 @@ export class PracticeShellComponent {
 	protected readonly isHomeScreen = computed(() => this.state.currentScreen() === 'home');
 	protected readonly isPracticeScreen = computed(() => this.state.currentScreen() === 'practice');
 	protected readonly showBackButton = computed(() => this.state.currentScreen() !== 'home');
+ 	protected readonly hasCompletionOverlay = computed(() => this.state.completionOverlay() !== null);
 
 	protected onBackClick(): void {
 		this.state.goBack();

@@ -28,12 +28,24 @@
 		"noActivePractice": "Keine aktive Übung",
 		"noActivePracticeHelp": "Öffne die Einstellungen, um eine Routine zu bauen, Muster zu speichern oder eine Übung zu starten."
 	},
+	"completion": {
+		"m25Heading": "Übung abgeschlossen",
+		"rhythmHeading": "Rhythmus abgeschlossen",
+		"routineHeading": "Routine abgeschlossen",
+		"finalCount": "Endstand",
+		"celebration": "Gut gespielt"
+	},
 	"actions": {
 		"goBack": "Zurück",
 		"openSettings": "Einstellungen öffnen",
 		"pause": "Pausieren",
 		"resume": "Fortsetzen",
 		"nextRhythm": "Nächster Rhythmus",
+		"repeat": "Wiederholen",
+		"newPractice": "Neue Übung",
+		"finish": "Beenden",
+		"repeatRhythm": "Diesen Rhythmus wiederholen",
+		"repeatRoutine": "Routine wiederholen",
 		"resetPractice": "Übung zurücksetzen",
 		"startCurrentRoutine": "Aktuelle Routine starten",
 		"prepareRoutine": "Routine vorbereiten",

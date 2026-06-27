@@ -65,6 +65,10 @@
 		}
 	</div>
 
+	@if (hasCompletionOverlay()) {
+		<m25-completion-overlay />
+	}
+
 	@if (state.settingsOpen()) {
 		<m25-settings-sheet (requestClose)="state.closeSettings()" (requestReset)="confirmReset()" />
 	}

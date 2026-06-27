@@ -6,6 +6,7 @@ import {
 	BlockKind,
 	ButtonShape,
 	ButtonTone,
+	CompletionOverlayState,
 	createDefaultState,
 	createId,
 	DEFAULT_REPETITIONS,
@@ -39,6 +40,7 @@ export class M25StateService {
 	private readonly feedback = inject(M25FeedbackService);
 	private readonly initialState = this.loadPersistedState();
 
+	readonly completionOverlay = signal<CompletionOverlayState | null>(null);
 	readonly currentScreen = signal<AppScreen>(this.resolveInitialScreen(this.initialState));
 	readonly screenHistory = signal<AppScreen[]>([]);
 	readonly settingsOpen = signal(false);
@@ -71,6 +73,10 @@ export class M25StateService {
 		return item ? item.count >= item.repetitions : false;
 	});
 	readonly canUsePlus = computed(() => {
+		if (this.completionOverlay()) {
+			return false;
+		}
+
 		if (this.currentMode() === 'm25') {
 			return this.m25Count() < this.settings().target;
 		}
@@ -80,6 +86,10 @@ export class M25StateService {
 		return Boolean(session && item && session.status === 'running' && item.count < item.repetitions);
 	});
 	readonly canUseMinus = computed(() => {
+		if (this.completionOverlay()) {
+			return false;
+		}
+
 		if (this.currentMode() === 'm25') {
 			return true;
 		}
@@ -235,11 +245,22 @@ export class M25StateService {
 	}
 
 	increment(): void {
-		if (this.currentMode() === 'm25') {
-			this.m25Count.update((count) => Math.min(count + 1, this.settings().target));
+		if (this.completionOverlay()) {
 			return;
 		}
 
+		if (this.currentMode() === 'm25') {
+			const previousCount = this.m25Count();
+			const nextCount = Math.min(previousCount + 1, this.settings().target);
+			this.m25Count.set(nextCount);
+
+			if (previousCount < this.settings().target && nextCount >= this.settings().target) {
+				this.openM25CompletionOverlay(nextCount);
+			}
+			return;
+		}
+
+		let overlay: CompletionOverlayState | null = null;
 		this.updateRhythmSession((session) => {
 			if (session.status !== 'running') {
 				return session;
@@ -256,6 +277,20 @@ export class M25StateService {
 
 			const completedLastItem = session.currentIndex === nextItems.length - 1
 				&& nextItems[session.currentIndex].count >= nextItems[session.currentIndex].repetitions;
+			const completedCurrentItem = item.count < item.repetitions
+				&& nextItems[session.currentIndex].count >= nextItems[session.currentIndex].repetitions;
+
+			if (completedCurrentItem) {
+				overlay = {
+					kind: completedLastItem ? 'rhythm-final' : 'rhythm-intermediate',
+					finalCount: nextItems[session.currentIndex].count,
+					repetitions: nextItems[session.currentIndex].repetitions,
+					currentIndex: session.currentIndex,
+					totalItems: nextItems.length,
+					routineName: session.routineName,
+					rhythmName: nextItems[session.currentIndex].name,
+				};
+			}
 
 			return {
 				...session,
@@ -263,9 +298,17 @@ export class M25StateService {
 				status: completedLastItem ? 'complete' : session.status,
 			};
 		});
+
+		if (overlay) {
+			this.completionOverlay.set(overlay);
+		}
 	}
 
 	decrement(): void {
+		if (this.completionOverlay()) {
+			return;
+		}
+
 		if (this.currentMode() === 'm25') {
 			const nextCount = this.applyErrorBehavior(this.m25Count(), this.settings().m25ErrorBehavior);
 			this.m25Count.set(Math.min(nextCount, this.settings().target));
@@ -337,6 +380,7 @@ export class M25StateService {
 	}
 
 	resetCurrentPractice(): void {
+		this.closeCompletionOverlay();
 		if (this.currentMode() === 'm25') {
 			this.resetM25Practice();
 			this.feedback.notify('info', 'practiceReset');
@@ -352,6 +396,7 @@ export class M25StateService {
 	}
 
 	resetRhythmPractice(): void {
+		this.closeCompletionOverlay();
 		this.activeRhythmSession.set(null);
 		if (this.currentMode() === 'rhythms' && this.currentScreen() === 'practice') {
 			this.navigateTo('practice', true);
@@ -395,6 +440,56 @@ export class M25StateService {
 		this.navigateTo('practice', true);
 		this.closeSettings();
 		this.feedback.notify('success', 'practiceStarted');
+	}
+
+	closeCompletionOverlay(): void {
+		this.completionOverlay.set(null);
+	}
+
+	repeatM25Practice(): void {
+		this.m25Count.set(0);
+		this.closeCompletionOverlay();
+	}
+
+	startNewM25Practice(): void {
+		this.m25Count.set(0);
+		this.closeCompletionOverlay();
+		this.goHome();
+	}
+
+	finishPractice(): void {
+		if (this.currentMode() === 'm25') {
+			this.m25Count.set(0);
+		} else {
+			this.activeRhythmSession.set(null);
+		}
+
+		this.closeCompletionOverlay();
+		this.goHome();
+	}
+
+	repeatCurrentRhythm(): void {
+		this.updateRhythmSession((session) => ({
+			...session,
+			status: 'running',
+			items: session.items.map((item, index) => index === session.currentIndex ? { ...item, count: 0 } : item),
+		}));
+		this.closeCompletionOverlay();
+	}
+
+	repeatRoutine(): void {
+		this.updateRhythmSession((session) => ({
+			...session,
+			currentIndex: 0,
+			status: 'running',
+			items: session.items.map((item) => ({ ...item, count: 0 })),
+		}));
+		this.closeCompletionOverlay();
+	}
+
+	advanceAfterCompletion(): void {
+		this.advanceRhythm();
+		this.closeCompletionOverlay();
 	}
 
 	loadRoutineDraft(routineId: string): void {
@@ -773,5 +868,21 @@ export class M25StateService {
 
 		this.screenHistory.update((history) => [...history, currentScreen]);
 		this.currentScreen.set(screen);
+	}
+
+	private openM25CompletionOverlay(finalCount: number): void {
+		if (this.completionOverlay()) {
+			return;
+		}
+
+		this.completionOverlay.set({
+			kind: 'm25',
+			finalCount,
+			repetitions: this.settings().target,
+			currentIndex: 0,
+			totalItems: 1,
+			routineName: '',
+			rhythmName: '',
+		});
 	}
 }

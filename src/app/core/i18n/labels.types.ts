@@ -30,12 +30,24 @@ export interface LabelDictionary {
 		noActivePractice: string;
 		noActivePracticeHelp: string;
 	};
+	completion: {
+		m25Heading: string;
+		rhythmHeading: string;
+		routineHeading: string;
+		finalCount: string;
+		celebration: string;
+	};
 	actions: {
 		goBack: string;
 		openSettings: string;
 		pause: string;
 		resume: string;
 		nextRhythm: string;
+		repeat: string;
+		newPractice: string;
+		finish: string;
+		repeatRhythm: string;
+		repeatRoutine: string;
 		resetPractice: string;
 		startCurrentRoutine: string;
 		prepareRoutine: string;

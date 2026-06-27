@@ -3,6 +3,7 @@ export type AppScreen = 'home' | 'practice' | 'routine-studio' | 'pattern-studio
 export type ErrorBehavior = 'decrement' | 'reset' | 'ignore';
 export type BlockKind = 'quarter' | 'eighth' | 'sixteenth' | 'triplet';
 export type RhythmSessionStatus = 'running' | 'paused' | 'complete';
+export type CompletionKind = 'm25' | 'rhythm-intermediate' | 'rhythm-final';
 export type LanguageCode = 'en' | 'es' | 'de';
 export type ThemeMode = 'dark' | 'light';
 export type ButtonTone = 'soft' | 'solid' | 'outline';
@@ -53,6 +54,16 @@ export interface RhythmSession {
 	items: RhythmSessionItem[];
 	currentIndex: number;
 	status: RhythmSessionStatus;
+}
+
+export interface CompletionOverlayState {
+	kind: CompletionKind;
+	finalCount: number;
+	repetitions: number;
+	currentIndex: number;
+	totalItems: number;
+	routineName: string;
+	rhythmName: string;
 }
 
 export interface PersistedState {

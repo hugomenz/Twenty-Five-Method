@@ -28,12 +28,24 @@
 		"noActivePractice": "No active practice",
 		"noActivePracticeHelp": "Open settings to build a routine, save patterns, or start practice."
 	},
+	"completion": {
+		"m25Heading": "Practice completed",
+		"rhythmHeading": "Rhythm completed",
+		"routineHeading": "Routine completed",
+		"finalCount": "Final count",
+		"celebration": "Nice work"
+	},
 	"actions": {
 		"goBack": "Back",
 		"openSettings": "Open settings",
 		"pause": "Pause",
 		"resume": "Resume",
 		"nextRhythm": "Next rhythm",
+		"repeat": "Repeat",
+		"newPractice": "New practice",
+		"finish": "Finish",
+		"repeatRhythm": "Repeat this rhythm",
+		"repeatRoutine": "Repeat routine",
 		"resetPractice": "Reset practice",
 		"startCurrentRoutine": "Start current routine",
 		"prepareRoutine": "Prepare routine",

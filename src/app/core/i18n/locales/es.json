@@ -28,12 +28,24 @@
 		"noActivePractice": "Sin práctica activa",
 		"noActivePracticeHelp": "Abre la configuración para crear una rutina, guardar ritmos o iniciar una práctica."
 	},
+	"completion": {
+		"m25Heading": "Práctica completada",
+		"rhythmHeading": "Ritmo completado",
+		"routineHeading": "Rutina completada",
+		"finalCount": "Conteo final",
+		"celebration": "Buen trabajo"
+	},
 	"actions": {
 		"goBack": "Volver",
 		"openSettings": "Abrir configuración",
 		"pause": "Pausar",
 		"resume": "Continuar",
 		"nextRhythm": "Siguiente ritmo",
+		"repeat": "Repetir",
+		"newPractice": "Nueva práctica",
+		"finish": "Finalizar",
+		"repeatRhythm": "Repetir este ritmo",
+		"repeatRoutine": "Repetir rutina",
 		"resetPractice": "Reiniciar práctica",
 		"startCurrentRoutine": "Iniciar rutina actual",
 		"prepareRoutine": "Preparar rutina",

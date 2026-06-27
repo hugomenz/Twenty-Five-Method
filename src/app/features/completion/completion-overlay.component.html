@@ -1,0 +1,37 @@
+@if (overlay(); as completed) {
+	<section class="completion-overlay" role="dialog" aria-modal="true" [attr.aria-label]="heading()" data-testid="completion-overlay">
+		<div class="completion-backdrop"></div>
+		<div class="completion-card">
+			<div class="confetti" aria-hidden="true">
+				@for (piece of confettiPieces; track piece) {
+					<span class="confetti__piece" [style.--piece-index]="piece"></span>
+				}
+			</div>
+
+			<p class="completion-kicker">{{ dictionary().completion.celebration }}</p>
+			<h2 class="completion-title">{{ heading() }}</h2>
+			@if (completed.kind !== 'm25') {
+				<p class="completion-subtitle">{{ completed.rhythmName }}</p>
+				<p class="completion-meta">{{ rhythmPosition() }}</p>
+			}
+			<p class="completion-count-label">{{ dictionary().completion.finalCount }}</p>
+			<p class="completion-count">{{ countText() }}</p>
+
+			<div class="completion-actions">
+				@if (completed.kind === 'm25') {
+					<button class="completion-action" type="button" (click)="repeat()">{{ dictionary().actions.repeat }}</button>
+					<button class="completion-action completion-action--secondary" type="button" (click)="newPractice()">{{ dictionary().actions.newPractice }}</button>
+					<button class="completion-action completion-action--ghost" type="button" (click)="finish()">{{ dictionary().actions.finish }}</button>
+				} @else if (completed.kind === 'rhythm-intermediate') {
+					<button class="completion-action" type="button" (click)="nextRhythm()">{{ dictionary().actions.nextRhythm }}</button>
+					<button class="completion-action completion-action--secondary" type="button" (click)="repeatRhythm()">{{ dictionary().actions.repeatRhythm }}</button>
+					<button class="completion-action completion-action--ghost" type="button" (click)="finish()">{{ dictionary().actions.finish }}</button>
+				} @else {
+					<button class="completion-action" type="button" (click)="repeatRhythm()">{{ dictionary().actions.repeatRhythm }}</button>
+					<button class="completion-action completion-action--secondary" type="button" (click)="repeatRoutine()">{{ dictionary().actions.repeatRoutine }}</button>
+					<button class="completion-action completion-action--ghost" type="button" (click)="finish()">{{ dictionary().actions.finish }}</button>
+				}
+			</div>
+		</div>
+	</section>
+}
