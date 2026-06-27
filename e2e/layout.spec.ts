@@ -58,6 +58,21 @@ test.describe('Layout, heights, and overflow', () => {
 		await expectNoGlobalScroll(page, testInfo);
 	});
 
+	test('back button returns to the main view after starting practice from routine studio', async ({ page }, testInfo) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: 'Prepare routine' }).click();
+
+		await page.getByLabel('Name').fill('Back flow');
+		await page.getByRole('button', { name: 'Eighths then sixteenths' }).click();
+		await page.getByRole('button', { name: 'Start current routine' }).click();
+
+		await expect(page.getByTestId('rhythm-count')).toBeVisible();
+		await page.getByRole('button', { name: 'Go back' }).click();
+
+		await expect(page.locator('.home-screen')).toBeVisible();
+		await expectNoGlobalScroll(page, testInfo);
+	});
+
 	test('long custom names do not cause horizontal overflow', async ({ page }, testInfo) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: 'Prepare routine' }).click();

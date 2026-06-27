@@ -764,7 +764,8 @@ export class M25StateService {
 			if (history.length === 0) {
 				this.screenHistory.set(currentScreen === 'home' ? [] : ['home']);
 			} else {
-				this.screenHistory.set(history);
+				const lastScreen = history.at(-1);
+				this.screenHistory.set(lastScreen === screen ? history.slice(0, -1) : history);
 			}
 			this.currentScreen.set(screen);
 			return;
