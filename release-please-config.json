@@ -1,0 +1,71 @@
+{
+	"$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+	"bootstrap-sha": "223922737da4418d6f2de55d3986353b29842aa7",
+	"release-type": "node",
+	"versioning": "default",
+	"bump-minor-pre-major": false,
+	"bump-patch-for-minor-pre-major": false,
+	"include-component-in-tag": false,
+	"include-v-in-tag": true,
+	"include-v-in-release-name": true,
+	"always-update": true,
+	"pull-request-title-pattern": "chore(release): release ${version}",
+	"changelog-sections": [
+		{
+			"type": "feat",
+			"section": "Features"
+		},
+		{
+			"type": "fix",
+			"section": "Bug Fixes"
+		},
+		{
+			"type": "perf",
+			"section": "Improvements"
+		},
+		{
+			"type": "refactor",
+			"section": "Improvements"
+		},
+		{
+			"type": "deps",
+			"section": "Improvements"
+		},
+		{
+			"type": "docs",
+			"section": "Documentation",
+			"hidden": true
+		},
+		{
+			"type": "test",
+			"section": "Tests",
+			"hidden": true
+		},
+		{
+			"type": "chore",
+			"section": "Chores",
+			"hidden": true
+		},
+		{
+			"type": "ci",
+			"section": "Continuous Integration",
+			"hidden": true
+		},
+		{
+			"type": "build",
+			"section": "Build System",
+			"hidden": true
+		},
+		{
+			"type": "style",
+			"section": "Formatting",
+			"hidden": true
+		}
+	],
+	"packages": {
+		".": {
+			"package-name": "twenty-five-method",
+			"changelog-path": "CHANGELOG.md"
+		}
+	}
+}
