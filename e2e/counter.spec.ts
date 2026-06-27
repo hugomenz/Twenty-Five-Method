@@ -4,7 +4,7 @@ import { gotoClean, readPersistedState } from './helpers';
 test.describe('M25 counter', () => {
 	test.beforeEach(async ({ page }) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open M25/i }).click();
+		await page.getByRole('button', { name: /^M25$/ }).click();
 		await expect(page.getByTestId('m25-count')).toBeVisible();
 	});
 
@@ -28,7 +28,7 @@ test.describe('M25 counter', () => {
 
 		await minus.click();
 		await minus.click();
-		await expect(count).toHaveText('-2');
+		await expect(count).toHaveText('−2');
 	});
 
 	test('stops at the target and shows the completion message', async ({ page }) => {

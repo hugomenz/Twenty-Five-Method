@@ -67,9 +67,10 @@ test.describe('Rhythm building and routines', () => {
 		const plus = page.getByRole('button', { name: 'Record successful repetition' });
 		await plus.click();
 		await plus.click();
-		await expect(page.getByText('Rhythm completed')).toBeVisible();
+		const overlay = page.getByTestId('completion-overlay');
+		await expect(overlay.getByRole('heading', { name: 'Rhythm completed' })).toBeVisible();
 
-		await page.getByRole('button', { name: 'Next rhythm' }).click();
+		await overlay.getByRole('button', { name: 'Next rhythm' }).click();
 		await expect(page.getByText('Rhythm 2 of 2')).toBeVisible();
 		await expect(rhythmCount).toContainText('0 / 2');
 	});

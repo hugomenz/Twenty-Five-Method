@@ -9,7 +9,7 @@ test.describe('Layout, heights, and overflow', () => {
 
 	test('M25 practice screen has no global scroll', async ({ page }, testInfo) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open M25/i }).click();
+		await page.getByRole('button', { name: /^M25$/ }).click();
 		await expect(page.getByTestId('m25-count')).toBeVisible();
 		await expectNoGlobalScroll(page, testInfo);
 	});
@@ -45,7 +45,7 @@ test.describe('Layout, heights, and overflow', () => {
 
 	test('settings dialog fits the viewport and scrolls internally', async ({ page }, testInfo) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open M25/i }).click();
+		await page.getByRole('button', { name: /^M25$/ }).click();
 		await page.getByRole('button', { name: 'Open settings' }).click();
 
 		const dialog = page.getByRole('dialog');
@@ -92,7 +92,7 @@ test.describe('Layout, heights, and overflow', () => {
 
 	test('back button returns to the main view from direct M25 practice', async ({ page }, testInfo) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open M25/i }).click();
+		await page.getByRole('button', { name: /^M25$/ }).click();
 		await expect(page.getByTestId('m25-count')).toBeVisible();
 
 		await page.getByRole('button', { name: 'Go back' }).click();
@@ -103,7 +103,7 @@ test.describe('Layout, heights, and overflow', () => {
 
 	test('back button returns to the main view from direct rhythms practice', async ({ page }, testInfo) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open rhythms/i }).click();
+		await page.getByRole('button', { name: /^Rhythms$/ }).click();
 		await expect(page.getByText('No active practice')).toBeVisible();
 
 		await page.getByRole('button', { name: 'Go back' }).click();
@@ -136,7 +136,7 @@ test.describe('Layout, heights, and overflow', () => {
 
 	test('back button returns to the empty rhythms screen from routine studio opened inside rhythms', async ({ page }, testInfo) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open rhythms/i }).click();
+		await page.getByRole('button', { name: /^Rhythms$/ }).click();
 		await page.getByRole('button', { name: 'Prepare routine' }).click();
 		await expect(page.getByText('Routine studio')).toBeVisible();
 
@@ -148,7 +148,7 @@ test.describe('Layout, heights, and overflow', () => {
 
 	test('back button returns to the empty rhythms screen from pattern studio opened inside rhythms', async ({ page }, testInfo) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open rhythms/i }).click();
+		await page.getByRole('button', { name: /^Rhythms$/ }).click();
 		await page.getByRole('button', { name: 'Build rhythm' }).click();
 		await expect(page.getByText('Rhythm workshop')).toBeVisible();
 

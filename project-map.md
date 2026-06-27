@@ -77,8 +77,11 @@ All visible labels should come from these files through `M25LabelsService`.
 
 - `src/app/features/practice/practice-shell.component.*`
   - Main screen orchestrator.
-  - Hosts home, practice, studio, back-navigation, and settings overlay.
+  - Hosts home, practice, studio, back-navigation, settings overlay, and completion overlay.
   - Theme and button customization CSS variables live here.
+- `src/app/features/completion/completion-overlay.component.*`
+  - Full-screen completion overlay for M25 and rhythm completions.
+  - Owns celebration visuals and mode-specific completion actions.
 - `src/app/features/home/home-screen.component.*`
   - Main entry view.
   - Mode selection happens here, outside settings.
@@ -124,7 +127,7 @@ All visible labels should come from these files through `M25LabelsService`.
 - `src/app/app.spec.ts`
   - Root composition and high-level appearance attributes.
 - `src/app/core/services/m25-state.service.spec.ts`
-  - Main logic coverage: persistence, targets, negatives, routines, active rhythm progress.
+  - Main logic coverage: persistence, targets, negatives, routines, active rhythm progress, completion-overlay state.
 - `src/app/core/services/m25-labels.service.spec.ts`
   - Translation and label switching coverage.
 - `src/app/core/notation/rhythm-transform.spec.ts`
@@ -137,6 +140,7 @@ All visible labels should come from these files through `M25LabelsService`.
   - Dialog open, visible content, close, keyboard.
 - `e2e/` (Playwright)
   - End-to-end flows across desktop, mobile portrait, and mobile landscape.
+  - `completion.spec.ts` covers completion overlays and notation contrast.
 
 If behavior changes, prefer adding or updating tests in the service spec first.
 

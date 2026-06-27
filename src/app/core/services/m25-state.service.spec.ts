@@ -91,6 +91,26 @@ describe('M25StateService', () => {
 		expect(snapshot.settings.buttonShape).toBe('square');
 	});
 
+	it('should open the m25 completion overlay once and allow repeating', () => {
+		const service = createService();
+
+		service.setTarget(2);
+		service.increment();
+		expect(service.completionOverlay()).toBeNull();
+
+		service.increment();
+		expect(service.m25Count()).toBe(2);
+		expect(service.completionOverlay()?.kind).toBe('m25');
+
+		// Rapid extra taps are ignored while the overlay is present.
+		service.increment();
+		expect(service.m25Count()).toBe(2);
+
+		service.repeatM25Practice();
+		expect(service.completionOverlay()).toBeNull();
+		expect(service.m25Count()).toBe(0);
+	});
+
 	it('should create and save a routine with a custom rhythm', () => {
 		const service = createService();
 
@@ -133,7 +153,7 @@ describe('M25StateService', () => {
 		expect(feedback.messages().at(-1)).toMatchObject({ kind: 'info', key: 'patternDeleted' });
 	});
 
-	it('should run a rhythm routine, advance to the next rhythm, and persist the active session', () => {
+	it('should open an intermediate rhythm completion overlay and advance manually', () => {
 		const service = createService();
 
 		service.selectMode('rhythms');
@@ -151,16 +171,39 @@ describe('M25StateService', () => {
 		service.increment();
 
 		expect(service.rhythmCompleted()).toBe(true);
+		expect(service.completionOverlay()?.kind).toBe('rhythm-intermediate');
 		expect(service.rhythmStatusKind()).toBe('rhythm-complete');
 
-		service.handleRhythmAction();
+		service.advanceAfterCompletion();
 		flushEffects();
 
 		expect(service.activeRhythmSession()?.currentIndex).toBe(1);
 		expect(service.currentRhythmItem()?.count).toBe(0);
+		expect(service.completionOverlay()).toBeNull();
 
 		const storedState = JSON.parse(localStorage.getItem('m25.state') ?? '{}') as { activeRhythmSession?: { currentIndex: number } };
 		expect(storedState.activeRhythmSession?.currentIndex).toBe(1);
+	});
+
+	it('should open the final rhythm completion overlay and allow repeating the routine', () => {
+		const service = createService();
+
+		service.selectMode('rhythms');
+		service.setRoutineDraftName('Final Routine');
+		service.addPatternToRoutine('preset-eighths-sixteenths');
+		service.setRoutineItemRepetitions(0, 1);
+		service.startRhythmPracticeFromDraft();
+
+		service.increment();
+
+		expect(service.completionOverlay()?.kind).toBe('rhythm-final');
+		expect(service.activeRhythmSession()?.status).toBe('complete');
+
+		service.repeatRoutine();
+		expect(service.completionOverlay()).toBeNull();
+		expect(service.activeRhythmSession()?.currentIndex).toBe(0);
+		expect(service.currentRhythmItem()?.count).toBe(0);
+		expect(service.activeRhythmSession()?.status).toBe('running');
 	});
 
 	it('should reset m25 practice and rhythm practice independently', () => {

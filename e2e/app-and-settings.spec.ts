@@ -7,8 +7,8 @@ test.describe('App shell and settings', () => {
 		await gotoClean(page);
 
 		await expect(page.locator('.home-screen')).toBeVisible();
-		await expect(page.getByRole('button', { name: /Open M25/i })).toBeVisible();
-		await expect(page.getByRole('button', { name: /Open rhythms/i })).toBeVisible();
+		await expect(page.getByRole('button', { name: /^M25$/ })).toBeVisible();
+		await expect(page.getByRole('button', { name: /^Rhythms$/ })).toBeVisible();
 
 		expect(problems.errors, problems.errors.join('\n')).toEqual([]);
 		expect(problems.failures, problems.failures.join('\n')).toEqual([]);
@@ -17,17 +17,17 @@ test.describe('App shell and settings', () => {
 	test('switches between M25 and Rhythms from the home screen', async ({ page }) => {
 		await gotoClean(page);
 
-		await page.getByRole('button', { name: /Open M25/i }).click();
+		await page.getByRole('button', { name: /^M25$/ }).click();
 		await expect(page.getByTestId('m25-count')).toBeVisible();
 
 		await page.getByRole('button', { name: 'Go back' }).click();
-		await page.getByRole('button', { name: /Open rhythms/i }).click();
+		await page.getByRole('button', { name: /^Rhythms$/ }).click();
 		await expect(page.getByText('No active practice')).toBeVisible();
 	});
 
 	test('opens settings with visible content and closes via button and Escape', async ({ page }) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open M25/i }).click();
+		await page.getByRole('button', { name: /^M25$/ }).click();
 
 		const settingsButton = page.getByRole('button', { name: 'Open settings' });
 		await settingsButton.click();
@@ -51,7 +51,7 @@ test.describe('App shell and settings', () => {
 
 	test('changes the target and persists it across reload', async ({ page }) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open M25/i }).click();
+		await page.getByRole('button', { name: /^M25$/ }).click();
 		await page.getByRole('button', { name: 'Open settings' }).click();
 
 		const dialog = page.getByRole('dialog');
@@ -67,7 +67,7 @@ test.describe('App shell and settings', () => {
 
 	test('toggles negative values and keeps M25 from going below zero when disabled', async ({ page }) => {
 		await gotoClean(page);
-		await page.getByRole('button', { name: /Open M25/i }).click();
+		await page.getByRole('button', { name: /^M25$/ }).click();
 		await page.getByRole('button', { name: 'Open settings' }).click();
 
 		const dialog = page.getByRole('dialog');
