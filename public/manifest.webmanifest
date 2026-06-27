@@ -1,0 +1,18 @@
+{
+  "name": "M-25",
+  "short_name": "M-25",
+  "description": "Touch-friendly counter for any piano practice session.",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "background_color": "#0f141c",
+  "theme_color": "#0f141c",
+  "icons": [
+    {
+      "src": "25.png",
+      "sizes": "768x768",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
