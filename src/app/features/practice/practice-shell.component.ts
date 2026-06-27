@@ -33,6 +33,16 @@ export class PracticeShellComponent {
 	protected readonly isPracticeScreen = computed(() => this.state.currentScreen() === 'practice');
 	protected readonly showBackButton = computed(() => this.state.currentScreen() !== 'home');
 
+	protected onBackClick(): void {
+		console.info('[M25][back-button] click', {
+			currentScreen: this.state.currentScreen(),
+			currentMode: this.state.currentMode(),
+			history: this.state.screenHistory(),
+			settingsOpen: this.state.settingsOpen(),
+		});
+		this.state.goBack();
+	}
+
 	protected confirmReset(): void {
 		if (!globalThis.confirm(this.dictionary().confirm.resetPractice)) {
 			return;

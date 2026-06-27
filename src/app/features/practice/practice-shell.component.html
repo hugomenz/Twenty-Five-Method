@@ -6,7 +6,7 @@
 >
 	<div class="top-chrome">
 		@if (showBackButton()) {
-			<button class="back-button" type="button" (click)="state.goBack()" [attr.aria-label]="dictionary().aria.goBack">
+			<button class="back-button" type="button" (click)="onBackClick()" [attr.aria-label]="dictionary().aria.goBack">
 				← <span>{{ dictionary().actions.goBack }}</span>
 			</button>
 		} @else {
