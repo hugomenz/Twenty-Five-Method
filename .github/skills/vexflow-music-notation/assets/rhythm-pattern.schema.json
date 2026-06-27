@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/m25/rhythm-pattern.schema.json",
+  "title": "M25 Rhythm Pattern",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "accessibleLabel",
+    "atoms"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "accessibleLabel": {
+      "type": "string",
+      "minLength": 1
+    },
+    "atoms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/atom"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "tuplet": {
+      "type": "object",
+      "required": [
+        "id",
+        "numNotes",
+        "notesOccupied"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "numNotes": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "notesOccupied": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "atom": {
+      "type": "object",
+      "required": [
+        "id",
+        "duration"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "duration": {
+          "enum": [
+            "quarter",
+            "eighth",
+            "sixteenth"
+          ]
+        },
+        "rest": {
+          "type": "boolean"
+        },
+        "dots": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "tuplet": {
+          "$ref": "#/$defs/tuplet"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

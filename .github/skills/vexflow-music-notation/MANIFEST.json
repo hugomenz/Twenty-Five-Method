@@ -1,0 +1,194 @@
+{
+  "files": [
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1085,
+      "sha256": "edbe8245c4550d9a96c7ac52a135bddb59b8fba9d6a92e9e565f15aa9f6a2b0d"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1143,
+      "sha256": "019a624210a7b17573ccfd1d8b829dfc9fc3b51cc99c2ede05b69b4bc9d4b274"
+    },
+    {
+      "path": "SKILL.md",
+      "bytes": 8834,
+      "sha256": "b7223cfce8f02d8ab3b99484249a6addcc703c6e91f26e009e89013aff785c1b"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 714,
+      "sha256": "d7929d55334608b577e10d62c5bf9888b757972c1ce589a27864b4360e9db63c"
+    },
+    {
+      "path": "assets/README.md",
+      "bytes": 324,
+      "sha256": "9e557edcca327c2bb964f14e7944a9c9e61955da5cf3ea2d6614656d09fe3163"
+    },
+    {
+      "path": "assets/rhythm-pattern.schema.json",
+      "bytes": 1801,
+      "sha256": "0d36065b616f612cccaf3cf0051384221f33b9a6cf95d25b42e1935084bf7c69"
+    },
+    {
+      "path": "assets/rhythm-presets.json",
+      "bytes": 8620,
+      "sha256": "7529851ba154aedde5ccd7a8b5dcb0be24471f4dc8fe252c10d55d4692074de6"
+    },
+    {
+      "path": "examples/angular-rhythm-notation.component.ts",
+      "bytes": 2357,
+      "sha256": "3f3b8833e92cbd2f019a906c37f08146c19d4b8d89a0c108b4cd3a9c20d22af5"
+    },
+    {
+      "path": "examples/render-rhythm.spec.ts",
+      "bytes": 1312,
+      "sha256": "4641f87c747f6467bf6faba98621f9e6dbf254e25727ca3cf59886e638980f61"
+    },
+    {
+      "path": "examples/render-rhythm.ts",
+      "bytes": 4237,
+      "sha256": "67931e96e970bc39416fc4685cd00bedbcb7b8c0065cf1d8b69565b25f2c2723"
+    },
+    {
+      "path": "examples/rhythm-pattern.model.ts",
+      "bytes": 556,
+      "sha256": "93235fc902cadc0be12d21b2e98391820a32825a03a9c19f89f507d89af61d20"
+    },
+    {
+      "path": "references/00-navigation.md",
+      "bytes": 1186,
+      "sha256": "39731323749a8ff8d0814f2e6899fdd1e11f280d9ccc1a8a93d9054c43177bb2"
+    },
+    {
+      "path": "references/01-installation-and-imports.md",
+      "bytes": 1610,
+      "sha256": "e9ff3e769b852fa90563ebde5158b04c12993ff8a16050a2390816004db6f2ab"
+    },
+    {
+      "path": "references/02-fonts-and-smufl.md",
+      "bytes": 1536,
+      "sha256": "6097a404fa0e6ee9551c87aab1ec8b7ef6305f5818a3ac9d8d2a9076ad1a56eb"
+    },
+    {
+      "path": "references/03-api-strategy.md",
+      "bytes": 1306,
+      "sha256": "c0fc0952ccbb3a54f4891398a90bd262dbe6871a8bfcb2bc074951cd4bc2ffc7"
+    },
+    {
+      "path": "references/04-rendering-lifecycle.md",
+      "bytes": 1730,
+      "sha256": "2a77f475a92b6776fa5ace0164051acece87597d859b21819e57a2e5d10bc132"
+    },
+    {
+      "path": "references/05-notes-durations-rests.md",
+      "bytes": 1514,
+      "sha256": "06a0a6ece1eaf4c66e2eb6674e06a76177a78f6bde941c403f52f1e49770062e"
+    },
+    {
+      "path": "references/06-voices-and-formatting.md",
+      "bytes": 1521,
+      "sha256": "52b996c9c1f9adb3ce62989d6c571dcb39fff4b491ccfe79489c4ae4503f510a"
+    },
+    {
+      "path": "references/07-beams-tuplets-dots.md",
+      "bytes": 1447,
+      "sha256": "9642c2c9cc9bcd3668af10b086fe11293451dc814ea4a57da3bbd0d78023d2fa"
+    },
+    {
+      "path": "references/08-staves-and-systems.md",
+      "bytes": 1163,
+      "sha256": "dd126a88241b2df2943d0e817a4afe2a8b11b4d594ce9668951a1bce5f826478"
+    },
+    {
+      "path": "references/09-interactivity.md",
+      "bytes": 1086,
+      "sha256": "8d465a098b1194bdaf404c02f2073fbddc44acb08a134ade99e2fb7f0397500b"
+    },
+    {
+      "path": "references/10-angular-integration.md",
+      "bytes": 1556,
+      "sha256": "3227c139fbf06d084b93ac4a4dedbf89026d1ba556f646986e23714e072588a4"
+    },
+    {
+      "path": "references/11-responsive-mobile-pwa.md",
+      "bytes": 1451,
+      "sha256": "26f30ea3558444cae2c740bf9aaebe605f972bed64da60a21e73d6c627c15294"
+    },
+    {
+      "path": "references/12-testing.md",
+      "bytes": 1217,
+      "sha256": "5b11c19e88a97690ca63ca2e958157c2e5a86e2cebd6072b422a851a1fae1ba2"
+    },
+    {
+      "path": "references/13-troubleshooting.md",
+      "bytes": 1700,
+      "sha256": "7408e9e3c6a2e24c6474d3d8d93b233d6294a18c9c0676a286e0d6066853b097"
+    },
+    {
+      "path": "references/14-m25-rhythm-integration.md",
+      "bytes": 1929,
+      "sha256": "b7e65502b1a7f636e1dd246232cdf7bd1e2ab04dd21753dd9b5b0254aaa4e0ff"
+    },
+    {
+      "path": "references/15-api-catalog.md",
+      "bytes": 14525,
+      "sha256": "eaf07b4848bbf0953d05c7edd7469e6bf1304a9c7e416198817d82c66395cc31"
+    },
+    {
+      "path": "references/16-examples-catalog.md",
+      "bytes": 1448,
+      "sha256": "1bbef1576881bcc7e80aa61492a839d432063b7096945c0a562623181f54c3dc"
+    },
+    {
+      "path": "references/17-versioning.md",
+      "bytes": 1150,
+      "sha256": "1bc9ec127a99e9d3409ad02bd29e80c864b1eed6495b7edba18e54f4825cbf8b"
+    },
+    {
+      "path": "references/18-source-manifest.md",
+      "bytes": 1588,
+      "sha256": "86f83b4cd5c41d2938533b020af9978a75cf699144670de6ae6e8c9722f86bca"
+    },
+    {
+      "path": "references/upstream/VEXFLOW-LICENSE.txt",
+      "bytes": 1202,
+      "sha256": "1f65b31d7238bd7e44f6773fe89f0389968c05195538f752cd262de4a0061fad"
+    },
+    {
+      "path": "references/upstream/VEXFLOW.md",
+      "bytes": 388,
+      "sha256": "6fb521ed14c74c97947fac20a242e138cca6ff862f878352556075259c767e09"
+    },
+    {
+      "path": "references/upstream/getting-started.md",
+      "bytes": 1861,
+      "sha256": "c376b2025dfe8b60968305af37e5531e0d12bb725e49d4d973a6fc65e586c643"
+    },
+    {
+      "path": "references/upstream/package.json",
+      "bytes": 899,
+      "sha256": "8b8deb45ae68a22099756ed75c3533857cbd71b881db91c5d7d377f338c4b4d0"
+    },
+    {
+      "path": "references/upstream/src-index.ts",
+      "bytes": 2621,
+      "sha256": "64da17a20e14e872baa9d08ac1ab2c9ef428ba0ebc6a1e4cde4c3c62174cffd9"
+    },
+    {
+      "path": "references/upstream/tutorial.md",
+      "bytes": 1250,
+      "sha256": "6f7d7b3a6f2ed34b8abf8703c43ca07bd9fe670e78ad0fe6a7825e4ee435c4ba"
+    },
+    {
+      "path": "scripts/refresh-official-sources.mjs",
+      "bytes": 1387,
+      "sha256": "ade85a21c80ea24dbabb33f4d9b4099ef5815bbd78049055d8a3b130b446e925"
+    },
+    {
+      "path": "scripts/validate-skill.py",
+      "bytes": 1768,
+      "sha256": "6f9116c52d0d518e0a9c358dc3ed9171fb8a6ccec64d32d1fb72961eb1cd275d"
+    }
+  ]
+}
