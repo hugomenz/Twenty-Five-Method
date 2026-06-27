@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { M25LabelsService } from '../../core/services/m25-labels.service';
 import { M25StateService } from '../../core/services/m25-state.service';
@@ -9,6 +10,7 @@ import { M25StateService } from '../../core/services/m25-state.service';
 	styleUrl: './session-dialog.shared.scss',
 })
 export class SessionStartDialogComponent {
+	private readonly document = inject(DOCUMENT);
 	protected readonly state = inject(M25StateService);
 	protected readonly labels = inject(M25LabelsService);
 	protected readonly dictionary = this.labels.dictionary;
@@ -29,6 +31,7 @@ export class SessionStartDialogComponent {
 		this.bpmError.set('');
 		this.state.setDefaultPracticeTitle(this.title());
 		this.state.setDefaultBpm(parsedBpm);
+		this.tryEnterFullscreen();
 		this.state.startSession(this.title(), parsedBpm);
 	}
 
@@ -43,5 +46,19 @@ export class SessionStartDialogComponent {
 		}
 
 		return Math.round(bpm);
+	}
+
+	private tryEnterFullscreen(): void {
+		if (!this.state.settings().immersiveMode) {
+			return;
+		}
+
+		const root = this.document.documentElement as HTMLElement & { requestFullscreen?: () => Promise<void> };
+		const requestFullscreen = root.requestFullscreen;
+		if (typeof requestFullscreen !== 'function') {
+			return;
+		}
+
+		void requestFullscreen.call(root).catch(() => undefined);
 	}
 }

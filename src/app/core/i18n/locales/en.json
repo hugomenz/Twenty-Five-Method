@@ -124,6 +124,7 @@
 		"askBpmBeforeStart": "Ask for BPM before starting",
 		"practiceTitle": "Practice title",
 		"practiceBpm": "BPM",
+		"immersiveMode": "Experimental immersive mode",
 		"version": "Version",
 		"minusAction": "Minus action",
 		"language": "Language",

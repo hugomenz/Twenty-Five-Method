@@ -2,6 +2,7 @@
   "name": "M25",
   "short_name": "M25",
   "description": "Touch-friendly counter for any piano practice session.",
+  "display_override": ["fullscreen", "standalone"],
   "display": "standalone",
   "scope": "./",
   "start_url": "./",

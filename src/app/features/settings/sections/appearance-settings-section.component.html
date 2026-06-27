@@ -48,6 +48,10 @@
 		<span>{{ dictionary().fields.practiceBpm }}</span>
 		<input type="number" min="1" [value]="state.settings().defaultBpm ?? ''" (input)="onDefaultBpmInput($event)" />
 	</label>
+	<label class="field field--toggle">
+		<span>{{ dictionary().fields.immersiveMode }}</span>
+		<input type="checkbox" [checked]="state.settings().immersiveMode" (change)="onImmersiveModeChange($event)" />
+	</label>
 	<div class="action-row">
 		<button class="sheet-action" type="button" (click)="state.openHistory()">{{ dictionary().actions.openHistory }}</button>
 	</div>

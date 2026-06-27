@@ -89,4 +89,11 @@ export class AppearanceSettingsSectionComponent {
 		const bpm = Number(value);
 		this.state.setDefaultBpm(Number.isFinite(bpm) ? bpm : null);
 	}
+
+	protected onImmersiveModeChange(event: Event): void {
+		const checked = readCheckedValue(event);
+		if (checked !== null) {
+			this.state.setImmersiveMode(checked);
+		}
+	}
 }

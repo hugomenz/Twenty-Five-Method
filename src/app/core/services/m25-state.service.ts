@@ -441,6 +441,10 @@ export class M25StateService {
 		this.settings.update((settings) => ({ ...settings, defaultBpm }));
 	}
 
+	setImmersiveMode(immersiveMode: boolean): void {
+		this.settings.update((settings) => ({ ...settings, immersiveMode }));
+	}
+
 	prepareSession(mode: AppMode, title = '', bpm: number | null = null): PracticeSession {
 		this.resetCoachingState();
 		const initialValue = this.currentPracticeValueForMode(mode);
@@ -1132,6 +1136,7 @@ export class M25StateService {
 		const askBpmBeforeStart = settings?.askBpmBeforeStart;
 		const defaultPracticeTitle = settings?.defaultPracticeTitle;
 		const defaultBpm = settings?.defaultBpm;
+		const immersiveMode = settings?.immersiveMode;
 		const language = settings?.language;
 		const theme = settings?.theme;
 		const buttonTone = settings?.buttonTone;
@@ -1152,6 +1157,7 @@ export class M25StateService {
 			askBpmBeforeStart: typeof askBpmBeforeStart === 'boolean' ? askBpmBeforeStart : fallback.askBpmBeforeStart,
 			defaultPracticeTitle: typeof defaultPracticeTitle === 'string' ? defaultPracticeTitle : fallback.defaultPracticeTitle,
 			defaultBpm: typeof defaultBpm === 'number' ? defaultBpm : defaultBpm === null ? null : fallback.defaultBpm,
+			immersiveMode: typeof immersiveMode === 'boolean' ? immersiveMode : fallback.immersiveMode,
 			language: safeLanguage,
 			theme: safeTheme,
 			buttonTone: safeButtonTone,

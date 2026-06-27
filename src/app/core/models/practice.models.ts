@@ -21,6 +21,7 @@ export interface SettingsState {
 	askBpmBeforeStart: boolean;
 	defaultPracticeTitle: string;
 	defaultBpm: number | null;
+	immersiveMode: boolean;
 	language: LanguageCode;
 	theme: ThemeMode;
 	buttonTone: ButtonTone;
@@ -163,6 +164,7 @@ export function createDefaultState(): PersistedState {
 			askBpmBeforeStart: true,
 			defaultPracticeTitle: '',
 			defaultBpm: null,
+			immersiveMode: false,
 			language: 'en',
 			theme: 'dark',
 			buttonTone: 'soft',
