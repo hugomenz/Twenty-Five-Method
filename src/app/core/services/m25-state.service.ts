@@ -298,6 +298,7 @@ export class M25StateService {
 	}
 
 	prepareSession(mode: AppMode, title = '', bpm: number | null = null): PracticeSession {
+		const initialValue = this.currentPracticeValueForMode(mode);
 		const session: PracticeSession = {
 			id: createId('session'),
 			mode,
@@ -310,6 +311,9 @@ export class M25StateService {
 			finishedAtMs: null,
 			activeElapsedMs: 0,
 			pausedElapsedMs: 0,
+			minimumValue: initialValue,
+			errorCount: 0,
+			positivePressCount: 0,
 		};
 
 		this.activeSession.set(session);
@@ -380,7 +384,8 @@ export class M25StateService {
 
 	finishSession(status: Extract<PracticeSessionStatus, 'completed' | 'cancelled'>): void {
 		const activeSession = this.activeSession();
-		if (!activeSession) {
+		if (!activeSession || activeSession.status === 'completed' || activeSession.status === 'cancelled') {
+			this.cancelConfirmOpen.set(false);
 			return;
 		}
 
@@ -391,16 +396,19 @@ export class M25StateService {
 		const pausedElapsedMs = activeSession.status === 'paused' && activeSession.pausedAtMs
 			? activeSession.pausedElapsedMs + (now - activeSession.pausedAtMs)
 			: activeSession.pausedElapsedMs;
-
-		this.activeSession.set({
+		const completedSession: PracticeSession = {
 			...activeSession,
 			status,
+			startedAtMs: activeSession.startedAtMs ?? now,
 			activeElapsedMs,
 			pausedElapsedMs,
 			lastResumedAtMs: null,
 			pausedAtMs: null,
 			finishedAtMs: now,
-		});
+		};
+
+		this.activeSession.set(completedSession);
+		this.appendPracticeRecord(this.createPracticeRecord(completedSession));
 		this.cancelConfirmOpen.set(false);
 	}
 
@@ -417,6 +425,7 @@ export class M25StateService {
 			const previousCount = this.m25Count();
 			const nextCount = Math.min(previousCount + 1, this.settings().target);
 			this.m25Count.set(nextCount);
+			this.recordPositiveAction(nextCount);
 
 			if (previousCount < this.settings().target && nextCount >= this.settings().target) {
 				this.openM25CompletionOverlay(nextCount);
@@ -425,6 +434,7 @@ export class M25StateService {
 		}
 
 		const overlayRef: { value: CompletionOverlayState | null } = { value: null };
+		const incrementedCountRef: { value: number | null } = { value: null };
 		this.updateRhythmSession((session) => {
 			if (session.status !== 'running') {
 				return session;
@@ -438,6 +448,7 @@ export class M25StateService {
 			const nextItems = session.items.map((entry, index) => index === session.currentIndex
 				? { ...entry, count: Math.min(entry.count + 1, entry.repetitions) }
 				: entry);
+			incrementedCountRef.value = nextItems[session.currentIndex].count;
 
 			const completedLastItem = session.currentIndex === nextItems.length - 1
 				&& nextItems[session.currentIndex].count >= nextItems[session.currentIndex].repetitions;
@@ -464,6 +475,10 @@ export class M25StateService {
 		});
 
 		const completedOverlay = overlayRef.value;
+		if (incrementedCountRef.value !== null) {
+			this.recordPositiveAction(incrementedCountRef.value);
+		}
+
 		if (completedOverlay !== null) {
 			if (completedOverlay.kind === 'rhythm-final') {
 				this.finishSession('completed');
@@ -484,9 +499,11 @@ export class M25StateService {
 		if (this.currentMode() === 'm25') {
 			const nextCount = this.applyErrorBehavior(this.m25Count(), this.settings().m25ErrorBehavior);
 			this.m25Count.set(Math.min(nextCount, this.settings().target));
+			this.recordErrorAction(Math.min(nextCount, this.settings().target));
 			return;
 		}
 
+		const nextCountRef: { value: number | null } = { value: null };
 		this.updateRhythmSession((session) => {
 			if (session.status !== 'running') {
 				return session;
@@ -501,6 +518,7 @@ export class M25StateService {
 			const nextItems = session.items.map((entry, index) => index === session.currentIndex
 				? { ...entry, count: Math.min(nextCount, entry.repetitions) }
 				: entry);
+			nextCountRef.value = nextItems[session.currentIndex].count;
 
 			return {
 				...session,
@@ -508,6 +526,9 @@ export class M25StateService {
 				status: 'running',
 			};
 		});
+		if (nextCountRef.value !== null) {
+			this.recordErrorAction(nextCountRef.value);
+		}
 	}
 
 	handleRhythmAction(): void {
@@ -621,8 +642,10 @@ export class M25StateService {
 	}
 
 	repeatM25Practice(): void {
+		const currentSession = this.activeSession();
 		this.m25Count.set(0);
 		this.closeCompletionOverlay();
+		this.prepareSession('m25', currentSession?.title ?? this.settings().defaultPracticeTitle, currentSession?.bpm ?? this.settings().defaultBpm);
 	}
 
 	startNewM25Practice(): void {
@@ -658,22 +681,29 @@ export class M25StateService {
 	}
 
 	repeatCurrentRhythm(): void {
+		const currentSession = this.activeSession();
+		const isFinalOverlay = this.completionOverlay()?.kind === 'rhythm-final';
 		this.updateRhythmSession((session) => ({
 			...session,
-			status: 'running',
+			status: isFinalOverlay ? 'paused' : 'running',
 			items: session.items.map((item, index) => index === session.currentIndex ? { ...item, count: 0 } : item),
 		}));
 		this.closeCompletionOverlay();
+		if (isFinalOverlay) {
+			this.prepareSession('rhythms', currentSession?.title ?? this.settings().defaultPracticeTitle, currentSession?.bpm ?? this.settings().defaultBpm);
+		}
 	}
 
 	repeatRoutine(): void {
+		const currentSession = this.activeSession();
 		this.updateRhythmSession((session) => ({
 			...session,
 			currentIndex: 0,
-			status: 'running',
+			status: 'paused',
 			items: session.items.map((item) => ({ ...item, count: 0 })),
 		}));
 		this.closeCompletionOverlay();
+		this.prepareSession('rhythms', currentSession?.title ?? this.settings().defaultPracticeTitle, currentSession?.bpm ?? this.settings().defaultBpm);
 	}
 
 	advanceAfterCompletion(): void {
@@ -989,6 +1019,9 @@ export class M25StateService {
 			finishedAtMs: typeof session.finishedAtMs === 'number' ? session.finishedAtMs : null,
 			activeElapsedMs: typeof session.activeElapsedMs === 'number' ? session.activeElapsedMs : 0,
 			pausedElapsedMs: typeof session.pausedElapsedMs === 'number' ? session.pausedElapsedMs : 0,
+			minimumValue: typeof session.minimumValue === 'number' ? Math.trunc(session.minimumValue) : 0,
+			errorCount: clampToZero(Math.trunc(Number(session.errorCount) || 0)),
+			positivePressCount: clampToZero(Math.trunc(Number(session.positivePressCount) || 0)),
 		};
 	}
 
@@ -1053,7 +1086,112 @@ export class M25StateService {
 			errorCount,
 			positivePressCount,
 			exerciseName: typeof record.exerciseName === 'string' ? record.exerciseName : '',
+			exerciseBuiltIn: typeof record.exerciseBuiltIn === 'boolean' ? record.exerciseBuiltIn : false,
 		};
+	}
+
+	private appendPracticeRecord(record: PracticeRecord): void {
+		if (this.practiceHistory().some((entry) => entry.id === record.id)) {
+			return;
+		}
+
+		const nextHistory = [record, ...this.practiceHistory()]
+			.sort((left, right) => right.finishedAtMs - left.finishedAtMs)
+			.slice(0, MAX_PRACTICE_RECORDS);
+
+		this.practiceHistory.set(nextHistory);
+		this.persistPracticeHistory(nextHistory);
+	}
+
+	private persistPracticeHistory(records: readonly PracticeRecord[]): void {
+		const snapshot: PracticeHistorySnapshot = {
+			version: PRACTICE_HISTORY_VERSION,
+			records: [...records],
+		};
+
+		this.storage.writePracticeHistorySnapshot(JSON.stringify(snapshot));
+	}
+
+	private createPracticeRecord(session: PracticeSession): PracticeRecord {
+		const exercise = this.currentExerciseInfo(session.mode);
+
+		return {
+			id: session.id,
+			mode: session.mode === 'm25' ? 'm25' : 'rhythm',
+			title: session.title,
+			bpm: session.bpm,
+			startedAtMs: session.startedAtMs ?? session.finishedAtMs ?? Date.now(),
+			finishedAtMs: session.finishedAtMs ?? Date.now(),
+			activeDurationMs: session.activeElapsedMs,
+			pausedDurationMs: session.pausedElapsedMs,
+			status: session.status === 'cancelled' ? 'cancelled' : 'completed',
+			target: this.currentPracticeTargetForMode(session.mode),
+			finalValue: this.currentPracticeValueForMode(session.mode),
+			minimumValue: session.minimumValue,
+			errorCount: session.errorCount,
+			positivePressCount: session.positivePressCount,
+			exerciseName: exercise.name,
+			exerciseBuiltIn: exercise.builtIn,
+		};
+	}
+
+	private currentPracticeValueForMode(mode: AppMode): number {
+		if (mode === 'm25') {
+			return this.m25Count();
+		}
+
+		return this.currentRhythmItem()?.count ?? 0;
+	}
+
+	private currentPracticeTargetForMode(mode: AppMode): number {
+		if (mode === 'm25') {
+			return this.settings().target;
+		}
+
+		return this.currentRhythmItem()?.repetitions ?? DEFAULT_REPETITIONS;
+	}
+
+	private currentExerciseInfo(mode: AppMode): { name: string; builtIn: boolean } {
+		if (mode === 'm25') {
+			return { name: '', builtIn: false };
+		}
+
+		const rhythmSession = this.activeRhythmSession();
+		const currentItem = this.currentRhythmItem();
+		const routineName = rhythmSession?.routineName.trim() ?? '';
+		if (routineName) {
+			return { name: routineName, builtIn: false };
+		}
+
+		return {
+			name: currentItem?.name ?? '',
+			builtIn: currentItem?.builtIn ?? false,
+		};
+	}
+
+	private recordPositiveAction(nextValue: number): void {
+		this.updateActiveSession((session) => ({
+			...session,
+			positivePressCount: session.positivePressCount + 1,
+			minimumValue: Math.min(session.minimumValue, nextValue),
+		}));
+	}
+
+	private recordErrorAction(nextValue: number): void {
+		this.updateActiveSession((session) => ({
+			...session,
+			errorCount: session.errorCount + 1,
+			minimumValue: Math.min(session.minimumValue, nextValue),
+		}));
+	}
+
+	private updateActiveSession(transform: (session: PracticeSession) => PracticeSession): void {
+		const session = this.activeSession();
+		if (!session) {
+			return;
+		}
+
+		this.activeSession.set(transform(session));
 	}
 
 	private parsePatterns(patterns: RhythmPattern[] | undefined): RhythmPattern[] {

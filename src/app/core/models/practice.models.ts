@@ -39,6 +39,9 @@ export interface PracticeSession {
 	finishedAtMs: number | null;
 	activeElapsedMs: number;
 	pausedElapsedMs: number;
+	minimumValue: number;
+	errorCount: number;
+	positivePressCount: number;
 }
 
 export interface PracticeRecord {
@@ -57,6 +60,7 @@ export interface PracticeRecord {
 	errorCount: number;
 	positivePressCount: number;
 	exerciseName: string;
+	exerciseBuiltIn: boolean;
 }
 
 export interface PracticeHistorySnapshot {

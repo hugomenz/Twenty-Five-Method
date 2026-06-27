@@ -89,6 +89,7 @@ describe('M25StateService', () => {
 				errorCount: index % 5,
 				positivePressCount: index + 1,
 				exerciseName: `Exercise ${index}`,
+				exerciseBuiltIn: index % 2 === 1,
 			})),
 		}));
 
@@ -186,6 +187,84 @@ describe('M25StateService', () => {
 		expect(service.activeSession()?.status).toBe('cancelled');
 		expect(service.activeSession()?.finishedAtMs).toBe(Date.now());
 		expect(service.activeSession()?.activeElapsedMs).toBe(2_500);
+	});
+
+	it('should save a completed m25 session exactly once', () => {
+		const service = createService();
+
+		service.prepareSession('m25', 'Completed once', 88);
+		service.startSession('Completed once', 88);
+		service.setTarget(1);
+		const firstSessionId = service.activeSession()!.id;
+
+		service.increment();
+
+		expect(service.practiceHistory()).toHaveLength(1);
+		expect(service.practiceHistory()[0]).toMatchObject({
+			id: firstSessionId,
+			mode: 'm25',
+			status: 'completed',
+			bpm: 88,
+			target: 1,
+			finalValue: 1,
+			minimumValue: 0,
+			errorCount: 0,
+			positivePressCount: 1,
+		});
+
+		service.finishPractice();
+		service.finishPractice();
+
+		expect(service.practiceHistory()).toHaveLength(1);
+		expect(JSON.parse(localStorage.getItem('m25.history') ?? '{}').records).toHaveLength(1);
+	});
+
+	it('should save cancelled sessions with paused time outside active duration', () => {
+		const service = createService();
+
+		service.prepareSession('rhythms', 'Warmup', 72);
+		service.startSession('Warmup', 72);
+		service.setRoutineDraftName('Warmup');
+		service.addPatternToRoutine('preset-eighths-sixteenths');
+		service.startRhythmPracticeFromDraft();
+		service.startSession('Warmup', 72);
+		service.increment();
+		vi.advanceTimersByTime(4_000);
+		service.pauseSession();
+		vi.advanceTimersByTime(6_000);
+		service.cancelAndSavePractice();
+
+		expect(service.practiceHistory()[0]).toMatchObject({
+			mode: 'rhythm',
+			status: 'cancelled',
+			bpm: 72,
+			activeDurationMs: 4_000,
+			pausedDurationMs: 6_000,
+			finalValue: 1,
+			minimumValue: 0,
+			errorCount: 0,
+			positivePressCount: 1,
+			exerciseName: 'Warmup',
+			exerciseBuiltIn: false,
+		});
+	});
+
+	it('should create a new ready session when repeating after completion', () => {
+		const service = createService();
+
+		service.prepareSession('m25', 'Loop', 90);
+		service.startSession('Loop', 90);
+		service.setTarget(1);
+		const firstSessionId = service.activeSession()!.id;
+		service.increment();
+
+		service.repeatM25Practice();
+
+		expect(service.practiceHistory()).toHaveLength(1);
+		expect(service.activeSession()?.id).not.toBe(firstSessionId);
+		expect(service.activeSession()?.status).toBe('ready');
+		expect(service.completionOverlay()).toBeNull();
+		expect(service.m25Count()).toBe(0);
 	});
 
 	it('should open the m25 completion overlay once and allow repeating', () => {
@@ -303,7 +382,8 @@ describe('M25StateService', () => {
 		expect(service.completionOverlay()).toBeNull();
 		expect(service.activeRhythmSession()?.currentIndex).toBe(0);
 		expect(service.currentRhythmItem()?.count).toBe(0);
-		expect(service.activeRhythmSession()?.status).toBe('running');
+		expect(service.activeRhythmSession()?.status).toBe('paused');
+		expect(service.activeSession()?.status).toBe('ready');
 	});
 
 	it('should reset m25 practice and rhythm practice independently', () => {
