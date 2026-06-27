@@ -6,6 +6,7 @@
 	"aria": {
 		"openSettings": "Einstellungen öffnen",
 		"closeSettings": "Einstellungen schließen",
+		"goBack": "Zurück",
 		"minusButton": "Fehler markieren",
 		"plusButton": "Erfolgreiche Wiederholung markieren",
 		"moveUp": "Nach oben",
@@ -27,12 +28,17 @@
 		"noActivePracticeHelp": "Öffne die Einstellungen, um eine Routine zu bauen, Muster zu speichern oder eine Übung zu starten."
 	},
 	"actions": {
+		"goBack": "Zurück",
 		"openSettings": "Einstellungen öffnen",
 		"pause": "Pausieren",
 		"resume": "Fortsetzen",
 		"nextRhythm": "Nächster Rhythmus",
 		"resetPractice": "Übung zurücksetzen",
 		"startCurrentRoutine": "Aktuelle Routine starten",
+		"prepareRoutine": "Routine vorbereiten",
+		"buildRhythm": "Rhythmus bauen",
+		"openM25": "M25 öffnen",
+		"openRhythms": "Rhythmen öffnen",
 		"saveRoutine": "Routine speichern",
 		"saveRhythm": "Rhythmus speichern",
 		"clear": "Leeren",
@@ -41,12 +47,25 @@
 		"delete": "Löschen"
 	},
 	"sections": {
-		"mode": "Modus",
-		"appearance": "Darstellung",
+		"general": "Allgemein",
 		"m25": "M25",
 		"rhythms": "Rhythmen",
 		"routines": "Routinen",
 		"builder": "Baukasten"
+	},
+	"home": {
+		"eyebrow": "Übungsboard",
+		"title": "Wähle zuerst den nächsten Ablauf, bevor die Hände die Tasten berühren.",
+		"subtitle": "M25 hält einen Abschnitt in Wiederholung. Rhythmen führt ihn durch vorbereitete rhythmische Routinen.",
+		"m25Description": "Ein fokussierter Wiederholungszähler für einen Abschnitt und ein Ziel.",
+		"rhythmsDescription": "Ein geführter Ablauf durch gespeicherte rhythmische Routinen.",
+		"studioHint": "Bereite Routinen und Muster außerhalb der Einstellungen vor, damit die Übung klar bleibt."
+	},
+	"studio": {
+		"routineTitle": "Routinenstudio",
+		"routineDescription": "Stapele feste oder eigene Rhythmen zu einem Probenablauf und starte ihn, wenn er bereit ist.",
+		"patternTitle": "Rhythmuswerkstatt",
+		"patternDescription": "Baue neue visuelle Rhythmusmuster Block für Block und speichere sie für spätere Routinen."
 	},
 	"fields": {
 		"target": "Ziel",

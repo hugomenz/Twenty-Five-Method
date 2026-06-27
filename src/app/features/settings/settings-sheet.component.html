@@ -11,10 +11,10 @@
 		</button>
 	</div>
 
-	<m25-mode-settings-section />
 	<m25-appearance-settings-section />
-	<m25-m25-settings-section (requestReset)="requestReset.emit()" />
-	<m25-rhythm-settings-section (requestReset)="requestReset.emit()" />
-	<m25-routine-editor-section />
-	<m25-rhythm-builder-section />
+	@if (state.currentMode() === 'm25') {
+		<m25-m25-settings-section (requestReset)="requestReset.emit()" />
+	} @else {
+		<m25-rhythm-settings-section (requestReset)="requestReset.emit()" />
+	}
 </dialog>

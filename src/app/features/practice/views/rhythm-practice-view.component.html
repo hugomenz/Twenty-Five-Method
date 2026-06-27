@@ -25,8 +25,13 @@
 		<p class="empty-title">{{ dictionary().status.noActivePractice }}</p>
 		<p class="detail-text detail-text--multiline">{{ dictionary().status.noActivePracticeHelp }}</p>
 		<p class="status-spacer" aria-hidden="true"></p>
-		<button class="session-button" type="button" (click)="state.openSettings()">
-			{{ dictionary().actions.openSettings }}
-		</button>
+		<div class="empty-actions">
+			<button class="session-button" type="button" (click)="openRoutineStudio()">
+				{{ dictionary().actions.prepareRoutine }}
+			</button>
+			<button class="session-button session-button--secondary" type="button" (click)="openPatternStudio()">
+				{{ dictionary().actions.buildRhythm }}
+			</button>
+		</div>
 	</div>
 }

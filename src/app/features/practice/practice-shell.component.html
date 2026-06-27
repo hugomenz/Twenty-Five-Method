@@ -4,46 +4,64 @@
 	[attr.data-button-tone]="state.settings().buttonTone"
 	[attr.data-button-shape]="state.settings().buttonShape"
 >
-	<p class="corner-mark">{{ dictionary().app.name }}</p>
+	<div class="top-chrome">
+		@if (showBackButton()) {
+			<button class="back-button" type="button" (click)="state.goBack()" [attr.aria-label]="dictionary().aria.goBack">
+				← <span>{{ dictionary().actions.goBack }}</span>
+			</button>
+		} @else {
+			<span class="back-button back-button--spacer" aria-hidden="true"></span>
+		}
 
-	<button
-		class="settings-button"
-		type="button"
-		(click)="state.toggleSettings()"
-		[attr.aria-label]="dictionary().aria.openSettings"
-	>
-		⚙
-	</button>
+		<p class="corner-mark">{{ dictionary().app.name }}</p>
 
-	<section class="practice-stage">
 		<button
-			class="control-button control-button--minus"
+			class="settings-button"
 			type="button"
-			(click)="state.decrement()"
-			[disabled]="!state.canUseMinus()"
-			[attr.aria-label]="dictionary().aria.minusButton"
+			(click)="state.toggleSettings()"
+			[attr.aria-label]="dictionary().aria.openSettings"
 		>
-			−
+			⚙
 		</button>
+	</div>
 
-		<section class="center-panel">
-			@if (isM25Mode()) {
-				<m25-practice-view />
-			} @else {
-				<m25-rhythm-practice-view />
-			}
+	@if (isHomeScreen()) {
+		<m25-home-screen />
+	} @else if (state.currentScreen() === 'routine-studio') {
+		<m25-routine-studio />
+	} @else if (state.currentScreen() === 'pattern-studio') {
+		<m25-pattern-studio />
+	} @else {
+		<section class="practice-stage">
+			<button
+				class="control-button control-button--minus"
+				type="button"
+				(click)="state.decrement()"
+				[disabled]="!state.canUseMinus()"
+				[attr.aria-label]="dictionary().aria.minusButton"
+			>
+				−
+			</button>
+
+			<section class="center-panel">
+				@if (isM25Mode()) {
+					<m25-practice-view />
+				} @else {
+					<m25-rhythm-practice-view />
+				}
+			</section>
+
+			<button
+				class="control-button control-button--plus"
+				type="button"
+				(click)="state.increment()"
+				[disabled]="!state.canUsePlus()"
+				[attr.aria-label]="dictionary().aria.plusButton"
+			>
+				+
+			</button>
 		</section>
-
-		<button
-			class="control-button control-button--plus"
-			type="button"
-			(click)="state.increment()"
-			[disabled]="!state.canUsePlus()"
-			[attr.aria-label]="dictionary().aria.plusButton"
-		>
-			+
-		</button>
-	</section>
+	}
 
 	@if (state.settingsOpen()) {
 		<button

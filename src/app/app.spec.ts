@@ -32,4 +32,40 @@ describe('App', () => {
 		expect(shell.getAttribute('data-button-tone')).toBe('outline');
 		expect(shell.getAttribute('data-button-shape')).toBe('pill');
 	});
+
+	it('should show the main view first and allow entering and leaving M25 practice', () => {
+		const fixture = TestBed.createComponent(App);
+		fixture.detectChanges();
+
+		const root = fixture.nativeElement as HTMLElement;
+		expect(root.querySelector('.home-screen')).toBeTruthy();
+
+		const m25Card = root.querySelector('.mode-card--m25') as HTMLButtonElement;
+		m25Card.click();
+		fixture.detectChanges();
+
+		expect(root.querySelector('.practice-stage')).toBeTruthy();
+
+		const backButton = root.querySelector('.back-button') as HTMLButtonElement;
+		backButton.click();
+		fixture.detectChanges();
+
+		expect(root.querySelector('.home-screen')).toBeTruthy();
+	});
+
+	it('should offer direct routine preparation when rhythms has no active practice', () => {
+		const fixture = TestBed.createComponent(App);
+		const state = TestBed.inject(M25StateService);
+		state.openPractice('rhythms');
+		fixture.detectChanges();
+
+		const root = fixture.nativeElement as HTMLElement;
+		expect(root.textContent).toContain('Prepare routine');
+
+		const prepareButton = Array.from(root.querySelectorAll('button')).find((button) => button.textContent?.includes('Prepare routine')) as HTMLButtonElement;
+		prepareButton.click();
+		fixture.detectChanges();
+
+		expect(root.querySelector('.studio-screen')).toBeTruthy();
+	});
 });

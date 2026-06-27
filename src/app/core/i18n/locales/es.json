@@ -6,6 +6,7 @@
 	"aria": {
 		"openSettings": "Abrir configuración",
 		"closeSettings": "Cerrar configuración",
+		"goBack": "Volver",
 		"minusButton": "Registrar error",
 		"plusButton": "Registrar repetición correcta",
 		"moveUp": "Subir",
@@ -27,12 +28,17 @@
 		"noActivePracticeHelp": "Abre la configuración para crear una rutina, guardar ritmos o iniciar una práctica."
 	},
 	"actions": {
+		"goBack": "Volver",
 		"openSettings": "Abrir configuración",
 		"pause": "Pausar",
 		"resume": "Continuar",
 		"nextRhythm": "Siguiente ritmo",
 		"resetPractice": "Reiniciar práctica",
 		"startCurrentRoutine": "Iniciar rutina actual",
+		"prepareRoutine": "Preparar rutina",
+		"buildRhythm": "Crear ritmo",
+		"openM25": "Abrir M25",
+		"openRhythms": "Abrir ritmos",
 		"saveRoutine": "Guardar rutina",
 		"saveRhythm": "Guardar ritmo",
 		"clear": "Limpiar",
@@ -41,12 +47,25 @@
 		"delete": "Eliminar"
 	},
 	"sections": {
-		"mode": "Modo",
-		"appearance": "Apariencia",
+		"general": "General",
 		"m25": "M25",
 		"rhythms": "Ritmos",
 		"routines": "Rutinas",
 		"builder": "Constructor"
+	},
+	"home": {
+		"eyebrow": "Mesa de práctica",
+		"title": "Elige el siguiente recorrido antes de apoyar las manos sobre el teclado.",
+		"subtitle": "M25 mantiene un solo pasaje en repetición. Ritmos lo hace pasar por rutinas rítmicas preparadas.",
+		"m25Description": "Un contador de repeticiones centrado en un pasaje y un objetivo.",
+		"rhythmsDescription": "Una ruta guiada a través de rutinas rítmicas guardadas.",
+		"studioHint": "Prepara rutinas y patrones fuera de configuración para que la práctica siga limpia."
+	},
+	"studio": {
+		"routineTitle": "Estudio de rutinas",
+		"routineDescription": "Combina ritmos predefinidos o personalizados en una ruta de ensayo y lánzala cuando la tengas lista.",
+		"patternTitle": "Taller de ritmos",
+		"patternDescription": "Crea nuevos patrones visuales bloque a bloque y guárdalos para rutinas futuras."
 	},
 	"fields": {
 		"target": "Objetivo",

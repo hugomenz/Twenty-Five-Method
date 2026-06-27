@@ -2,6 +2,7 @@ import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { BUILT_IN_RHYTHM_PATTERNS } from '../data/rhythm-presets';
 import {
 	AppMode,
+	AppScreen,
 	BlockKind,
 	ButtonShape,
 	ButtonTone,
@@ -36,6 +37,8 @@ export class M25StateService {
 	private readonly storage = inject(M25StorageService);
 	private readonly initialState = this.loadPersistedState();
 
+	readonly currentScreen = signal<AppScreen>(this.resolveInitialScreen(this.initialState));
+	readonly screenHistory = signal<AppScreen[]>([]);
 	readonly settingsOpen = signal(false);
 	readonly settings = signal<SettingsState>(this.initialState.settings);
 	readonly recentMode = signal<AppMode>(this.initialState.recentMode);
@@ -133,6 +136,42 @@ export class M25StateService {
 		effect(() => {
 			this.persistState();
 		});
+	}
+
+	goBack(): void {
+		this.settingsOpen.set(false);
+		const history = this.screenHistory();
+		const previousScreen = history.at(-1);
+
+		if (!previousScreen) {
+			this.currentScreen.set(this.hasActivePractice() ? 'practice' : 'home');
+			return;
+		}
+
+		this.screenHistory.set(history.slice(0, -1));
+		this.currentScreen.set(previousScreen);
+	}
+
+	goHome(): void {
+		this.settingsOpen.set(false);
+		this.screenHistory.set([]);
+		this.currentScreen.set('home');
+	}
+
+	openPractice(mode?: AppMode): void {
+		if (mode) {
+			this.recentMode.set(mode);
+		}
+
+		this.navigateTo('practice');
+	}
+
+	openRoutineStudio(): void {
+		this.navigateTo('routine-studio');
+	}
+
+	openPatternStudio(): void {
+		this.navigateTo('pattern-studio');
 	}
 
 	toggleSettings(): void {
@@ -310,6 +349,9 @@ export class M25StateService {
 
 	resetRhythmPractice(): void {
 		this.activeRhythmSession.set(null);
+		if (this.currentMode() === 'rhythms' && this.currentScreen() === 'practice') {
+			this.navigateTo('practice', true);
+		}
 	}
 
 	startRhythmPracticeFromDraft(): void {
@@ -346,6 +388,7 @@ export class M25StateService {
 			status: 'running',
 		});
 		this.recentMode.set('rhythms');
+		this.navigateTo('practice', true);
 		this.closeSettings();
 	}
 
@@ -596,15 +639,28 @@ export class M25StateService {
 	}
 
 	private parseSettings(settings: Partial<SettingsState> | undefined, fallback: SettingsState): SettingsState {
+		const m25ErrorBehavior = settings?.m25ErrorBehavior;
+		const rhythmErrorBehavior = settings?.rhythmErrorBehavior;
+		const language = settings?.language;
+		const theme = settings?.theme;
+		const buttonTone = settings?.buttonTone;
+		const buttonShape = settings?.buttonShape;
+		const safeM25ErrorBehavior = isErrorBehavior(m25ErrorBehavior ?? '') ? m25ErrorBehavior ?? fallback.m25ErrorBehavior : fallback.m25ErrorBehavior;
+		const safeRhythmErrorBehavior = isErrorBehavior(rhythmErrorBehavior ?? '') ? rhythmErrorBehavior ?? fallback.rhythmErrorBehavior : fallback.rhythmErrorBehavior;
+		const safeLanguage = isLanguageCode(language ?? '') ? language ?? fallback.language : fallback.language;
+		const safeTheme = isThemeMode(theme ?? '') ? theme ?? fallback.theme : fallback.theme;
+		const safeButtonTone = isButtonTone(buttonTone ?? '') ? buttonTone ?? fallback.buttonTone : fallback.buttonTone;
+		const safeButtonShape = isButtonShape(buttonShape ?? '') ? buttonShape ?? fallback.buttonShape : fallback.buttonShape;
+
 		return {
 			target: normalizePositiveInteger(Number(settings?.target), fallback.target),
 			allowNegative: settings?.allowNegative ?? fallback.allowNegative,
-			m25ErrorBehavior: isErrorBehavior(settings?.m25ErrorBehavior ?? '') ? settings!.m25ErrorBehavior! : fallback.m25ErrorBehavior,
-			rhythmErrorBehavior: isErrorBehavior(settings?.rhythmErrorBehavior ?? '') ? settings!.rhythmErrorBehavior! : fallback.rhythmErrorBehavior,
-			language: isLanguageCode(settings?.language ?? '') ? settings!.language! : fallback.language,
-			theme: isThemeMode(settings?.theme ?? '') ? settings!.theme! : fallback.theme,
-			buttonTone: isButtonTone(settings?.buttonTone ?? '') ? settings!.buttonTone! : fallback.buttonTone,
-			buttonShape: isButtonShape(settings?.buttonShape ?? '') ? settings!.buttonShape! : fallback.buttonShape,
+			m25ErrorBehavior: safeM25ErrorBehavior,
+			rhythmErrorBehavior: safeRhythmErrorBehavior,
+			language: safeLanguage,
+			theme: safeTheme,
+			buttonTone: safeButtonTone,
+			buttonShape: safeButtonShape,
 		};
 	}
 
@@ -674,5 +730,36 @@ export class M25StateService {
 			currentIndex,
 			status,
 		};
+	}
+
+	private resolveInitialScreen(state: PersistedState): AppScreen {
+		if (state.activeRhythmSession || state.m25Count !== 0) {
+			return 'practice';
+		}
+
+		return 'home';
+	}
+
+	private navigateTo(screen: AppScreen, replace = false): void {
+		this.settingsOpen.set(false);
+		const currentScreen = this.currentScreen();
+
+		if (currentScreen === screen) {
+			return;
+		}
+
+		if (replace) {
+			const history = this.screenHistory();
+			if (history.length === 0) {
+				this.screenHistory.set(currentScreen === 'home' ? [] : ['home']);
+			} else {
+				this.screenHistory.set(history);
+			}
+			this.currentScreen.set(screen);
+			return;
+		}
+
+		this.screenHistory.update((history) => [...history, currentScreen]);
+		this.currentScreen.set(screen);
 	}
 }

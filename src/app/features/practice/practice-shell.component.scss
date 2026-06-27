@@ -81,16 +81,21 @@
 	--sheet-button-radius: 0.8rem;
 }
 
-.corner-mark,
-.settings-button {
-	position: absolute;
-	top: calc(env(safe-area-inset-top) + 0.85rem);
+
+.top-chrome {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 0.75rem;
+	position: relative;
 	z-index: 2;
-	margin: 0;
+	min-height: 2.8rem;
+	margin-bottom: 0.9rem;
 }
 
 .corner-mark {
-	left: calc(env(safe-area-inset-left) + 0.95rem);
+	margin: 0;
+	justify-self: center;
 	color: var(--muted);
 	font-size: 1rem;
 	font-weight: 700;
@@ -98,8 +103,28 @@
 	text-transform: uppercase;
 }
 
+.back-button {
+	appearance: none;
+	border: 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	min-width: 4.25rem;
+	padding: 0;
+	background: transparent;
+	color: var(--muted);
+	font: inherit;
+	font-size: 0.92rem;
+	font-weight: 700;
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+}
+
+.back-button--spacer {
+	visibility: hidden;
+}
+
 .settings-button {
-	right: calc(env(safe-area-inset-right) + 0.95rem);
 	appearance: none;
 	border: 0;
 	display: inline-flex;
@@ -115,6 +140,7 @@
 	box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
 	-webkit-tap-highlight-color: transparent;
 	touch-action: manipulation;
+	justify-self: end;
 }
 
 .practice-stage {
@@ -171,6 +197,7 @@
 	border-color: var(--button-border-color);
 }
 
+.back-button:active,
 .control-button:active,
 .settings-button:active {
 	transform: translateY(1px);
@@ -190,6 +217,7 @@
 	background: rgb(5 8 12 / 0.72);
 }
 
+.back-button:focus-visible,
 .settings-button:focus-visible,
 .control-button:focus-visible {
 	outline: 3px solid color-mix(in srgb, var(--accent) 82%, white);

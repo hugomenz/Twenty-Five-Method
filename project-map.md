@@ -61,30 +61,35 @@ All visible labels should come from these files through `M25LabelsService`.
 ### Practice UI
 
 - `src/app/features/practice/practice-shell.component.*`
-  - Main horizontal-first stage.
-  - Theme and button customization CSS variables.
-  - Hosts minus/plus controls and settings dialog.
+  - Main screen orchestrator.
+  - Hosts home, practice, studio, back-navigation, and settings overlay.
+  - Theme and button customization CSS variables live here.
+- `src/app/features/home/home-screen.component.*`
+  - Main entry view.
+  - Mode selection happens here, outside settings.
 - `src/app/features/practice/views/m25-practice-view.component.*`
   - Center panel for M25 mode.
 - `src/app/features/practice/views/rhythm-practice-view.component.*`
   - Center panel for Rhythms mode.
+- `src/app/features/studio/routine-studio.component.*`
+  - Full-screen routine preparation flow.
+- `src/app/features/studio/pattern-studio.component.*`
+  - Full-screen rhythm creation flow.
 
 ### Settings UI
 
 - `src/app/features/settings/settings-sheet.component.*`
-  - Dialog container.
-- `src/app/features/settings/sections/mode-settings-section.component.*`
-  - Mode switch.
+  - Dialog container for general and mode-specific settings only.
 - `src/app/features/settings/sections/appearance-settings-section.component.*`
-  - Language, theme, button tone, button shape.
+  - General settings: language, theme, button tone, button shape.
 - `src/app/features/settings/sections/m25-settings-section.component.*`
   - M25-specific controls.
 - `src/app/features/settings/sections/rhythm-settings-section.component.*`
   - Rhythm-specific controls.
 - `src/app/features/settings/sections/routine-editor-section.component.*`
-  - Routine draft and saved routines.
+  - Shared routine editor used by the routine studio.
 - `src/app/features/settings/sections/rhythm-builder-section.component.*`
-  - Custom rhythm builder.
+  - Shared rhythm builder used by the pattern studio.
 - `src/app/features/settings/sections/settings-section.shared.scss`
   - Shared section-level settings styling.
 

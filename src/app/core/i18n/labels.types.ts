@@ -8,6 +8,7 @@ export interface LabelDictionary {
 	aria: {
 		openSettings: string;
 		closeSettings: string;
+		goBack: string;
 		minusButton: string;
 		plusButton: string;
 		moveUp: string;
@@ -29,12 +30,17 @@ export interface LabelDictionary {
 		noActivePracticeHelp: string;
 	};
 	actions: {
+		goBack: string;
 		openSettings: string;
 		pause: string;
 		resume: string;
 		nextRhythm: string;
 		resetPractice: string;
 		startCurrentRoutine: string;
+		prepareRoutine: string;
+		buildRhythm: string;
+		openM25: string;
+		openRhythms: string;
 		saveRoutine: string;
 		saveRhythm: string;
 		clear: string;
@@ -43,12 +49,25 @@ export interface LabelDictionary {
 		delete: string;
 	};
 	sections: {
-		mode: string;
-		appearance: string;
+		general: string;
 		m25: string;
 		rhythms: string;
 		routines: string;
 		builder: string;
+	};
+	home: {
+		eyebrow: string;
+		title: string;
+		subtitle: string;
+		m25Description: string;
+		rhythmsDescription: string;
+		studioHint: string;
+	};
+	studio: {
+		routineTitle: string;
+		routineDescription: string;
+		patternTitle: string;
+		patternDescription: string;
 	};
 	fields: {
 		target: string;

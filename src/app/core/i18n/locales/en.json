@@ -6,6 +6,7 @@
 	"aria": {
 		"openSettings": "Open settings",
 		"closeSettings": "Close settings",
+		"goBack": "Go back",
 		"minusButton": "Record mistake",
 		"plusButton": "Record successful repetition",
 		"moveUp": "Move up",
@@ -27,12 +28,17 @@
 		"noActivePracticeHelp": "Open settings to build a routine, save patterns, or start practice."
 	},
 	"actions": {
+		"goBack": "Back",
 		"openSettings": "Open settings",
 		"pause": "Pause",
 		"resume": "Resume",
 		"nextRhythm": "Next rhythm",
 		"resetPractice": "Reset practice",
 		"startCurrentRoutine": "Start current routine",
+		"prepareRoutine": "Prepare routine",
+		"buildRhythm": "Build rhythm",
+		"openM25": "Open M25",
+		"openRhythms": "Open rhythms",
 		"saveRoutine": "Save routine",
 		"saveRhythm": "Save rhythm",
 		"clear": "Clear",
@@ -41,12 +47,25 @@
 		"delete": "Delete"
 	},
 	"sections": {
-		"mode": "Mode",
-		"appearance": "Appearance",
+		"general": "General",
 		"m25": "M25",
 		"rhythms": "Rhythms",
 		"routines": "Routines",
 		"builder": "Builder"
+	},
+	"home": {
+		"eyebrow": "Practice board",
+		"title": "Choose the next repetition path before your hands touch the keys.",
+		"subtitle": "M25 keeps one passage on loop. Rhythms rotates it through prepared rhythmic patterns.",
+		"m25Description": "A focused repetition counter for one passage and one target.",
+		"rhythmsDescription": "A guided route through saved rhythmic routines.",
+		"studioHint": "Set up routines and custom rhythm patterns outside settings so practice stays clean."
+	},
+	"studio": {
+		"routineTitle": "Routine studio",
+		"routineDescription": "Stack preset or custom rhythms into one rehearsal route, then launch it when it feels right.",
+		"patternTitle": "Rhythm workshop",
+		"patternDescription": "Build new visual rhythm patterns block by block and save them for later routines."
 	},
 	"fields": {
 		"target": "Target",

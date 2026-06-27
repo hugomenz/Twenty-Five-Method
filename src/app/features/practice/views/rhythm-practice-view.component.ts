@@ -48,4 +48,11 @@ export class RhythmPracticeViewComponent {
 
 		return this.labels.rhythmPosition(session.currentIndex + 1, session.items.length);
 	});
+	protected openRoutineStudio(): void {
+		this.state.openRoutineStudio();
+	}
+
+	protected openPatternStudio(): void {
+		this.state.openPatternStudio();
+	}
 }
