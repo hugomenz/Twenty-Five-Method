@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
+import { pathToFileURL } from 'node:url';
 import { exit } from 'node:process';
 
 const TITLE_PATTERN =
   /^(feat|fix|refactor|perf|test|docs|chore|ci|build)(\([a-z0-9][a-z0-9-]*\))?(!)?: .+/;
 
-const VALID_EXAMPLES = [
+export const VALID_EXAMPLES = [
   'feat: add session history',
   'fix(ui): prevent horizontal modal overflow',
   'feat(session)!: replace stored session format',
@@ -18,7 +19,7 @@ const VALID_EXAMPLES = [
   'build(pwa): refresh service worker assets',
 ];
 
-const INVALID_EXAMPLES = [
+export const INVALID_EXAMPLES = [
   'update things',
   'changes',
   'final fixes',
@@ -65,11 +66,17 @@ function validateTitle(title) {
   console.log('pr title ok');
 }
 
-const input = process.argv[2];
+function runCli() {
+  const input = process.argv[2];
 
-if (input === '--self-test') {
-  assertExamples();
-  exit(0);
+  if (input === '--self-test') {
+    assertExamples();
+    exit(0);
+  }
+
+  validateTitle(input);
 }
 
-validateTitle(input);
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  runCli();
+}

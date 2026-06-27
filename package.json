@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "validate:pr-title": "node scripts/validate-pr-title.mjs --self-test",
+    "validate:release": "node scripts/validate-release-setup.mjs"
   },
   "private": true,
   "packageManager": "npm@11.8.0",

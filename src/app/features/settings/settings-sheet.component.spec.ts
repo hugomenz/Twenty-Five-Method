@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import packageJson from '../../../../package.json';
 import { SettingsSheetComponent } from './settings-sheet.component';
 
 describe('SettingsSheetComponent', () => {
@@ -35,6 +36,16 @@ describe('SettingsSheetComponent', () => {
 		const close = fixture.nativeElement.querySelector('.sheet-close') as HTMLButtonElement;
 		expect(close).toBeTruthy();
 		expect(close.getAttribute('aria-label')).toBeTruthy();
+	});
+
+	it('shows the current app version from package.json', async () => {
+		const fixture = TestBed.createComponent(SettingsSheetComponent);
+		fixture.detectChanges();
+		await fixture.whenStable();
+
+		const version = fixture.nativeElement.querySelector('[data-testid="app-version"]') as HTMLElement;
+		expect(version).toBeTruthy();
+		expect(version.textContent?.trim()).toBe(`M25 v${packageJson.version}`);
 	});
 
 	it('emits requestClose when the close button is used', async () => {

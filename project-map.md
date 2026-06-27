@@ -14,10 +14,14 @@ Use this file before broad repo exploration. It is the fast path for locating th
 - App bootstrap: `src/main.ts`
 - Root app shell bootstrap: `src/app/app.ts`
 - Global providers: `src/app/app.config.ts`
+- Single source app version export: `src/app/core/app-version.ts`
 - Global page styles: `src/styles.scss`
 - GitHub Pages base href and budgets: `angular.json`
 - PWA manifest: `public/manifest.webmanifest`
 - Pages workflow: `.github/workflows/deploy-pages.yml`
+- Release workflow: `.github/workflows/release-please.yml`
+- PR title validation workflow: `.github/workflows/validate-pr-title.yml`
+- Release config: `release-please-config.json`, `.release-please-manifest.json`
 
 ## Main Architecture
 
@@ -164,6 +168,24 @@ If behavior changes, prefer adding or updating tests in the service spec first.
 - Production build: `npm run build`
 - End-to-end: `npm run e2e` (auto-starts the dev server on port 4327)
 - E2E UI / report: `npm run e2e:ui`, `npm run e2e:report`
+- Release config checks: `npm run validate:pr-title`, `npm run validate:release`
+
+## Release Automation
+
+- `.github/workflows/release-please.yml`
+  - Runs Release Please on `push` to `main` and on manual dispatch.
+- `release-please-config.json`
+  - Defines changelog sections, SemVer behavior, and bootstrap settings.
+- `.release-please-manifest.json`
+  - Stores the tracked current version for the root package.
+- `CHANGELOG.md`
+  - User-facing release notes managed by Release Please after bootstrap.
+- `docs/RELEASING.md`
+  - Maintainer-facing release workflow guide.
+- `scripts/validate-pr-title.mjs`
+  - Conventional PR title validator used by CI and local checks.
+- `scripts/validate-release-setup.mjs`
+  - Local validation for release config, version sourcing, and PR title rules.
 
 ## Deployment Notes
 
