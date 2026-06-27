@@ -118,3 +118,26 @@ Here is a link to the most recent Angular style guide https://angular.dev/style-
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## Release And Commit Conventions
+
+- Use Conventional Commits for every future commit.
+- Do NOT modify the project version manually in `package.json` or `package-lock.json`.
+- Do NOT edit published sections of `CHANGELOG.md` manually.
+- Do NOT create tags manually.
+- Do NOT create GitHub Releases manually.
+- Let Release Please manage versions, release pull requests, tags, and GitHub Releases.
+- Prefer short scopes such as `ui`, `rhythm`, `m25`, `session`, `history`, `pwa`, `settings`, and `release`.
+
+Examples:
+
+```text
+feat(session): add pause and resume flow
+fix(ui): keep completion actions visible in landscape
+refactor(rhythm): simplify notation renderer
+perf(pwa): reduce initial bundle size
+test(session): cover cancellation behavior
+docs(release): document version workflow
+```
+
+- Avoid generic commit messages such as `update things`, `changes`, `final fixes`, or `work`.
