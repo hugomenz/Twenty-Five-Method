@@ -1,0 +1,132 @@
+:host,
+.practice-view {
+	display: flex;
+	width: 100%;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.8rem;
+	min-height: 0;
+	text-align: center;
+}
+
+.mode-pill {
+	margin: 0;
+	padding: 0.35rem 0.8rem;
+	border-radius: 999px;
+	background: rgb(255 255 255 / 0.06);
+	color: var(--muted);
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+}
+
+.routine-name,
+.pattern-name,
+.pattern-symbols,
+.detail-text,
+.empty-title,
+.status-message,
+.status-spacer {
+	margin: 0;
+}
+
+.routine-name {
+	color: var(--muted);
+	font-size: 0.95rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.pattern-name,
+.empty-title {
+	font-size: clamp(1.35rem, 3vw, 2rem);
+	font-weight: 700;
+	line-height: 1.1;
+}
+
+.pattern-symbols {
+	color: var(--accent);
+	font-size: clamp(1.2rem, 2.8vw, 1.65rem);
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	line-height: 1.35;
+}
+
+.counter-value {
+	display: block;
+	margin: 0;
+	font-weight: 800;
+	font-variant-numeric: tabular-nums;
+	line-height: 0.88;
+	letter-spacing: -0.05em;
+}
+
+.counter-value--compact {
+	font-size: clamp(3.8rem, 14vmin, 7rem);
+}
+
+.detail-text {
+	color: var(--muted);
+	font-size: clamp(0.95rem, 2.6vw, 1.1rem);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.detail-text--multiline {
+	max-width: 23rem;
+	text-transform: none;
+	letter-spacing: 0;
+	line-height: 1.45;
+}
+
+.status-message,
+.status-spacer {
+	min-height: 1.7rem;
+	font-size: clamp(1rem, 2.8vw, 1.2rem);
+	font-weight: 700;
+}
+
+.status-message {
+	color: var(--accent);
+}
+
+.session-button {
+	appearance: none;
+	border: 0;
+	min-height: 3rem;
+	padding: 0 1.15rem;
+	border-radius: var(--sheet-button-radius, 1rem);
+	background: var(--surface-alt);
+	color: var(--text);
+	font: inherit;
+	font-size: 0.95rem;
+	font-weight: 700;
+	box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+}
+
+.session-button:active {
+	transform: translateY(1px);
+}
+
+.session-button:disabled {
+	background: var(--surface-disabled);
+	color: rgb(245 247 250 / 0.4);
+	box-shadow: none;
+}
+
+.session-button:focus-visible {
+	outline: 3px solid color-mix(in srgb, var(--accent) 82%, white);
+	outline-offset: 3px;
+}
+
+@media (min-width: 900px), (orientation: landscape) {
+	.counter-value--compact {
+		font-size: clamp(3.8rem, 10vw, 6rem);
+	}
+}

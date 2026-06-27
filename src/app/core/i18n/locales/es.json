@@ -1,0 +1,114 @@
+{
+	"app": {
+		"name": "M25",
+		"settingsTitle": "Configuración"
+	},
+	"aria": {
+		"openSettings": "Abrir configuración",
+		"closeSettings": "Cerrar configuración",
+		"minusButton": "Registrar error",
+		"plusButton": "Registrar repetición correcta",
+		"moveUp": "Subir",
+		"moveDown": "Bajar",
+		"moveLeft": "Mover a la izquierda",
+		"moveRight": "Mover a la derecha",
+		"remove": "Eliminar"
+	},
+	"modes": {
+		"m25": "M25",
+		"rhythms": "Ritmos"
+	},
+	"status": {
+		"passageCompleted": "Pasaje completado",
+		"rhythmCompleted": "Ritmo completado",
+		"practiceCompleted": "Práctica completada",
+		"practicePaused": "Práctica en pausa",
+		"noActivePractice": "Sin práctica activa",
+		"noActivePracticeHelp": "Abre la configuración para crear una rutina, guardar ritmos o iniciar una práctica."
+	},
+	"actions": {
+		"openSettings": "Abrir configuración",
+		"pause": "Pausar",
+		"resume": "Continuar",
+		"nextRhythm": "Siguiente ritmo",
+		"resetPractice": "Reiniciar práctica",
+		"startCurrentRoutine": "Iniciar rutina actual",
+		"saveRoutine": "Guardar rutina",
+		"saveRhythm": "Guardar ritmo",
+		"clear": "Limpiar",
+		"load": "Cargar",
+		"start": "Iniciar",
+		"delete": "Eliminar"
+	},
+	"sections": {
+		"mode": "Modo",
+		"appearance": "Apariencia",
+		"m25": "M25",
+		"rhythms": "Ritmos",
+		"routines": "Rutinas",
+		"builder": "Constructor"
+	},
+	"fields": {
+		"target": "Objetivo",
+		"allowNegative": "Permitir valores negativos",
+		"minusAction": "Acción de −",
+		"language": "Idioma",
+		"theme": "Tema",
+		"buttonTone": "Estilo de botones",
+		"buttonShape": "Forma de botones",
+		"name": "Nombre",
+		"repetitions": "Repeticiones"
+	},
+	"options": {
+		"errorBehavior": {
+			"decrement": "Restar 1",
+			"reset": "Volver a 0",
+			"ignore": "No modificar"
+		},
+		"language": {
+			"en": "Inglés",
+			"es": "Español",
+			"de": "Alemán"
+		},
+		"theme": {
+			"dark": "Oscuro",
+			"light": "Claro"
+		},
+		"buttonTone": {
+			"soft": "Suave",
+			"solid": "Sólido",
+			"outline": "Contorno"
+		},
+		"buttonShape": {
+			"rounded": "Redondeada",
+			"pill": "Píldora",
+			"square": "Recta"
+		}
+	},
+	"patterns": {
+		"blocks": {
+			"quarter": { "label": "Negra", "symbol": "♩" },
+			"eighth": { "label": "Corchea", "symbol": "♪" },
+			"sixteenth": { "label": "Semicorchea", "symbol": "♬" },
+			"triplet": { "label": "Tresillo", "symbol": "♪3" }
+		},
+		"presets": {
+			"preset.eighthsThenSixteenths": "Corcheas y semicorcheas",
+			"preset.sixteenthsThenEighths": "Semicorcheas y corcheas",
+			"preset.twoEighthsTwoSixteenths": "Dos corcheas y dos semicorcheas",
+			"preset.twoSixteenthsTwoEighths": "Dos semicorcheas y dos corcheas",
+			"preset.quarterThenTriplet": "Negra y tresillo",
+			"preset.tripletThenQuarter": "Tresillo y negra"
+		},
+		"rhythmCount": "{count} ritmos",
+		"rhythmPosition": "Ritmo {current} de {total}",
+		"targetValue": "Objetivo: {target}",
+		"builderHint": "Añade bloques para crear una guía visual.",
+		"routineHint": "Añade ritmos y define sus repeticiones.",
+		"untitledRoutine": "Rutina sin nombre",
+		"activeRoutine": "Rutina activa"
+	},
+	"confirm": {
+		"resetPractice": "¿Reiniciar la práctica actual?"
+	}
+}

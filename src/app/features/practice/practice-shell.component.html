@@ -1,0 +1,57 @@
+<main
+	class="practice-shell"
+	[attr.data-theme]="state.settings().theme"
+	[attr.data-button-tone]="state.settings().buttonTone"
+	[attr.data-button-shape]="state.settings().buttonShape"
+>
+	<p class="corner-mark">{{ dictionary().app.name }}</p>
+
+	<button
+		class="settings-button"
+		type="button"
+		(click)="state.toggleSettings()"
+		[attr.aria-label]="dictionary().aria.openSettings"
+	>
+		⚙
+	</button>
+
+	<section class="practice-stage">
+		<button
+			class="control-button control-button--minus"
+			type="button"
+			(click)="state.decrement()"
+			[disabled]="!state.canUseMinus()"
+			[attr.aria-label]="dictionary().aria.minusButton"
+		>
+			−
+		</button>
+
+		<section class="center-panel">
+			@if (isM25Mode()) {
+				<m25-practice-view />
+			} @else {
+				<m25-rhythm-practice-view />
+			}
+		</section>
+
+		<button
+			class="control-button control-button--plus"
+			type="button"
+			(click)="state.increment()"
+			[disabled]="!state.canUsePlus()"
+			[attr.aria-label]="dictionary().aria.plusButton"
+		>
+			+
+		</button>
+	</section>
+
+	@if (state.settingsOpen()) {
+		<button
+			class="sheet-backdrop"
+			type="button"
+			(click)="state.closeSettings()"
+			[attr.aria-label]="dictionary().aria.closeSettings"
+		></button>
+		<m25-settings-sheet (requestClose)="state.closeSettings()" (requestReset)="confirmReset()" />
+	}
+</main>

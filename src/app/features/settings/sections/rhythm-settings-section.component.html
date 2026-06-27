@@ -1,0 +1,17 @@
+<section class="sheet-section">
+	<h2>{{ dictionary().sections.rhythms }}</h2>
+	<label class="field">
+		<span>{{ dictionary().fields.minusAction }}</span>
+		<select [value]="state.settings().rhythmErrorBehavior" (change)="onErrorBehaviorChange($event)">
+			@for (errorBehavior of errorBehaviors; track errorBehavior) {
+				<option [value]="errorBehavior">{{ dictionary().options.errorBehavior[errorBehavior] }}</option>
+			}
+		</select>
+	</label>
+	<button class="sheet-action" type="button" (click)="state.startRhythmPracticeFromDraft()" [disabled]="state.routineDraftItems().length === 0">
+		{{ dictionary().actions.startCurrentRoutine }}
+	</button>
+	<button class="sheet-action sheet-action--muted" type="button" (click)="requestReset.emit()" [disabled]="!state.activeRhythmSession()">
+		{{ dictionary().actions.resetPractice }}
+	</button>
+</section>

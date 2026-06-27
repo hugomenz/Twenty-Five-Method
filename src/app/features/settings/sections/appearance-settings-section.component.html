@@ -1,0 +1,35 @@
+<section class="sheet-section">
+	<h2>{{ dictionary().sections.appearance }}</h2>
+	<label class="field">
+		<span>{{ dictionary().fields.language }}</span>
+		<select [value]="state.settings().language" (change)="onLanguageChange($event)">
+			@for (language of languages; track language) {
+				<option [value]="language">{{ dictionary().options.language[language] }}</option>
+			}
+		</select>
+	</label>
+	<label class="field">
+		<span>{{ dictionary().fields.theme }}</span>
+		<select [value]="state.settings().theme" (change)="onThemeChange($event)">
+			@for (theme of themes; track theme) {
+				<option [value]="theme">{{ dictionary().options.theme[theme] }}</option>
+			}
+		</select>
+	</label>
+	<label class="field">
+		<span>{{ dictionary().fields.buttonTone }}</span>
+		<select [value]="state.settings().buttonTone" (change)="onButtonToneChange($event)">
+			@for (buttonTone of buttonTones; track buttonTone) {
+				<option [value]="buttonTone">{{ dictionary().options.buttonTone[buttonTone] }}</option>
+			}
+		</select>
+	</label>
+	<label class="field">
+		<span>{{ dictionary().fields.buttonShape }}</span>
+		<select [value]="state.settings().buttonShape" (change)="onButtonShapeChange($event)">
+			@for (buttonShape of buttonShapes; track buttonShape) {
+				<option [value]="buttonShape">{{ dictionary().options.buttonShape[buttonShape] }}</option>
+			}
+		</select>
+	</label>
+</section>

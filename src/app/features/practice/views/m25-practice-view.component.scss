@@ -1,0 +1,64 @@
+:host,
+.practice-view {
+	display: flex;
+	width: 100%;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.8rem;
+	min-height: 0;
+	text-align: center;
+}
+
+.mode-pill {
+	margin: 0;
+	padding: 0.35rem 0.8rem;
+	border-radius: 999px;
+	background: rgb(255 255 255 / 0.06);
+	color: var(--muted);
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+}
+
+.counter-value {
+	display: block;
+	margin: 0;
+	font-size: clamp(5.8rem, 26vmin, 12rem);
+	font-weight: 800;
+	line-height: 0.88;
+	letter-spacing: -0.08em;
+	font-variant-numeric: tabular-nums;
+}
+
+.detail-text,
+.status-message,
+.status-spacer {
+	margin: 0;
+}
+
+.detail-text {
+	color: var(--muted);
+	font-size: clamp(0.95rem, 2.6vw, 1.1rem);
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.status-message,
+.status-spacer {
+	min-height: 1.7rem;
+	font-size: clamp(1rem, 2.8vw, 1.2rem);
+	font-weight: 700;
+}
+
+.status-message {
+	color: var(--accent);
+}
+
+@media (min-width: 900px), (orientation: landscape) {
+	.counter-value {
+		font-size: clamp(5rem, 22vw, 11rem);
+	}
+}

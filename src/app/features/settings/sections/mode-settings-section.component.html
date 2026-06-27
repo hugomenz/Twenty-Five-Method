@@ -1,0 +1,21 @@
+<section class="sheet-section">
+	<h2>{{ dictionary().sections.mode }}</h2>
+	<div class="mode-switcher">
+		<button
+			type="button"
+			class="mode-switcher__button"
+			[class.mode-switcher__button--active]="state.currentMode() === 'm25'"
+			(click)="state.selectMode('m25')"
+		>
+			{{ dictionary().modes.m25 }}
+		</button>
+		<button
+			type="button"
+			class="mode-switcher__button"
+			[class.mode-switcher__button--active]="state.currentMode() === 'rhythms'"
+			(click)="state.selectMode('rhythms')"
+		>
+			{{ dictionary().modes.rhythms }}
+		</button>
+	</div>
+</section>

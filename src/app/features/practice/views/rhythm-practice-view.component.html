@@ -1,0 +1,32 @@
+@if (state.activeRhythmSession(); as session) {
+	@if (currentItem(); as item) {
+		<div class="practice-view">
+			<p class="mode-pill">{{ dictionary().modes.rhythms }}</p>
+			<p class="routine-name">{{ routineName() }}</p>
+			<p class="pattern-name">{{ patternName() }}</p>
+			<p class="pattern-symbols">{{ patternSymbols() }}</p>
+			<output class="counter-value counter-value--compact" aria-live="polite">
+				{{ item.count }} / {{ item.repetitions }}
+			</output>
+			<p class="detail-text">{{ rhythmPosition() }}</p>
+			@if (statusMessage()) {
+				<p class="status-message" aria-live="polite">{{ statusMessage() }}</p>
+			} @else {
+				<p class="status-spacer" aria-hidden="true"></p>
+			}
+			<button class="session-button" type="button" (click)="state.handleRhythmAction()">
+				{{ actionLabel() }}
+			</button>
+		</div>
+	}
+} @else {
+	<div class="practice-view">
+		<p class="mode-pill">{{ dictionary().modes.rhythms }}</p>
+		<p class="empty-title">{{ dictionary().status.noActivePractice }}</p>
+		<p class="detail-text detail-text--multiline">{{ dictionary().status.noActivePracticeHelp }}</p>
+		<p class="status-spacer" aria-hidden="true"></p>
+		<button class="session-button" type="button" (click)="state.openSettings()">
+			{{ dictionary().actions.openSettings }}
+		</button>
+	</div>
+}

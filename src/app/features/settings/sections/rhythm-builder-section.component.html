@@ -1,0 +1,57 @@
+<section class="sheet-section">
+	<h2>{{ dictionary().sections.builder }}</h2>
+	<label class="field">
+		<span>{{ dictionary().fields.name }}</span>
+		<input type="text" [value]="state.patternDraftName()" (input)="onPatternNameInput($event)" />
+	</label>
+	<div class="chip-list chip-list--builder">
+		@for (block of blockOptions(); track block.kind) {
+			<button class="chip chip--builder" type="button" (click)="state.addPatternBlock(block.kind)">
+				{{ block.label }} · {{ block.symbol }}
+			</button>
+		}
+	</div>
+	@if (state.patternDraftBlocks().length > 0) {
+		<p class="preview-text">{{ preview() }}</p>
+		<div class="stack-list stack-list--compact">
+			@for (block of state.patternDraftBlocks(); track block + '-' + $index) {
+				<div class="stack-card stack-card--compact">
+					<p class="stack-card__title">{{ labels.blockOption(block).label }} · {{ labels.blockOption(block).symbol }}</p>
+					<div class="stack-card__actions">
+						<button type="button" (click)="state.movePatternBlock($index, -1)" [attr.aria-label]="dictionary().aria.moveLeft">←</button>
+						<button type="button" (click)="state.movePatternBlock($index, 1)" [attr.aria-label]="dictionary().aria.moveRight">→</button>
+						<button type="button" (click)="state.removePatternBlock($index)" [attr.aria-label]="dictionary().aria.remove">✕</button>
+					</div>
+				</div>
+			}
+		</div>
+	} @else {
+		<p class="helper-text">{{ dictionary().patterns.builderHint }}</p>
+	}
+
+	<div class="action-row">
+		<button class="sheet-action" type="button" (click)="state.savePattern()" [disabled]="state.patternDraftBlocks().length === 0">
+			{{ dictionary().actions.saveRhythm }}
+		</button>
+		<button class="sheet-action sheet-action--muted" type="button" (click)="state.clearPatternDraft()">
+			{{ dictionary().actions.clear }}
+		</button>
+	</div>
+
+	@if (customPatterns().length > 0) {
+		<div class="stack-list">
+			@for (pattern of customPatterns(); track pattern.id) {
+				<div class="stack-card stack-card--saved">
+					<div>
+						<p class="stack-card__title">{{ pattern.name }}</p>
+						<p class="stack-card__meta">{{ pattern.symbols }}</p>
+					</div>
+					<div class="stack-card__actions">
+						<button type="button" (click)="state.loadPatternDraft(pattern.id)">{{ dictionary().actions.load }}</button>
+						<button type="button" (click)="state.deletePattern(pattern.id)">{{ dictionary().actions.delete }}</button>
+					</div>
+				</div>
+			}
+		</div>
+	}
+</section>

@@ -1,0 +1,65 @@
+<section class="sheet-section">
+	<h2>{{ dictionary().sections.routines }}</h2>
+	<label class="field">
+		<span>{{ dictionary().fields.name }}</span>
+		<input type="text" [value]="state.routineDraftName()" (input)="onDraftNameInput($event)" />
+	</label>
+	<div class="chip-list">
+		@for (pattern of availablePatterns(); track pattern.id) {
+			<button class="chip" type="button" (click)="state.addPatternToRoutine(pattern.id)">
+				{{ pattern.name }}
+			</button>
+		}
+	</div>
+
+	@if (routineDraftItems().length > 0) {
+		<div class="stack-list">
+			@for (item of routineDraftItems(); track item.patternId + '-' + $index) {
+				<div class="stack-card">
+					<div>
+						<p class="stack-card__title">{{ item.name }}</p>
+						<p class="stack-card__meta">{{ item.symbols }}</p>
+					</div>
+					<label class="stack-card__field">
+						<span>{{ dictionary().fields.repetitions }}</span>
+						<input type="number" min="1" [value]="item.repetitions" (input)="onRepetitionsInput($index, $event)" />
+					</label>
+					<div class="stack-card__actions">
+						<button type="button" (click)="state.moveRoutineItem($index, -1)" [attr.aria-label]="dictionary().aria.moveUp">↑</button>
+						<button type="button" (click)="state.moveRoutineItem($index, 1)" [attr.aria-label]="dictionary().aria.moveDown">↓</button>
+						<button type="button" (click)="state.removeRoutineItem($index)" [attr.aria-label]="dictionary().aria.remove">✕</button>
+					</div>
+				</div>
+			}
+		</div>
+	} @else {
+		<p class="helper-text">{{ dictionary().patterns.routineHint }}</p>
+	}
+
+	<div class="action-row">
+		<button class="sheet-action" type="button" (click)="state.saveRoutine()" [disabled]="state.routineDraftItems().length === 0">
+			{{ dictionary().actions.saveRoutine }}
+		</button>
+		<button class="sheet-action sheet-action--muted" type="button" (click)="state.clearRoutineDraft()">
+			{{ dictionary().actions.clear }}
+		</button>
+	</div>
+
+	@if (savedRoutines().length > 0) {
+		<div class="stack-list">
+			@for (routine of savedRoutines(); track routine.id) {
+				<div class="stack-card stack-card--saved">
+					<div>
+						<p class="stack-card__title">{{ routine.name }}</p>
+						<p class="stack-card__meta">{{ routine.rhythmCount }}</p>
+					</div>
+					<div class="stack-card__actions">
+						<button type="button" (click)="state.loadRoutineDraft(routine.id)">{{ dictionary().actions.load }}</button>
+						<button type="button" (click)="state.startSavedRoutine(routine.id)">{{ dictionary().actions.start }}</button>
+						<button type="button" (click)="state.deleteRoutine(routine.id)">{{ dictionary().actions.delete }}</button>
+					</div>
+				</div>
+			}
+		</div>
+	}
+</section>

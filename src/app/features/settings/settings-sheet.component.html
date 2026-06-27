@@ -1,0 +1,20 @@
+<dialog class="settings-sheet" open [attr.aria-label]="dictionary().app.settingsTitle">
+	<div class="sheet-header">
+		<p class="sheet-title">{{ dictionary().app.name }}</p>
+		<button
+			class="sheet-close"
+			type="button"
+			(click)="requestClose.emit()"
+			[attr.aria-label]="dictionary().aria.closeSettings"
+		>
+			✕
+		</button>
+	</div>
+
+	<m25-mode-settings-section />
+	<m25-appearance-settings-section />
+	<m25-m25-settings-section (requestReset)="requestReset.emit()" />
+	<m25-rhythm-settings-section (requestReset)="requestReset.emit()" />
+	<m25-routine-editor-section />
+	<m25-rhythm-builder-section />
+</dialog>

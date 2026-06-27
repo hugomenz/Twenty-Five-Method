@@ -1,0 +1,114 @@
+{
+	"app": {
+		"name": "M25",
+		"settingsTitle": "Einstellungen"
+	},
+	"aria": {
+		"openSettings": "Einstellungen öffnen",
+		"closeSettings": "Einstellungen schließen",
+		"minusButton": "Fehler markieren",
+		"plusButton": "Erfolgreiche Wiederholung markieren",
+		"moveUp": "Nach oben",
+		"moveDown": "Nach unten",
+		"moveLeft": "Nach links verschieben",
+		"moveRight": "Nach rechts verschieben",
+		"remove": "Entfernen"
+	},
+	"modes": {
+		"m25": "M25",
+		"rhythms": "Rhythmen"
+	},
+	"status": {
+		"passageCompleted": "Abschnitt abgeschlossen",
+		"rhythmCompleted": "Rhythmus abgeschlossen",
+		"practiceCompleted": "Übung abgeschlossen",
+		"practicePaused": "Übung pausiert",
+		"noActivePractice": "Keine aktive Übung",
+		"noActivePracticeHelp": "Öffne die Einstellungen, um eine Routine zu bauen, Muster zu speichern oder eine Übung zu starten."
+	},
+	"actions": {
+		"openSettings": "Einstellungen öffnen",
+		"pause": "Pausieren",
+		"resume": "Fortsetzen",
+		"nextRhythm": "Nächster Rhythmus",
+		"resetPractice": "Übung zurücksetzen",
+		"startCurrentRoutine": "Aktuelle Routine starten",
+		"saveRoutine": "Routine speichern",
+		"saveRhythm": "Rhythmus speichern",
+		"clear": "Leeren",
+		"load": "Laden",
+		"start": "Starten",
+		"delete": "Löschen"
+	},
+	"sections": {
+		"mode": "Modus",
+		"appearance": "Darstellung",
+		"m25": "M25",
+		"rhythms": "Rhythmen",
+		"routines": "Routinen",
+		"builder": "Baukasten"
+	},
+	"fields": {
+		"target": "Ziel",
+		"allowNegative": "Negative Werte erlauben",
+		"minusAction": "Aktion für −",
+		"language": "Sprache",
+		"theme": "Thema",
+		"buttonTone": "Button-Stil",
+		"buttonShape": "Button-Form",
+		"name": "Name",
+		"repetitions": "Wiederholungen"
+	},
+	"options": {
+		"errorBehavior": {
+			"decrement": "1 abziehen",
+			"reset": "Auf 0 setzen",
+			"ignore": "Nicht ändern"
+		},
+		"language": {
+			"en": "Englisch",
+			"es": "Spanisch",
+			"de": "Deutsch"
+		},
+		"theme": {
+			"dark": "Dunkel",
+			"light": "Hell"
+		},
+		"buttonTone": {
+			"soft": "Sanft",
+			"solid": "Voll",
+			"outline": "Kontur"
+		},
+		"buttonShape": {
+			"rounded": "Abgerundet",
+			"pill": "Pille",
+			"square": "Eckig"
+		}
+	},
+	"patterns": {
+		"blocks": {
+			"quarter": { "label": "Viertelnote", "symbol": "♩" },
+			"eighth": { "label": "Achtelnote", "symbol": "♪" },
+			"sixteenth": { "label": "Sechzehntelnote", "symbol": "♬" },
+			"triplet": { "label": "Triolen", "symbol": "♪3" }
+		},
+		"presets": {
+			"preset.eighthsThenSixteenths": "Achtel, dann Sechzehntel",
+			"preset.sixteenthsThenEighths": "Sechzehntel, dann Achtel",
+			"preset.twoEighthsTwoSixteenths": "Zwei Achtel, zwei Sechzehntel",
+			"preset.twoSixteenthsTwoEighths": "Zwei Sechzehntel, zwei Achtel",
+			"preset.quarterThenTriplet": "Viertel und Triole",
+			"preset.tripletThenQuarter": "Triole und Viertel"
+		},
+		"rhythmCount": "{count} Rhythmen",
+		"rhythmPosition": "Rhythmus {current} von {total}",
+		"targetValue": "Ziel: {target}",
+		"builderHint": "Füge Blöcke hinzu, um eine visuelle Übungshilfe zu bauen.",
+		"routineHint": "Füge Rhythmen hinzu und definiere ihre Wiederholungen.",
+		"untitledRoutine": "Unbenannte Routine",
+		"activeRoutine": "Aktive Routine"
+	},
+	"confirm": {
+		"resetPractice": "Aktuelle Übung zurücksetzen?"
+	}
+}

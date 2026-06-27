@@ -1,0 +1,10 @@
+<div class="practice-view">
+	<p class="mode-pill">{{ dictionary().modes.m25 }}</p>
+	<output class="counter-value" aria-live="polite">{{ state.m25Count() }}</output>
+	<p class="detail-text">{{ targetLabel() }}</p>
+	@if (state.m25Completed()) {
+		<p class="status-message" aria-live="polite">{{ dictionary().status.passageCompleted }}</p>
+	} @else {
+		<p class="status-spacer" aria-hidden="true"></p>
+	}
+</div>

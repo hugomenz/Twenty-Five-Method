@@ -1,0 +1,114 @@
+{
+	"app": {
+		"name": "M25",
+		"settingsTitle": "Settings"
+	},
+	"aria": {
+		"openSettings": "Open settings",
+		"closeSettings": "Close settings",
+		"minusButton": "Record mistake",
+		"plusButton": "Record successful repetition",
+		"moveUp": "Move up",
+		"moveDown": "Move down",
+		"moveLeft": "Move left",
+		"moveRight": "Move right",
+		"remove": "Remove"
+	},
+	"modes": {
+		"m25": "M25",
+		"rhythms": "Rhythms"
+	},
+	"status": {
+		"passageCompleted": "Passage completed",
+		"rhythmCompleted": "Rhythm completed",
+		"practiceCompleted": "Practice completed",
+		"practicePaused": "Practice paused",
+		"noActivePractice": "No active practice",
+		"noActivePracticeHelp": "Open settings to build a routine, save patterns, or start practice."
+	},
+	"actions": {
+		"openSettings": "Open settings",
+		"pause": "Pause",
+		"resume": "Resume",
+		"nextRhythm": "Next rhythm",
+		"resetPractice": "Reset practice",
+		"startCurrentRoutine": "Start current routine",
+		"saveRoutine": "Save routine",
+		"saveRhythm": "Save rhythm",
+		"clear": "Clear",
+		"load": "Load",
+		"start": "Start",
+		"delete": "Delete"
+	},
+	"sections": {
+		"mode": "Mode",
+		"appearance": "Appearance",
+		"m25": "M25",
+		"rhythms": "Rhythms",
+		"routines": "Routines",
+		"builder": "Builder"
+	},
+	"fields": {
+		"target": "Target",
+		"allowNegative": "Allow negative values",
+		"minusAction": "Minus action",
+		"language": "Language",
+		"theme": "Theme",
+		"buttonTone": "Button tone",
+		"buttonShape": "Button shape",
+		"name": "Name",
+		"repetitions": "Repetitions"
+	},
+	"options": {
+		"errorBehavior": {
+			"decrement": "Subtract 1",
+			"reset": "Reset to 0",
+			"ignore": "Do not change"
+		},
+		"language": {
+			"en": "English",
+			"es": "Spanish",
+			"de": "German"
+		},
+		"theme": {
+			"dark": "Dark",
+			"light": "Light"
+		},
+		"buttonTone": {
+			"soft": "Soft",
+			"solid": "Solid",
+			"outline": "Outline"
+		},
+		"buttonShape": {
+			"rounded": "Rounded",
+			"pill": "Pill",
+			"square": "Square"
+		}
+	},
+	"patterns": {
+		"blocks": {
+			"quarter": { "label": "Quarter note", "symbol": "♩" },
+			"eighth": { "label": "Eighth note", "symbol": "♪" },
+			"sixteenth": { "label": "Sixteenth note", "symbol": "♬" },
+			"triplet": { "label": "Triplet", "symbol": "♪3" }
+		},
+		"presets": {
+			"preset.eighthsThenSixteenths": "Eighths then sixteenths",
+			"preset.sixteenthsThenEighths": "Sixteenths then eighths",
+			"preset.twoEighthsTwoSixteenths": "Two eighths, two sixteenths",
+			"preset.twoSixteenthsTwoEighths": "Two sixteenths, two eighths",
+			"preset.quarterThenTriplet": "Quarter then triplet",
+			"preset.tripletThenQuarter": "Triplet then quarter"
+		},
+		"rhythmCount": "{count} rhythms",
+		"rhythmPosition": "Rhythm {current} of {total}",
+		"targetValue": "Target: {target}",
+		"builderHint": "Add blocks to create a visual guide.",
+		"routineHint": "Add rhythms and define repetitions.",
+		"untitledRoutine": "Untitled routine",
+		"activeRoutine": "Active routine"
+	},
+	"confirm": {
+		"resetPractice": "Reset the current practice?"
+	}
+}
