@@ -2,6 +2,7 @@ import {
 	afterNextRender,
 	ChangeDetectionStrategy,
 	Component,
+	computed,
 	ElementRef,
 	inject,
 	output,
@@ -28,6 +29,9 @@ export class SettingsSheetComponent {
 	protected readonly state = inject(M25StateService);
 	protected readonly labels = inject(M25LabelsService);
 	protected readonly dictionary = this.labels.dictionary;
+	protected readonly settingsContext = computed<'general' | 'm25' | 'rhythms'>(() => {
+		return this.state.currentScreen() === 'practice' ? this.state.currentMode() : 'general';
+	});
 	readonly requestClose = output<void>();
 	readonly requestReset = output<void>();
 

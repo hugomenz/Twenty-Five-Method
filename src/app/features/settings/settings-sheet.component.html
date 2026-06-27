@@ -19,9 +19,9 @@
 
 	<div class="sheet-body">
 		<m25-appearance-settings-section />
-		@if (state.currentMode() === 'm25') {
+		@if (settingsContext() === 'm25') {
 			<m25-m25-settings-section (requestReset)="requestReset.emit()" />
-		} @else {
+		} @else if (settingsContext() === 'rhythms') {
 			<m25-rhythm-settings-section (requestReset)="requestReset.emit()" />
 		}
 	</div>

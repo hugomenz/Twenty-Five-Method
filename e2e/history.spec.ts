@@ -2,10 +2,17 @@ import { expect, test } from '@playwright/test';
 import { gotoClean, readPracticeHistory } from './helpers';
 
 async function setTargetToOne(page: import('@playwright/test').Page): Promise<void> {
-	await page.getByRole('button', { name: 'Open settings' }).click();
-	const dialog = page.getByRole('dialog');
-	await dialog.getByLabel('Target').fill('1');
-	await dialog.getByRole('button', { name: 'Close settings' }).click();
+	await page.evaluate(() => {
+		const raw = window.localStorage.getItem('m25.state');
+		if (!raw) {
+			return;
+		}
+
+		const state = JSON.parse(raw) as { settings?: { target?: number } };
+		state.settings = { ...state.settings, target: 1 };
+		window.localStorage.setItem('m25.state', JSON.stringify(state));
+	});
+	await page.reload();
 }
 
 async function completeM25Session(page: import('@playwright/test').Page, title: string): Promise<void> {
