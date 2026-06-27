@@ -48,6 +48,17 @@
 		"keepPractising": "Keep practising",
 		"finishAndSave": "Finish and save"
 	},
+	"coaching": {
+		"negativeHeading": "You have been under zero for a while",
+		"negativeSubtitle": "It may help to lower the BPM or take a short rest.",
+		"negativeBpmHeading": "Lower BPM and restart",
+		"negativeBpmSubtitle": "A slower tempo can help you recover control before starting again from zero.",
+		"lowerBpmButton": "Lower BPM and start over",
+		"continueButton": "Continue",
+		"finishAndRestButton": "Finish and rest",
+		"restartWithBpmButton": "Restart with this BPM",
+		"suggestedBpm": "Suggested BPM"
+	},
 	"completion": {
 		"m25Heading": "Practice completed",
 		"rhythmHeading": "Rhythm completed",

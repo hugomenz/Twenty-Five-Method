@@ -8,6 +8,7 @@ import { HistoryDetailViewComponent } from './views/history-detail-view.componen
 import { HistoryListViewComponent } from './views/history-list-view.component';
 import { M25PracticeViewComponent } from './views/m25-practice-view.component';
 import { RhythmPracticeViewComponent } from './views/rhythm-practice-view.component';
+import { NegativeCoachingDialogComponent } from '../session/negative-coaching-dialog.component';
 import { SessionCancelDialogComponent } from '../session/session-cancel-dialog.component';
 import { SessionPauseOverlayComponent } from '../session/session-pause-overlay.component';
 import { SessionStartDialogComponent } from '../session/session-start-dialog.component';
@@ -24,6 +25,7 @@ import { SettingsSheetComponent } from '../settings/settings-sheet.component';
 		HistoryDetailViewComponent,
 		HistoryListViewComponent,
 		M25PracticeViewComponent,
+		NegativeCoachingDialogComponent,
 		RhythmPracticeViewComponent,
 		SessionCancelDialogComponent,
 		SessionPauseOverlayComponent,
@@ -47,6 +49,7 @@ export class PracticeShellComponent {
  	protected readonly hasCompletionOverlay = computed(() => this.state.completionOverlay() !== null);
 	protected readonly showStartDialog = computed(() => this.state.currentScreen() === 'practice' && this.state.activeSessionStatus() === 'ready');
 	protected readonly showPauseOverlay = computed(() => this.state.currentScreen() === 'practice' && this.state.activeSessionStatus() === 'paused');
+	protected readonly showNegativeCoachingDialog = computed(() => this.state.currentScreen() === 'practice' && this.state.negativeCoachingPromptOpen());
 	protected readonly showCancelDialog = computed(() => this.state.currentScreen() === 'practice' && this.state.cancelConfirmOpen());
 	protected readonly showPauseAction = computed(() => this.state.currentScreen() === 'practice' && this.state.activeSessionStatus() === 'running');
 	protected readonly showCancelAction = computed(() => this.state.currentScreen() === 'practice' && (this.state.activeSessionStatus() === 'ready' || this.state.activeSessionStatus() === 'running' || this.state.activeSessionStatus() === 'paused'));

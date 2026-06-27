@@ -242,6 +242,37 @@ describe('M25StateService', () => {
 		expect(service.negativeCoachingPromptOpen()).toBe(true);
 	});
 
+	it('should save the current session and start a new one with a lower bpm', () => {
+		const service = createService();
+
+		service.prepareSession('m25', 'Recovery Loop', 100);
+		service.startSession('Recovery Loop', 100);
+		service.decrement();
+		service.decrement();
+		const firstSessionId = service.activeSession()!.id;
+
+		vi.advanceTimersByTime(NEGATIVE_PROMPT_THRESHOLD_MS);
+		expect(service.negativeCoachingPromptOpen()).toBe(true);
+
+		service.openNegativeCoachingLowerBpmStep();
+		service.restartPracticeWithLowerBpm(84);
+
+		expect(service.practiceHistory()).toHaveLength(1);
+		expect(service.practiceHistory()[0]).toMatchObject({
+			id: firstSessionId,
+			status: 'cancelled',
+			bpm: 100,
+			finalValue: -2,
+			title: 'Recovery Loop',
+		});
+		expect(service.activeSession()?.id).not.toBe(firstSessionId);
+		expect(service.activeSession()?.status).toBe('running');
+		expect(service.activeSession()?.title).toBe('Recovery Loop');
+		expect(service.activeSession()?.bpm).toBe(84);
+		expect(service.m25Count()).toBe(0);
+		expect(service.negativeCoachingPromptOpen()).toBe(false);
+	});
+
 	it('should save a completed m25 session exactly once', () => {
 		const service = createService();
 

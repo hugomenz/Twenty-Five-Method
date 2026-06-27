@@ -50,6 +50,17 @@ export interface LabelDictionary {
 		keepPractising: string;
 		finishAndSave: string;
 	};
+	coaching: {
+		negativeHeading: string;
+		negativeSubtitle: string;
+		negativeBpmHeading: string;
+		negativeBpmSubtitle: string;
+		lowerBpmButton: string;
+		continueButton: string;
+		finishAndRestButton: string;
+		restartWithBpmButton: string;
+		suggestedBpm: string;
+	};
 	completion: {
 		m25Heading: string;
 		rhythmHeading: string;

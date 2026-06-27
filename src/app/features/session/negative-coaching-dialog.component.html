@@ -1,0 +1,32 @@
+<section class="session-overlay" role="dialog" aria-modal="true" [attr.aria-label]="title()" data-testid="negative-coaching-dialog">
+	<div class="session-overlay__backdrop"></div>
+	<div class="session-card">
+		<p class="session-card__kicker">{{ dictionary().app.name }}</p>
+		<h2 class="session-card__title">{{ title() }}</h2>
+
+		@if (showBpmStep()) {
+			<p class="session-card__copy">{{ dictionary().coaching.negativeBpmSubtitle }}</p>
+			@if (suggestedBpm() !== null) {
+				<p class="session-card__copy">{{ dictionary().coaching.suggestedBpm }}: {{ suggestedBpm() }}</p>
+			}
+			<label class="session-field">
+				<span>{{ dictionary().fields.practiceBpm }}</span>
+				<input type="number" min="1" [value]="bpm()" (input)="onBpmInput($event)" />
+				@if (bpmError()) {
+					<span class="session-field__error">{{ bpmError() }}</span>
+				}
+			</label>
+			<div class="session-actions session-actions--stacked">
+				<button class="session-button" type="button" (click)="restartWithBpm()">{{ dictionary().coaching.restartWithBpmButton }}</button>
+				<button class="session-button session-button--ghost" type="button" (click)="continuePractice()">{{ dictionary().coaching.continueButton }}</button>
+			</div>
+		} @else {
+			<p class="session-card__copy">{{ dictionary().coaching.negativeSubtitle }}</p>
+			<div class="session-actions session-actions--stacked">
+				<button class="session-button" type="button" (click)="openLowerBpmStep()">{{ dictionary().coaching.lowerBpmButton }}</button>
+				<button class="session-button session-button--ghost" type="button" (click)="continuePractice()">{{ dictionary().coaching.continueButton }}</button>
+				<button class="session-button session-button--ghost" type="button" (click)="finishAndRest()">{{ dictionary().coaching.finishAndRestButton }}</button>
+			</div>
+		}
+	</div>
+</section>

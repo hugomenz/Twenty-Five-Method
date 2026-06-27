@@ -79,6 +79,7 @@ export class M25StateService {
 	readonly activeSession = signal<PracticeSession | null>(this.initialState.activeSession);
 	readonly cancelConfirmOpen = signal(false);
 	readonly completionOverlay = signal<CompletionOverlayState | null>(null);
+	readonly negativeCoachingLowerBpmStepOpen = signal(false);
 	readonly negativeCoachingPromptOpen = signal(false);
 	readonly currentScreen = signal<AppScreen>(this.resolveInitialScreen(this.initialState));
 	readonly screenHistory = signal<AppScreen[]>([]);
@@ -110,6 +111,14 @@ export class M25StateService {
 	});
 	readonly allPatterns = computed(() => [...BUILT_IN_RHYTHM_PATTERNS, ...this.customPatterns()]);
 	readonly m25Completed = computed(() => this.m25Count() >= this.settings().target);
+	readonly suggestedLowerBpm = computed(() => {
+		const bpm = this.activeSession()?.bpm;
+		if (bpm === null || bpm === undefined) {
+			return null;
+		}
+
+		return Math.max(1, Math.round(bpm * 0.85));
+	});
 	readonly currentRhythmItem = computed(() => {
 		const session = this.activeRhythmSession();
 		if (!session) {
@@ -302,6 +311,52 @@ export class M25StateService {
 		}
 
 		this.cancelConfirmOpen.set(true);
+	}
+
+	continueAfterNegativeCoaching(): void {
+		this.negativeCoachingPromptOpen.set(false);
+		this.negativeCoachingLowerBpmStepOpen.set(false);
+	}
+
+	openNegativeCoachingLowerBpmStep(): void {
+		if (!this.negativeCoachingPromptOpen()) {
+			return;
+		}
+
+		this.negativeCoachingLowerBpmStepOpen.set(true);
+	}
+
+	finishAndRestAfterNegativeCoaching(): void {
+		this.negativeCoachingPromptOpen.set(false);
+		this.negativeCoachingLowerBpmStepOpen.set(false);
+		this.cancelAndSavePractice();
+	}
+
+	restartPracticeWithLowerBpm(bpm: number | null): void {
+		const activeSession = this.activeSession();
+		if (!activeSession) {
+			return;
+		}
+
+		const nextMode = activeSession.mode;
+		const nextTitle = activeSession.title;
+		this.finishSession('cancelled');
+
+		if (nextMode === 'm25') {
+			this.m25Count.set(0);
+		} else {
+			this.updateRhythmSession((session) => ({
+				...session,
+				currentIndex: 0,
+				status: 'paused',
+				items: session.items.map((item) => ({ ...item, count: 0 })),
+			}));
+		}
+
+		this.prepareSession(nextMode, nextTitle, bpm);
+		this.startSession(nextTitle, bpm);
+		this.negativeCoachingPromptOpen.set(false);
+		this.negativeCoachingLowerBpmStepOpen.set(false);
 	}
 
 	closeCancelConfirm(): void {
@@ -1322,6 +1377,7 @@ export class M25StateService {
 	private resetNegativeCoachingPeriod(): void {
 		this.clearNegativeCoachingTimer();
 		this.negativeCoachingPromptOpen.set(false);
+		this.negativeCoachingLowerBpmStepOpen.set(false);
 		this.coachingState.update((state) => ({
 			...state,
 			negativePeriodStartedAtActiveMs: null,
@@ -1369,6 +1425,7 @@ export class M25StateService {
 			...state,
 			negativeInterventionShown: true,
 		}));
+		this.negativeCoachingLowerBpmStepOpen.set(false);
 		this.negativeCoachingPromptOpen.set(true);
 	}
 
@@ -1397,6 +1454,7 @@ export class M25StateService {
 	private resetCoachingState(): void {
 		this.clearNegativeCoachingTimer();
 		this.negativeCoachingPromptOpen.set(false);
+		this.negativeCoachingLowerBpmStepOpen.set(false);
 		this.coachingState.set(createDefaultCoachingState());
 	}
 

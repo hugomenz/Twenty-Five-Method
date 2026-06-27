@@ -48,6 +48,17 @@
 		"keepPractising": "Weiterüben",
 		"finishAndSave": "Beenden und speichern"
 	},
+	"coaching": {
+		"negativeHeading": "Du bist schon länger unter null",
+		"negativeSubtitle": "Es kann helfen, das BPM zu senken oder kurz zu pausieren.",
+		"negativeBpmHeading": "BPM senken und neu starten",
+		"negativeBpmSubtitle": "Ein langsameres Tempo kann helfen, wieder Kontrolle zu gewinnen, bevor du bei null neu startest.",
+		"lowerBpmButton": "BPM senken und neu starten",
+		"continueButton": "Fortsetzen",
+		"finishAndRestButton": "Beenden und ausruhen",
+		"restartWithBpmButton": "Mit diesem BPM neu starten",
+		"suggestedBpm": "Vorgeschlagenes BPM"
+	},
 	"completion": {
 		"m25Heading": "Übung abgeschlossen",
 		"rhythmHeading": "Rhythmus abgeschlossen",

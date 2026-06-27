@@ -85,6 +85,10 @@
 		<m25-session-pause-overlay />
 	}
 
+	@if (showNegativeCoachingDialog()) {
+		<m25-negative-coaching-dialog />
+	}
+
 	@if (showCancelDialog()) {
 		<m25-session-cancel-dialog />
 	}
