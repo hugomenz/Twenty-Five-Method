@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { M25LabelsService } from '../../core/services/m25-labels.service';
 import { M25StateService } from '../../core/services/m25-state.service';
 import { HomeScreenComponent } from '../home/home-screen.component';
+import { FeedbackToastsComponent } from '../feedback/feedback-toasts.component';
 import { M25PracticeViewComponent } from './views/m25-practice-view.component';
 import { RhythmPracticeViewComponent } from './views/rhythm-practice-view.component';
 import { PatternStudioComponent } from '../studio/pattern-studio.component';
@@ -18,6 +19,7 @@ import { SettingsSheetComponent } from '../settings/settings-sheet.component';
 		PatternStudioComponent,
 		RoutineStudioComponent,
 		SettingsSheetComponent,
+		FeedbackToastsComponent,
 	],
 	templateUrl: './practice-shell.component.html',
 	styleUrl: './practice-shell.component.scss',

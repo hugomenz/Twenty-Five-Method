@@ -25,51 +25,49 @@
 		</button>
 	</div>
 
-	@if (isHomeScreen()) {
-		<m25-home-screen />
-	} @else if (state.currentScreen() === 'routine-studio') {
-		<m25-routine-studio />
-	} @else if (state.currentScreen() === 'pattern-studio') {
-		<m25-pattern-studio />
-	} @else {
-		<section class="practice-stage">
-			<button
-				class="control-button control-button--minus"
-				type="button"
-				(click)="state.decrement()"
-				[disabled]="!state.canUseMinus()"
-				[attr.aria-label]="dictionary().aria.minusButton"
-			>
-				−
-			</button>
+	<div class="screen-area" [class.screen-area--practice]="isPracticeScreen()">
+		@if (isHomeScreen()) {
+			<m25-home-screen />
+		} @else if (state.currentScreen() === 'routine-studio') {
+			<m25-routine-studio />
+		} @else if (state.currentScreen() === 'pattern-studio') {
+			<m25-pattern-studio />
+		} @else {
+			<section class="practice-stage">
+				<button
+					class="control-button control-button--minus"
+					type="button"
+					(click)="state.decrement()"
+					[disabled]="!state.canUseMinus()"
+					[attr.aria-label]="dictionary().aria.minusButton"
+				>
+					−
+				</button>
 
-			<section class="center-panel">
-				@if (isM25Mode()) {
-					<m25-practice-view />
-				} @else {
-					<m25-rhythm-practice-view />
-				}
+				<section class="center-panel">
+					@if (isM25Mode()) {
+						<m25-practice-view />
+					} @else {
+						<m25-rhythm-practice-view />
+					}
+				</section>
+
+				<button
+					class="control-button control-button--plus"
+					type="button"
+					(click)="state.increment()"
+					[disabled]="!state.canUsePlus()"
+					[attr.aria-label]="dictionary().aria.plusButton"
+				>
+					+
+				</button>
 			</section>
-
-			<button
-				class="control-button control-button--plus"
-				type="button"
-				(click)="state.increment()"
-				[disabled]="!state.canUsePlus()"
-				[attr.aria-label]="dictionary().aria.plusButton"
-			>
-				+
-			</button>
-		</section>
-	}
+		}
+	</div>
 
 	@if (state.settingsOpen()) {
-		<button
-			class="sheet-backdrop"
-			type="button"
-			(click)="state.closeSettings()"
-			[attr.aria-label]="dictionary().aria.closeSettings"
-		></button>
 		<m25-settings-sheet (requestClose)="state.closeSettings()" (requestReset)="confirmReset()" />
 	}
+
+	<m25-feedback-toasts />
 </main>

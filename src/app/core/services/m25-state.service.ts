@@ -31,10 +31,12 @@ import {
 	clampToZero,
 } from '../models/practice.models';
 import { M25StorageService } from './m25-storage.service';
+import { M25FeedbackService } from './m25-feedback.service';
 
 @Injectable({ providedIn: 'root' })
 export class M25StateService {
 	private readonly storage = inject(M25StorageService);
+	private readonly feedback = inject(M25FeedbackService);
 	private readonly initialState = this.loadPersistedState();
 
 	readonly currentScreen = signal<AppScreen>(this.resolveInitialScreen(this.initialState));
@@ -337,10 +339,12 @@ export class M25StateService {
 	resetCurrentPractice(): void {
 		if (this.currentMode() === 'm25') {
 			this.resetM25Practice();
+			this.feedback.notify('info', 'practiceReset');
 			return;
 		}
 
 		this.resetRhythmPractice();
+		this.feedback.notify('info', 'practiceReset');
 	}
 
 	resetM25Practice(): void {
@@ -390,6 +394,7 @@ export class M25StateService {
 		this.recentMode.set('rhythms');
 		this.navigateTo('practice', true);
 		this.closeSettings();
+		this.feedback.notify('success', 'practiceStarted');
 	}
 
 	loadRoutineDraft(routineId: string): void {
@@ -416,6 +421,7 @@ export class M25StateService {
 		})).filter((item) => this.findPattern(item.patternId));
 
 		if (!name || items.length === 0) {
+			this.feedback.notify('error', 'routineIncomplete');
 			return;
 		}
 
@@ -432,6 +438,7 @@ export class M25StateService {
 		});
 
 		this.editingRoutineId.set(routineId);
+		this.feedback.notify('success', 'routineSaved');
 	}
 
 	deleteRoutine(routineId: string): void {
@@ -439,6 +446,7 @@ export class M25StateService {
 		if (this.editingRoutineId() === routineId) {
 			this.clearRoutineDraft();
 		}
+		this.feedback.notify('info', 'routineDeleted');
 	}
 
 	clearRoutineDraft(): void {
@@ -498,6 +506,7 @@ export class M25StateService {
 		const blocks = [...this.patternDraftBlocks()];
 
 		if (!name || blocks.length === 0) {
+			this.feedback.notify('error', 'patternIncomplete');
 			return;
 		}
 
@@ -519,6 +528,7 @@ export class M25StateService {
 		});
 
 		this.editingPatternId.set(patternId);
+		this.feedback.notify('success', 'patternSaved');
 	}
 
 	loadPatternDraft(patternId: string): void {
@@ -545,6 +555,7 @@ export class M25StateService {
 		if (this.editingPatternId() === patternId) {
 			this.clearPatternDraft();
 		}
+		this.feedback.notify('info', 'patternDeleted');
 	}
 
 	clearPatternDraft(): void {

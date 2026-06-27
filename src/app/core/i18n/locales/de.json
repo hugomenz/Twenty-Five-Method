@@ -7,6 +7,7 @@
 		"openSettings": "Einstellungen öffnen",
 		"closeSettings": "Einstellungen schließen",
 		"goBack": "Zurück",
+		"dismiss": "Schließen",
 		"minusButton": "Fehler markieren",
 		"plusButton": "Erfolgreiche Wiederholung markieren",
 		"moveUp": "Nach oben",
@@ -129,5 +130,15 @@
 	},
 	"confirm": {
 		"resetPractice": "Aktuelle Übung zurücksetzen?"
+	},
+	"feedback": {
+		"routineSaved": "Routine gespeichert.",
+		"routineDeleted": "Routine gelöscht.",
+		"routineIncomplete": "Gib zuerst einen Namen und mindestens einen Rhythmus ein.",
+		"patternSaved": "Rhythmus gespeichert.",
+		"patternDeleted": "Rhythmus gelöscht.",
+		"patternIncomplete": "Gib zuerst einen Namen und mindestens einen Block ein.",
+		"practiceStarted": "Übung gestartet.",
+		"practiceReset": "Übung zurückgesetzt."
 	}
 }

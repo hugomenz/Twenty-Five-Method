@@ -1,33 +1,35 @@
 :host {
-	position: absolute;
-	right: calc(env(safe-area-inset-right) + 0.75rem);
-	bottom: calc(env(safe-area-inset-bottom) + 0.75rem);
-	left: calc(env(safe-area-inset-left) + 0.75rem);
-	z-index: 4;
-	display: block;
+	display: contents;
 }
 
 .settings-sheet {
-	width: 100%;
-	max-height: min(82dvh, 48rem);
+	width: min(34rem, calc(100vw - 1.5rem));
+	max-width: calc(100vw - 1.5rem);
+	max-height: min(86dvh, 48rem);
+	margin: auto;
+	padding: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 1rem;
-	overflow: auto;
-	padding: 1rem;
 	border: 1px solid var(--border);
-	border-radius: 1.6rem;
-	background: rgb(16 22 30 / 0.96);
-	box-shadow: 0 1.3rem 3rem rgb(0 0 0 / 0.42);
-	backdrop-filter: blur(16px);
+	border-radius: 1.4rem;
+	background: var(--surface);
 	color: var(--text);
+	box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.5);
+	overflow: hidden;
+}
+
+.settings-sheet::backdrop {
+	background: rgb(5 8 12 / 0.62);
 }
 
 .sheet-header {
+	flex: none;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 1rem;
+	padding: 0.9rem 1rem;
+	border-bottom: 1px solid var(--border);
 }
 
 .sheet-title {
@@ -62,8 +64,20 @@
 }
 
 @media (min-width: 900px), (orientation: landscape) {
-	:host {
-		left: auto;
-		width: min(29rem, calc(100vw - 1.5rem - env(safe-area-inset-left) - env(safe-area-inset-right)));
+	.settings-sheet {
+		width: min(30rem, calc(100vw - 1.5rem));
 	}
-	}
+}
+
+.sheet-body {
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 1rem;
+	padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	-webkit-overflow-scrolling: touch;
+}

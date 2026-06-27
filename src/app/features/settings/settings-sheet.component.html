@@ -1,20 +1,28 @@
-<dialog class="settings-sheet" open [attr.aria-label]="dictionary().app.settingsTitle">
+<dialog
+	#dialogEl
+	class="settings-sheet"
+	[attr.aria-label]="dictionary().app.settingsTitle"
+	(close)="requestClose.emit()"
+	(click)="onDialogClick($event)"
+>
 	<div class="sheet-header">
-		<p class="sheet-title">{{ dictionary().app.name }}</p>
+		<p class="sheet-title">{{ dictionary().app.settingsTitle }}</p>
 		<button
 			class="sheet-close"
 			type="button"
-			(click)="requestClose.emit()"
+			(click)="close()"
 			[attr.aria-label]="dictionary().aria.closeSettings"
 		>
 			✕
 		</button>
 	</div>
 
-	<m25-appearance-settings-section />
-	@if (state.currentMode() === 'm25') {
-		<m25-m25-settings-section (requestReset)="requestReset.emit()" />
-	} @else {
-		<m25-rhythm-settings-section (requestReset)="requestReset.emit()" />
-	}
+	<div class="sheet-body">
+		<m25-appearance-settings-section />
+		@if (state.currentMode() === 'm25') {
+			<m25-m25-settings-section (requestReset)="requestReset.emit()" />
+		} @else {
+			<m25-rhythm-settings-section (requestReset)="requestReset.emit()" />
+		}
+	</div>
 </dialog>

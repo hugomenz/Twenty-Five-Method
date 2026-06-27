@@ -1,4 +1,12 @@
-:host,
+:host {
+	display: block;
+	height: 100%;
+	min-height: 0;
+	min-width: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+}
+
 .home-screen {
 	display: flex;
 	width: 100%;
@@ -6,6 +14,7 @@
 	flex-direction: column;
 	gap: 1rem;
 	margin: 0 auto;
+	padding-bottom: 0.5rem;
 }
 
 .hero-panel,

@@ -7,6 +7,7 @@
 		"openSettings": "Open settings",
 		"closeSettings": "Close settings",
 		"goBack": "Go back",
+		"dismiss": "Dismiss",
 		"minusButton": "Record mistake",
 		"plusButton": "Record successful repetition",
 		"moveUp": "Move up",
@@ -129,5 +130,15 @@
 	},
 	"confirm": {
 		"resetPractice": "Reset the current practice?"
+	},
+	"feedback": {
+		"routineSaved": "Routine saved.",
+		"routineDeleted": "Routine deleted.",
+		"routineIncomplete": "Add a name and at least one rhythm first.",
+		"patternSaved": "Rhythm saved.",
+		"patternDeleted": "Rhythm deleted.",
+		"patternIncomplete": "Add a name and at least one block first.",
+		"practiceStarted": "Practice started.",
+		"practiceReset": "Practice reset."
 	}
 }

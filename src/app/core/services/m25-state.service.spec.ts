@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { M25StateService } from './m25-state.service';
+import { M25FeedbackService } from './m25-feedback.service';
 
 describe('M25StateService', () => {
 	function flushEffects(): void {
@@ -107,6 +108,29 @@ describe('M25StateService', () => {
 		expect(service.customPatterns()).toHaveLength(1);
 		expect(service.routines()).toHaveLength(1);
 		expect(service.routines()[0]?.items[0]?.patternId).toBe(customPatternId);
+	});
+
+	it('should report feedback after saving, failing validation, and deleting', () => {
+		const service = createService();
+		const feedback = TestBed.inject(M25FeedbackService);
+
+		// Saving an empty routine fails validation and reports an error.
+		service.saveRoutine();
+		expect(feedback.messages().at(-1)).toMatchObject({ kind: 'error', key: 'routineIncomplete' });
+
+		service.setPatternDraftName('Custom');
+		service.addPatternBlock('eighth');
+		service.savePattern();
+		expect(feedback.messages().at(-1)).toMatchObject({ kind: 'success', key: 'patternSaved' });
+
+		const patternId = service.customPatterns()[0]!.id;
+		service.setRoutineDraftName('Routine');
+		service.addPatternToRoutine(patternId);
+		service.saveRoutine();
+		expect(feedback.messages().at(-1)).toMatchObject({ kind: 'success', key: 'routineSaved' });
+
+		service.deletePattern(patternId);
+		expect(feedback.messages().at(-1)).toMatchObject({ kind: 'info', key: 'patternDeleted' });
 	});
 
 	it('should run a rhythm routine, advance to the next rhythm, and persist the active session', () => {

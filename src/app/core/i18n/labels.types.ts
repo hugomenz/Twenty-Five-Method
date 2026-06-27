@@ -9,6 +9,7 @@ export interface LabelDictionary {
 		openSettings: string;
 		closeSettings: string;
 		goBack: string;
+		dismiss: string;
 		minusButton: string;
 		plusButton: string;
 		moveUp: string;
@@ -100,5 +101,15 @@ export interface LabelDictionary {
 	};
 	confirm: {
 		resetPractice: string;
+	};
+	feedback: {
+		routineSaved: string;
+		routineDeleted: string;
+		routineIncomplete: string;
+		patternSaved: string;
+		patternDeleted: string;
+		patternIncomplete: string;
+		practiceStarted: string;
+		practiceReset: string;
 	};
 }
