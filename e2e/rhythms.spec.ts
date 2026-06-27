@@ -58,6 +58,7 @@ test.describe('Rhythm building and routines', () => {
 		await expect(page.getByText('Routine saved.')).toBeVisible();
 
 		await page.getByRole('button', { name: 'Start current routine' }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 		await expect(page.getByText('Practice started.')).toBeVisible();
 
 		const rhythmCount = page.getByTestId('rhythm-count');
@@ -81,6 +82,7 @@ test.describe('Rhythm building and routines', () => {
 		await page.getByLabel('Name').fill('Persisted');
 		await page.getByRole('button', { name: 'Eighths then sixteenths' }).click();
 		await page.getByRole('button', { name: 'Start current routine' }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 		await expect(page.getByTestId('rhythm-count')).toBeVisible();
 
 		await page.reload();

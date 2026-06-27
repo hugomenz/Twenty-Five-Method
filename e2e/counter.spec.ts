@@ -5,6 +5,7 @@ test.describe('M25 counter', () => {
 	test.beforeEach(async ({ page }) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 		await expect(page.getByTestId('m25-count')).toBeVisible();
 	});
 

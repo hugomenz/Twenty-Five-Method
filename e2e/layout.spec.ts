@@ -10,6 +10,7 @@ test.describe('Layout, heights, and overflow', () => {
 	test('M25 practice screen has no global scroll', async ({ page }, testInfo) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 		await expect(page.getByTestId('m25-count')).toBeVisible();
 		await expectNoGlobalScroll(page, testInfo);
 	});
@@ -46,6 +47,7 @@ test.describe('Layout, heights, and overflow', () => {
 	test('settings dialog fits the viewport and scrolls internally', async ({ page }, testInfo) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 		await page.getByRole('button', { name: 'Open settings' }).click();
 
 		const dialog = page.getByRole('dialog');
@@ -65,6 +67,7 @@ test.describe('Layout, heights, and overflow', () => {
 		await page.getByLabel('Name').fill('Back flow');
 		await page.getByRole('button', { name: 'Eighths then sixteenths' }).click();
 		await page.getByRole('button', { name: 'Start current routine' }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 
 		await expect(page.getByTestId('rhythm-count')).toBeVisible();
 		await page.getByRole('button', { name: 'Go back' }).click();
@@ -79,8 +82,12 @@ test.describe('Layout, heights, and overflow', () => {
 		await page.getByLabel('Name').fill('Reload back flow');
 		await page.getByRole('button', { name: 'Eighths then sixteenths' }).click();
 		await page.getByRole('button', { name: 'Start current routine' }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 
 		await expect(page.getByTestId('rhythm-count')).toBeVisible();
+		await expect.poll(async () => {
+			return page.evaluate(() => JSON.parse(window.localStorage.getItem('m25.state') ?? '{}')?.activeSession?.status ?? null);
+		}).toBe('running');
 		await page.reload();
 		await expect(page.getByTestId('rhythm-count')).toBeVisible();
 
@@ -93,6 +100,7 @@ test.describe('Layout, heights, and overflow', () => {
 	test('back button returns to the main view from direct M25 practice', async ({ page }, testInfo) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 		await expect(page.getByTestId('m25-count')).toBeVisible();
 
 		await page.getByRole('button', { name: 'Go back' }).click();

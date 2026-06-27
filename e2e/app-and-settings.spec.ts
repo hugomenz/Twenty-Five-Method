@@ -18,6 +18,7 @@ test.describe('App shell and settings', () => {
 		await gotoClean(page);
 
 		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 		await expect(page.getByTestId('m25-count')).toBeVisible();
 
 		await page.getByRole('button', { name: 'Go back' }).click();
@@ -28,6 +29,7 @@ test.describe('App shell and settings', () => {
 	test('opens settings with visible content and closes via button and Escape', async ({ page }) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 
 		const settingsButton = page.getByRole('button', { name: 'Open settings' });
 		await settingsButton.click();
@@ -52,6 +54,7 @@ test.describe('App shell and settings', () => {
 	test('changes the target and persists it across reload', async ({ page }) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 		await page.getByRole('button', { name: 'Open settings' }).click();
 
 		const dialog = page.getByRole('dialog');
@@ -68,6 +71,7 @@ test.describe('App shell and settings', () => {
 	test('toggles negative values and keeps M25 from going below zero when disabled', async ({ page }) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: /^M25$/ }).click();
+		await page.getByTestId('session-start-dialog').getByRole('button', { name: 'Start' }).click();
 		await page.getByRole('button', { name: 'Open settings' }).click();
 
 		const dialog = page.getByRole('dialog');

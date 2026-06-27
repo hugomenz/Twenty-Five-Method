@@ -13,6 +13,11 @@ describe('M25StateService', () => {
 		return TestBed.inject(M25StateService);
 	}
 
+	function startM25Session(service: M25StateService): void {
+		service.prepareSession('m25', 'Pattern', 84);
+		service.startSession('Pattern', 84);
+	}
+
 	beforeEach(() => {
 		localStorage.clear();
 		TestBed.resetTestingModule();
@@ -67,6 +72,7 @@ describe('M25StateService', () => {
 
 	it('should allow negative values in m25 and stop at zero when negatives are disabled', () => {
 		const service = createService();
+		startM25Session(service);
 
 		service.decrement();
 		service.decrement();
@@ -81,6 +87,7 @@ describe('M25StateService', () => {
 
 	it('should use a configurable target in m25 and persist appearance options', () => {
 		const service = createService();
+		startM25Session(service);
 
 		service.setTarget(3);
 		service.setLanguage('de');
@@ -154,6 +161,7 @@ describe('M25StateService', () => {
 
 	it('should open the m25 completion overlay once and allow repeating', () => {
 		const service = createService();
+		startM25Session(service);
 
 		service.setTarget(2);
 		service.increment();
@@ -224,6 +232,7 @@ describe('M25StateService', () => {
 		service.setRoutineItemRepetitions(0, 2);
 		service.setRoutineItemRepetitions(1, 3);
 		service.startRhythmPracticeFromDraft();
+		service.startSession('Passage Routine', 92);
 
 		expect(service.activeRhythmSession()?.items).toHaveLength(2);
 		expect(service.rhythmActionKind()).toBe('pause');
@@ -254,6 +263,7 @@ describe('M25StateService', () => {
 		service.addPatternToRoutine('preset-eighths-sixteenths');
 		service.setRoutineItemRepetitions(0, 1);
 		service.startRhythmPracticeFromDraft();
+		service.startSession('Final Routine', 76);
 
 		service.increment();
 
@@ -269,6 +279,7 @@ describe('M25StateService', () => {
 
 	it('should reset m25 practice and rhythm practice independently', () => {
 		const service = createService();
+		startM25Session(service);
 
 		service.increment();
 		service.increment();
@@ -279,6 +290,7 @@ describe('M25StateService', () => {
 		service.setRoutineDraftName('Routine');
 		service.addPatternToRoutine('preset-eighths-sixteenths');
 		service.startRhythmPracticeFromDraft();
+		service.startSession('Routine', 72);
 		expect(service.activeRhythmSession()).not.toBeNull();
 
 		service.resetRhythmPractice();
