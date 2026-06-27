@@ -60,6 +60,19 @@ export class CompletionOverlayComponent {
 
 		return this.labels.rhythmPosition(overlay.currentIndex + 1, overlay.totalItems);
 	});
+	protected readonly completionSubtitle = computed(() => {
+		const overlay = this.overlay();
+		if (!overlay || overlay.kind === 'm25') {
+			return '';
+		}
+
+		const currentItem = this.state.currentRhythmItem();
+		if (currentItem) {
+			return this.labels.patternName(currentItem);
+		}
+
+		return overlay.rhythmName;
+	});
 	protected readonly exerciseName = computed(() => {
 		const session = this.activeSession();
 		if (!session || session.mode === 'm25') {

@@ -8,39 +8,45 @@
 				}
 			</div>
 
-			<p class="completion-kicker">{{ dictionary().completion.celebration }}</p>
-			<h2 class="completion-title">{{ heading() }}</h2>
-			@if (completed.kind !== 'm25') {
-				<p class="completion-subtitle">{{ completed.rhythmName }}</p>
-				<p class="completion-meta">{{ rhythmPosition() }}</p>
-			}
-			<p class="completion-count-label">{{ countLabel() }}</p>
-			<p class="completion-count">{{ countText() }}</p>
-			@if (showSummary()) {
-				<dl class="completion-summary">
-					@for (entry of summaryRows(); track entry.label) {
-						<div class="completion-summary__row">
-							<dt>{{ entry.label }}</dt>
-							<dd>{{ entry.value }}</dd>
-						</div>
+			<div class="completion-layout">
+				<div class="completion-summary-panel">
+					<p class="completion-kicker">{{ dictionary().completion.celebration }}</p>
+					<h2 class="completion-title">{{ heading() }}</h2>
+					@if (completed.kind !== 'm25') {
+						<p class="completion-subtitle">{{ completionSubtitle() }}</p>
+						<p class="completion-meta">{{ rhythmPosition() }}</p>
 					}
-				</dl>
-			}
+					<p class="completion-count-label">{{ countLabel() }}</p>
+					<p class="completion-count">{{ countText() }}</p>
+					@if (showSummary()) {
+						<dl class="completion-summary">
+							@for (entry of summaryRows(); track entry.label) {
+								<div class="completion-summary__row">
+									<dt>{{ entry.label }}</dt>
+									<dd>{{ entry.value }}</dd>
+								</div>
+							}
+						</dl>
+					}
+				</div>
 
-			<div class="completion-actions">
-				@if (completed.kind === 'm25') {
-					<button class="completion-action" type="button" (click)="repeat()">{{ dictionary().actions.repeat }}</button>
-					<button class="completion-action completion-action--secondary" type="button" (click)="newPractice()">{{ dictionary().actions.newPractice }}</button>
-					<button class="completion-action completion-action--ghost" type="button" (click)="finish()">{{ dictionary().actions.finish }}</button>
-				} @else if (completed.kind === 'rhythm-intermediate') {
-					<button class="completion-action" type="button" (click)="nextRhythm()">{{ dictionary().actions.nextRhythm }}</button>
-					<button class="completion-action completion-action--secondary" type="button" (click)="repeatRhythm()">{{ dictionary().actions.repeatRhythm }}</button>
-					<button class="completion-action completion-action--ghost" type="button" (click)="finish()">{{ dictionary().actions.finish }}</button>
-				} @else {
-					<button class="completion-action" type="button" (click)="repeatRhythm()">{{ dictionary().actions.repeatRhythm }}</button>
-					<button class="completion-action completion-action--secondary" type="button" (click)="repeatRoutine()">{{ dictionary().actions.repeatRoutine }}</button>
-					<button class="completion-action completion-action--ghost" type="button" (click)="finish()">{{ dictionary().actions.finish }}</button>
-				}
+				<div class="completion-actions-panel">
+					<div class="completion-actions">
+						@if (completed.kind === 'm25') {
+							<button class="completion-action" type="button" (click)="repeat()">{{ dictionary().actions.repeat }}</button>
+							<button class="completion-action completion-action--secondary" type="button" (click)="newPractice()">{{ dictionary().actions.newPractice }}</button>
+							<button class="completion-action completion-action--ghost" type="button" (click)="finish()">{{ dictionary().actions.finish }}</button>
+						} @else if (completed.kind === 'rhythm-intermediate') {
+							<button class="completion-action" type="button" (click)="nextRhythm()">{{ dictionary().actions.nextRhythm }}</button>
+							<button class="completion-action completion-action--secondary" type="button" (click)="repeatRhythm()">{{ dictionary().actions.repeatRhythm }}</button>
+							<button class="completion-action completion-action--ghost" type="button" (click)="finish()">{{ dictionary().actions.finish }}</button>
+						} @else {
+							<button class="completion-action" type="button" (click)="repeatRhythm()">{{ dictionary().actions.repeatRhythm }}</button>
+							<button class="completion-action completion-action--secondary" type="button" (click)="repeatRoutine()">{{ dictionary().actions.repeatRoutine }}</button>
+							<button class="completion-action completion-action--ghost" type="button" (click)="finish()">{{ dictionary().actions.finish }}</button>
+						}
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
