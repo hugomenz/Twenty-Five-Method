@@ -1,12 +1,11 @@
 <section class="sheet-section">
-	<h2>{{ dictionary().sections.routines }}</h2>
 	<label class="field">
 		<span>{{ dictionary().fields.name }}</span>
 		<input type="text" [value]="state.routineDraftName()" (input)="onDraftNameInput($event)" />
 	</label>
-	<div class="chip-list">
+	<div class="chip-list chip-list--compact">
 		@for (pattern of availablePatterns(); track pattern.id) {
-			<button class="chip" type="button" (click)="state.addPatternToRoutine(pattern.id)">
+			<button class="chip chip--compact" type="button" (click)="state.addPatternToRoutine(pattern.id)">
 				{{ pattern.name }}
 			</button>
 		}
@@ -15,7 +14,7 @@
 	@if (routineDraftItems().length > 0) {
 		<div class="stack-list">
 			@for (item of routineDraftItems(); track item.patternId + '-' + $index) {
-				<div class="stack-card">
+				<div class="stack-card stack-card--routine">
 					<div class="stack-card__body">
 						<p class="stack-card__title">{{ item.name }}</p>
 						@defer (on viewport) {
@@ -28,14 +27,16 @@
 							<div class="card-notation notation-skeleton" aria-hidden="true"></div>
 						}
 					</div>
-					<label class="stack-card__field">
-						<span>{{ dictionary().fields.repetitions }}</span>
-						<input type="number" min="1" [value]="item.repetitions" (input)="onRepetitionsInput($index, $event)" />
-					</label>
-					<div class="stack-card__actions">
-						<button type="button" (click)="state.moveRoutineItem($index, -1)" [attr.aria-label]="dictionary().aria.moveUp">↑</button>
-						<button type="button" (click)="state.moveRoutineItem($index, 1)" [attr.aria-label]="dictionary().aria.moveDown">↓</button>
-						<button type="button" (click)="state.removeRoutineItem($index)" [attr.aria-label]="dictionary().aria.remove">✕</button>
+					<div class="stack-card__footer">
+						<label class="stack-card__field">
+							<span>{{ dictionary().fields.repetitions }}</span>
+							<input type="number" min="1" [value]="item.repetitions" (input)="onRepetitionsInput($index, $event)" />
+						</label>
+						<div class="stack-card__actions">
+							<button type="button" (click)="state.moveRoutineItem($index, -1)" [attr.aria-label]="dictionary().aria.moveUp">↑</button>
+							<button type="button" (click)="state.moveRoutineItem($index, 1)" [attr.aria-label]="dictionary().aria.moveDown">↓</button>
+							<button type="button" (click)="state.removeRoutineItem($index)" [attr.aria-label]="dictionary().aria.remove">✕</button>
+						</div>
 					</div>
 				</div>
 			}

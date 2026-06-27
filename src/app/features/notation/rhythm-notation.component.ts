@@ -46,6 +46,7 @@ export class RhythmNotationComponent {
 	private resizeObserver: ResizeObserver | null = null;
 	private frameId: number | null = null;
 	private lastWidth = -1;
+	private lastHeight = -1;
 
 	constructor() {
 		effect(() => {
@@ -66,10 +67,12 @@ export class RhythmNotationComponent {
 			const host = this.hostRef().nativeElement;
 			this.resizeObserver = new ResizeObserver((entries) => {
 				const width = entries[0]?.contentRect.width ?? host.clientWidth;
-				if (Math.abs(width - this.lastWidth) < 1) {
+				const height = entries[0]?.contentRect.height ?? host.clientHeight;
+				if (Math.abs(width - this.lastWidth) < 1 && Math.abs(height - this.lastHeight) < 1) {
 					return;
 				}
 				this.lastWidth = width;
+				this.lastHeight = height;
 				this.scheduleRender();
 			});
 			this.resizeObserver.observe(host);

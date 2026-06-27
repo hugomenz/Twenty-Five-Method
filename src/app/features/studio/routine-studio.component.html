@@ -1,8 +1,6 @@
 <section class="studio-screen">
 	<header class="studio-head">
-		<p class="studio-kicker">{{ dictionary().sections.routines }}</p>
 		<h1 class="studio-title">{{ title() }}</h1>
-		<p class="studio-copy">{{ description() }}</p>
 		<button class="studio-launch" type="button" (click)="state.startRhythmPracticeFromDraft()" [disabled]="state.routineDraftItems().length === 0">
 			{{ dictionary().actions.startCurrentRoutine }}
 		</button>

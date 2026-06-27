@@ -91,8 +91,17 @@
 	gap: 0.6rem;
 }
 
+.chip-list--compact {
+	gap: 0.45rem;
+}
+
 .chip {
 	text-align: left;
+}
+
+.chip--compact {
+	padding: 0.62rem 0.78rem;
+	font-size: 0.88rem;
 }
 
 .chip--builder {
@@ -156,6 +165,14 @@
 	gap: 0.5rem;
 }
 
+.stack-card__footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+
 .stack-card__body {
 	display: flex;
 	flex-direction: column;
@@ -174,8 +191,8 @@
 .card-notation {
 	display: block;
 	width: 100%;
-	max-width: 16rem;
-	height: 3.4rem;
+	max-width: none;
+	height: clamp(5.25rem, 16dvh, 7.5rem);
 	min-width: 0;
 	color: var(--text);
 }
@@ -226,6 +243,11 @@
 	.stack-card {
 		grid-template-columns: minmax(0, 1fr) auto auto;
 		align-items: center;
+	}
+
+	.stack-card--routine {
+		grid-template-columns: minmax(0, 1fr);
+		align-items: stretch;
 	}
 
 	.stack-card--saved,

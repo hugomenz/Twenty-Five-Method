@@ -15,5 +15,4 @@ export class RoutineStudioComponent {
 	protected readonly labels = inject(M25LabelsService);
 	protected readonly dictionary = this.labels.dictionary;
 	protected readonly title = computed(() => this.dictionary().studio.routineTitle);
-	protected readonly description = computed(() => this.dictionary().studio.routineDescription);
 }
