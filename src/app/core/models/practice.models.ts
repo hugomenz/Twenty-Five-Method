@@ -3,6 +3,7 @@ export type AppScreen = 'home' | 'practice' | 'routine-studio' | 'pattern-studio
 export type ErrorBehavior = 'decrement' | 'reset' | 'ignore';
 export type BlockKind = 'quarter' | 'eighth' | 'sixteenth' | 'triplet';
 export type RhythmSessionStatus = 'running' | 'paused' | 'complete';
+export type PracticeSessionStatus = 'ready' | 'running' | 'paused' | 'completed' | 'cancelled';
 export type CompletionKind = 'm25' | 'rhythm-intermediate' | 'rhythm-final';
 export type LanguageCode = 'en' | 'es' | 'de';
 export type ThemeMode = 'dark' | 'light';
@@ -14,10 +15,28 @@ export interface SettingsState {
 	allowNegative: boolean;
 	m25ErrorBehavior: ErrorBehavior;
 	rhythmErrorBehavior: ErrorBehavior;
+	askTitleBeforeStart: boolean;
+	askBpmBeforeStart: boolean;
+	defaultPracticeTitle: string;
+	defaultBpm: number | null;
 	language: LanguageCode;
 	theme: ThemeMode;
 	buttonTone: ButtonTone;
 	buttonShape: ButtonShape;
+}
+
+export interface PracticeSession {
+	id: string;
+	mode: AppMode;
+	status: PracticeSessionStatus;
+	title: string;
+	bpm: number | null;
+	startedAtMs: number | null;
+	lastResumedAtMs: number | null;
+	pausedAtMs: number | null;
+	finishedAtMs: number | null;
+	activeElapsedMs: number;
+	pausedElapsedMs: number;
 }
 
 export interface RhythmPattern {
@@ -69,6 +88,7 @@ export interface CompletionOverlayState {
 export interface PersistedState {
 	settings: SettingsState;
 	recentMode: AppMode;
+	activeSession: PracticeSession | null;
 	m25Count: number;
 	activeRhythmSession: RhythmSession | null;
 	routines: Routine[];
@@ -107,17 +127,26 @@ export function createDefaultState(): PersistedState {
 			allowNegative: true,
 			m25ErrorBehavior: 'decrement',
 			rhythmErrorBehavior: 'decrement',
+			askTitleBeforeStart: true,
+			askBpmBeforeStart: true,
+			defaultPracticeTitle: '',
+			defaultBpm: null,
 			language: 'en',
 			theme: 'dark',
 			buttonTone: 'soft',
 			buttonShape: 'rounded',
 		},
 		recentMode: 'm25',
+		activeSession: null,
 		m25Count: 0,
 		activeRhythmSession: null,
 		routines: [],
 		customPatterns: [],
 	};
+}
+
+export function isPracticeSessionStatus(value: string): value is PracticeSessionStatus {
+	return ['ready', 'running', 'paused', 'completed', 'cancelled'].includes(value);
 }
 
 export function createId(prefix: string): string {

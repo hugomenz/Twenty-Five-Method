@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { vi } from 'vitest';
 import { M25StateService } from './m25-state.service';
 import { M25FeedbackService } from './m25-feedback.service';
 
@@ -15,11 +16,20 @@ describe('M25StateService', () => {
 	beforeEach(() => {
 		localStorage.clear();
 		TestBed.resetTestingModule();
+		vi.useFakeTimers();
+		vi.setSystemTime(new Date('2026-06-27T12:00:00Z'));
+	});
+
+	afterEach(() => {
+		vi.useRealTimers();
 	});
 
 	it('should start with english defaults and no active practice', () => {
 		const service = createService();
 
+		expect(service.settings().askTitleBeforeStart).toBe(true);
+		expect(service.settings().askBpmBeforeStart).toBe(true);
+		expect(service.activeSession()).toBeNull();
 		expect(service.settings().language).toBe('en');
 		expect(service.settings().theme).toBe('dark');
 		expect(service.settings().buttonTone).toBe('soft');
@@ -89,6 +99,57 @@ describe('M25StateService', () => {
 		expect(snapshot.settings.theme).toBe('light');
 		expect(snapshot.settings.buttonTone).toBe('solid');
 		expect(snapshot.settings.buttonShape).toBe('square');
+	});
+
+	it('should prepare a session without starting time until startSession is called', () => {
+		const service = createService();
+
+		service.prepareSession('m25', 'Arpeggio', 84);
+		expect(service.activeSession()?.status).toBe('ready');
+		expect(service.activeSession()?.startedAtMs).toBeNull();
+
+		vi.advanceTimersByTime(5000);
+		expect(service.activeSession()?.activeElapsedMs).toBe(0);
+
+		service.startSession('Arpeggio', 84);
+		expect(service.activeSession()?.status).toBe('running');
+		expect(service.activeSession()?.startedAtMs).toBe(Date.now());
+	});
+
+	it('should pause and resume using timestamps without counting paused time', () => {
+		const service = createService();
+
+		service.prepareSession('m25', 'Etude', 96);
+		service.startSession('Etude', 96);
+		vi.advanceTimersByTime(10_000);
+		service.pauseSession();
+
+		expect(service.activeSession()?.status).toBe('paused');
+		expect(service.activeSession()?.activeElapsedMs).toBe(10_000);
+
+		vi.advanceTimersByTime(7_000);
+		service.resumeSession();
+		expect(service.activeSession()?.pausedElapsedMs).toBe(7_000);
+
+		vi.advanceTimersByTime(3_000);
+		service.finishSession('completed');
+
+		expect(service.activeSession()?.status).toBe('completed');
+		expect(service.activeSession()?.activeElapsedMs).toBe(13_000);
+		expect(service.activeSession()?.pausedElapsedMs).toBe(7_000);
+	});
+
+	it('should mark cancelled sessions explicitly', () => {
+		const service = createService();
+
+		service.prepareSession('rhythms', 'Warmup', 72);
+		service.startSession('Warmup', 72);
+		vi.advanceTimersByTime(2_500);
+		service.finishSession('cancelled');
+
+		expect(service.activeSession()?.status).toBe('cancelled');
+		expect(service.activeSession()?.finishedAtMs).toBe(Date.now());
+		expect(service.activeSession()?.activeElapsedMs).toBe(2_500);
 	});
 
 	it('should open the m25 completion overlay once and allow repeating', () => {

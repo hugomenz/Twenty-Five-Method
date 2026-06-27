@@ -16,11 +16,14 @@ import {
 	isButtonTone,
 	isErrorBehavior,
 	isLanguageCode,
+	isPracticeSessionStatus,
 	isThemeMode,
 	LanguageCode,
 	moveArrayItem,
 	normalizePositiveInteger,
 	PersistedState,
+	PracticeSession,
+	PracticeSessionStatus,
 	RhythmPattern,
 	RhythmSession,
 	RhythmSessionItem,
@@ -40,6 +43,7 @@ export class M25StateService {
 	private readonly feedback = inject(M25FeedbackService);
 	private readonly initialState = this.loadPersistedState();
 
+	readonly activeSession = signal<PracticeSession | null>(this.initialState.activeSession);
 	readonly completionOverlay = signal<CompletionOverlayState | null>(null);
 	readonly currentScreen = signal<AppScreen>(this.resolveInitialScreen(this.initialState));
 	readonly screenHistory = signal<AppScreen[]>([]);
@@ -58,6 +62,7 @@ export class M25StateService {
 	readonly editingPatternId = signal<string | null>(null);
 
 	readonly currentMode = computed(() => this.recentMode());
+	readonly activeSessionStatus = computed(() => this.activeSession()?.status ?? null);
 	readonly allPatterns = computed(() => [...BUILT_IN_RHYTHM_PATTERNS, ...this.customPatterns()]);
 	readonly m25Completed = computed(() => this.m25Count() >= this.settings().target);
 	readonly currentRhythmItem = computed(() => {
@@ -97,6 +102,11 @@ export class M25StateService {
 		return this.activeRhythmSession()?.status === 'running';
 	});
 	readonly hasActivePractice = computed(() => {
+		const activeSession = this.activeSession();
+		if (activeSession) {
+			return activeSession.status === 'ready' || activeSession.status === 'running' || activeSession.status === 'paused';
+		}
+
 		if (this.currentMode() === 'm25') {
 			return this.m25Count() !== 0;
 		}
@@ -242,6 +252,122 @@ export class M25StateService {
 
 	setRhythmErrorBehavior(behavior: ErrorBehavior): void {
 		this.settings.update((settings) => ({ ...settings, rhythmErrorBehavior: behavior }));
+	}
+
+	setAskTitleBeforeStart(askTitleBeforeStart: boolean): void {
+		this.settings.update((settings) => ({ ...settings, askTitleBeforeStart }));
+	}
+
+	setAskBpmBeforeStart(askBpmBeforeStart: boolean): void {
+		this.settings.update((settings) => ({ ...settings, askBpmBeforeStart }));
+	}
+
+	setDefaultPracticeTitle(defaultPracticeTitle: string): void {
+		this.settings.update((settings) => ({ ...settings, defaultPracticeTitle }));
+	}
+
+	setDefaultBpm(defaultBpm: number | null): void {
+		this.settings.update((settings) => ({ ...settings, defaultBpm }));
+	}
+
+	prepareSession(mode: AppMode, title = '', bpm: number | null = null): PracticeSession {
+		const session: PracticeSession = {
+			id: createId('session'),
+			mode,
+			status: 'ready',
+			title,
+			bpm,
+			startedAtMs: null,
+			lastResumedAtMs: null,
+			pausedAtMs: null,
+			finishedAtMs: null,
+			activeElapsedMs: 0,
+			pausedElapsedMs: 0,
+		};
+
+		this.activeSession.set(session);
+		return session;
+	}
+
+	startSession(title: string, bpm: number | null): void {
+		const activeSession = this.activeSession();
+		if (!activeSession) {
+			return;
+		}
+
+		const now = Date.now();
+		const normalizedTitle = title.trim() || this.settings().defaultPracticeTitle.trim();
+		const normalizedBpm = bpm;
+
+		this.activeSession.set({
+			...activeSession,
+			status: 'running',
+			title: normalizedTitle,
+			bpm: normalizedBpm,
+			startedAtMs: activeSession.startedAtMs ?? now,
+			lastResumedAtMs: now,
+			pausedAtMs: null,
+			finishedAtMs: null,
+		});
+	}
+
+	pauseSession(): void {
+		const activeSession = this.activeSession();
+		if (!activeSession || activeSession.status !== 'running') {
+			return;
+		}
+
+		const now = Date.now();
+		const activeElapsedMs = activeSession.activeElapsedMs + (activeSession.lastResumedAtMs ? now - activeSession.lastResumedAtMs : 0);
+		this.activeSession.set({
+			...activeSession,
+			status: 'paused',
+			activeElapsedMs,
+			lastResumedAtMs: null,
+			pausedAtMs: now,
+		});
+	}
+
+	resumeSession(): void {
+		const activeSession = this.activeSession();
+		if (!activeSession || activeSession.status !== 'paused') {
+			return;
+		}
+
+		const now = Date.now();
+		const pausedElapsedMs = activeSession.pausedElapsedMs + (activeSession.pausedAtMs ? now - activeSession.pausedAtMs : 0);
+		this.activeSession.set({
+			...activeSession,
+			status: 'running',
+			pausedElapsedMs,
+			pausedAtMs: null,
+			lastResumedAtMs: now,
+		});
+	}
+
+	finishSession(status: Extract<PracticeSessionStatus, 'completed' | 'cancelled'>): void {
+		const activeSession = this.activeSession();
+		if (!activeSession) {
+			return;
+		}
+
+		const now = Date.now();
+		const activeElapsedMs = activeSession.status === 'running' && activeSession.lastResumedAtMs
+			? activeSession.activeElapsedMs + (now - activeSession.lastResumedAtMs)
+			: activeSession.activeElapsedMs;
+		const pausedElapsedMs = activeSession.status === 'paused' && activeSession.pausedAtMs
+			? activeSession.pausedElapsedMs + (now - activeSession.pausedAtMs)
+			: activeSession.pausedElapsedMs;
+
+		this.activeSession.set({
+			...activeSession,
+			status,
+			activeElapsedMs,
+			pausedElapsedMs,
+			lastResumedAtMs: null,
+			pausedAtMs: null,
+			finishedAtMs: now,
+		});
 	}
 
 	increment(): void {
@@ -690,6 +816,7 @@ export class M25StateService {
 		const snapshot: PersistedState = {
 			settings: this.settings(),
 			recentMode: this.activeRhythmSession() ? 'rhythms' : this.recentMode(),
+			activeSession: this.activeSession(),
 			m25Count: this.m25Count(),
 			activeRhythmSession: this.activeRhythmSession(),
 			routines: this.routines(),
@@ -714,6 +841,7 @@ export class M25StateService {
 		try {
 			const parsed = JSON.parse(rawState) as Partial<PersistedState>;
 			const settings = this.parseSettings(parsed.settings, defaults.settings);
+			const activeSession = this.parseActiveSession(parsed.activeSession);
 			const customPatterns = this.parsePatterns(parsed.customPatterns);
 			const routines = this.parseRoutines(parsed.routines);
 			const activeRhythmSession = this.parseRhythmSession(parsed.activeRhythmSession, settings.allowNegative);
@@ -731,6 +859,7 @@ export class M25StateService {
 			return {
 				settings,
 				recentMode,
+				activeSession,
 				m25Count,
 				activeRhythmSession,
 				routines,
@@ -747,6 +876,10 @@ export class M25StateService {
 	private parseSettings(settings: Partial<SettingsState> | undefined, fallback: SettingsState): SettingsState {
 		const m25ErrorBehavior = settings?.m25ErrorBehavior;
 		const rhythmErrorBehavior = settings?.rhythmErrorBehavior;
+		const askTitleBeforeStart = settings?.askTitleBeforeStart;
+		const askBpmBeforeStart = settings?.askBpmBeforeStart;
+		const defaultPracticeTitle = settings?.defaultPracticeTitle;
+		const defaultBpm = settings?.defaultBpm;
 		const language = settings?.language;
 		const theme = settings?.theme;
 		const buttonTone = settings?.buttonTone;
@@ -763,10 +896,36 @@ export class M25StateService {
 			allowNegative: settings?.allowNegative ?? fallback.allowNegative,
 			m25ErrorBehavior: safeM25ErrorBehavior,
 			rhythmErrorBehavior: safeRhythmErrorBehavior,
+			askTitleBeforeStart: typeof askTitleBeforeStart === 'boolean' ? askTitleBeforeStart : fallback.askTitleBeforeStart,
+			askBpmBeforeStart: typeof askBpmBeforeStart === 'boolean' ? askBpmBeforeStart : fallback.askBpmBeforeStart,
+			defaultPracticeTitle: typeof defaultPracticeTitle === 'string' ? defaultPracticeTitle : fallback.defaultPracticeTitle,
+			defaultBpm: typeof defaultBpm === 'number' ? defaultBpm : defaultBpm === null ? null : fallback.defaultBpm,
 			language: safeLanguage,
 			theme: safeTheme,
 			buttonTone: safeButtonTone,
 			buttonShape: safeButtonShape,
+		};
+	}
+
+	private parseActiveSession(session: PracticeSession | null | undefined): PracticeSession | null {
+		if (!session || session.mode !== 'm25' && session.mode !== 'rhythms') {
+			return null;
+		}
+
+		const status = isPracticeSessionStatus(session.status) ? session.status : 'ready';
+
+		return {
+			id: typeof session.id === 'string' ? session.id : createId('session'),
+			mode: session.mode,
+			status,
+			title: typeof session.title === 'string' ? session.title : '',
+			bpm: typeof session.bpm === 'number' ? session.bpm : null,
+			startedAtMs: typeof session.startedAtMs === 'number' ? session.startedAtMs : null,
+			lastResumedAtMs: typeof session.lastResumedAtMs === 'number' ? session.lastResumedAtMs : null,
+			pausedAtMs: typeof session.pausedAtMs === 'number' ? session.pausedAtMs : null,
+			finishedAtMs: typeof session.finishedAtMs === 'number' ? session.finishedAtMs : null,
+			activeElapsedMs: typeof session.activeElapsedMs === 'number' ? session.activeElapsedMs : 0,
+			pausedElapsedMs: typeof session.pausedElapsedMs === 'number' ? session.pausedElapsedMs : 0,
 		};
 	}
 
