@@ -1,6 +1,6 @@
 {
-  "name": "M-25",
-  "short_name": "M-25",
+  "name": "M25",
+  "short_name": "M25",
   "description": "Touch-friendly counter for any piano practice session.",
   "display": "standalone",
   "scope": "./",
