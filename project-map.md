@@ -44,7 +44,7 @@ Use this file before broad repo exploration. It is the fast path for locating th
   - Preset names are translation keys, not final UI strings.
 - `src/app/core/services/m25-state.service.ts`
   - Main application state facade.
-  - Persistence, routines, custom rhythms, active practice, settings.
+  - Persistence, routines, custom rhythms, active practice, settings, adaptive coaching.
   - Primary target for behavior changes and most logic tests.
 - `src/app/core/services/m25-labels.service.ts`
   - JSON-backed labels and translated musical block metadata.
@@ -55,6 +55,9 @@ Use this file before broad repo exploration. It is the fast path for locating th
   - Transient toast/snackbar message store. Notify after an operation completes.
 - `src/app/core/services/m25-wake-lock.service.ts`
   - Screen wake lock lifecycle only.
+- `src/app/core/theme/progress-theme.ts`
+  - Pure score-to-color mapping for adaptive background progression.
+  - Test this in isolation before touching shell styling.
 
 ### Rhythm notation (VexFlow)
 
@@ -98,6 +101,9 @@ All visible labels should come from these files through `M25LabelsService`.
   - Shows the latest records first and opens individual record details.
 - `src/app/features/practice/views/history-detail-view.component.*`
   - Full saved-session detail view with deletion.
+- `src/app/features/session/negative-coaching-dialog.component.*`
+  - Adaptive intervention dialog for prolonged negative practice periods.
+  - Handles continue, rest, and lower-BPM restart flows.
 - `src/app/features/studio/routine-studio.component.*`
   - Full-screen routine preparation flow.
 - `src/app/features/studio/pattern-studio.component.*`

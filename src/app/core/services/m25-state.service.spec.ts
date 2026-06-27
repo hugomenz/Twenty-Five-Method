@@ -273,6 +273,24 @@ describe('M25StateService', () => {
 		expect(service.negativeCoachingPromptOpen()).toBe(false);
 	});
 
+	it('should not reopen the negative coaching prompt during the same negative period', () => {
+		const service = createService();
+		startM25Session(service);
+
+		service.decrement();
+		vi.advanceTimersByTime(NEGATIVE_PROMPT_THRESHOLD_MS);
+		expect(service.negativeCoachingPromptOpen()).toBe(true);
+
+		service.continueAfterNegativeCoaching();
+		vi.advanceTimersByTime(5 * 60 * 1000);
+		expect(service.negativeCoachingPromptOpen()).toBe(false);
+
+		service.increment();
+		service.decrement();
+		vi.advanceTimersByTime(NEGATIVE_PROMPT_THRESHOLD_MS);
+		expect(service.negativeCoachingPromptOpen()).toBe(true);
+	});
+
 	it('should show a single recovery message after climbing back from minus five', () => {
 		const service = createService();
 		const feedback = TestBed.inject(M25FeedbackService);
