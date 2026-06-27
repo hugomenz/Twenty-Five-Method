@@ -141,32 +141,17 @@ export class M25StateService {
 	}
 
 	goBack(): void {
-		console.info('[M25][navigation] goBack:start', {
-			currentScreen: this.currentScreen(),
-			history: this.screenHistory(),
-			settingsOpen: this.settingsOpen(),
-			hasActivePractice: this.hasActivePractice(),
-			activeRhythmSession: this.activeRhythmSession()?.routineName ?? null,
-		});
 		this.settingsOpen.set(false);
 		const history = this.screenHistory();
 		const previousScreen = history.at(-1);
 
 		if (!previousScreen) {
-			const fallbackScreen = this.hasActivePractice() ? 'practice' : 'home';
-			console.info('[M25][navigation] goBack:fallback', {
-				fallbackScreen,
-			});
-			this.currentScreen.set(fallbackScreen);
+			this.currentScreen.set('home');
 			return;
 		}
 
 		this.screenHistory.set(history.slice(0, -1));
 		this.currentScreen.set(previousScreen);
-		console.info('[M25][navigation] goBack:end', {
-			nextScreen: previousScreen,
-			nextHistory: this.screenHistory(),
-		});
 	}
 
 	goHome(): void {
@@ -180,15 +165,15 @@ export class M25StateService {
 			this.recentMode.set(mode);
 		}
 
-		this.navigateTo('practice', false, `openPractice:${mode ?? 'current'}`);
+		this.navigateTo('practice', false);
 	}
 
 	openRoutineStudio(): void {
-		this.navigateTo('routine-studio', false, 'openRoutineStudio');
+		this.navigateTo('routine-studio');
 	}
 
 	openPatternStudio(): void {
-		this.navigateTo('pattern-studio', false, 'openPatternStudio');
+		this.navigateTo('pattern-studio');
 	}
 
 	toggleSettings(): void {
@@ -407,7 +392,7 @@ export class M25StateService {
 			status: 'running',
 		});
 		this.recentMode.set('rhythms');
-		this.navigateTo('practice', true, 'startRhythmPracticeFromDraft');
+		this.navigateTo('practice', true);
 		this.closeSettings();
 		this.feedback.notify('success', 'practiceStarted');
 	}
@@ -766,22 +751,11 @@ export class M25StateService {
 		return 'home';
 	}
 
-	private navigateTo(screen: AppScreen, replace = false, source = 'unknown'): void {
+	private navigateTo(screen: AppScreen, replace = false): void {
 		this.settingsOpen.set(false);
 		const currentScreen = this.currentScreen();
-		console.info('[M25][navigation] navigateTo:start', {
-			source,
-			currentScreen,
-			targetScreen: screen,
-			replace,
-			history: this.screenHistory(),
-		});
 
 		if (currentScreen === screen) {
-			console.info('[M25][navigation] navigateTo:noop', {
-				source,
-				screen,
-			});
 			return;
 		}
 
@@ -794,20 +768,10 @@ export class M25StateService {
 				this.screenHistory.set(lastScreen === screen ? history.slice(0, -1) : history);
 			}
 			this.currentScreen.set(screen);
-			console.info('[M25][navigation] navigateTo:replace', {
-				source,
-				nextScreen: screen,
-				nextHistory: this.screenHistory(),
-			});
 			return;
 		}
 
 		this.screenHistory.update((history) => [...history, currentScreen]);
 		this.currentScreen.set(screen);
-		console.info('[M25][navigation] navigateTo:push', {
-			source,
-			nextScreen: screen,
-			nextHistory: this.screenHistory(),
-		});
 	}
 }
