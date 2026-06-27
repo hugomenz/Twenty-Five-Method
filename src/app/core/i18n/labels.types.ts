@@ -115,6 +115,7 @@ export interface LabelDictionary {
 		askBpmBeforeStart: string;
 		practiceTitle: string;
 		practiceBpm: string;
+		version: string;
 		minusAction: string;
 		language: string;
 		theme: string;

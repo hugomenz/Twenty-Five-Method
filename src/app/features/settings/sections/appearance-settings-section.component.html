@@ -51,4 +51,10 @@
 	<div class="action-row">
 		<button class="sheet-action" type="button" (click)="state.openHistory()">{{ dictionary().actions.openHistory }}</button>
 	</div>
+	<div class="stack-card stack-card--compact" aria-label="{{ dictionary().fields.version }}">
+		<div class="stack-card__body">
+			<p class="stack-card__title">{{ dictionary().fields.version }}</p>
+			<p class="stack-card__meta" data-testid="app-version">{{ dictionary().app.name }} v{{ appVersion }}</p>
+		</div>
+	</div>
 </section>

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { APP_VERSION } from '../../../core/app-version';
 import {
 	BUTTON_SHAPES,
 	BUTTON_TONES,
@@ -23,6 +24,7 @@ export class AppearanceSettingsSectionComponent {
 	protected readonly state = inject(M25StateService);
 	protected readonly labels = inject(M25LabelsService);
 	protected readonly dictionary = this.labels.dictionary;
+	protected readonly appVersion = APP_VERSION;
 	protected readonly languages = LANGUAGE_CODES;
 	protected readonly themes = THEME_MODES;
 	protected readonly buttonTones = BUTTON_TONES;
