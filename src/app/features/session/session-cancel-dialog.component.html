@@ -1,0 +1,12 @@
+<section class="session-overlay" role="dialog" aria-modal="true" [attr.aria-label]="dictionary().cancel.heading" data-testid="session-cancel-dialog">
+	<div class="session-overlay__backdrop"></div>
+	<div class="session-card">
+		<p class="session-card__kicker">{{ dictionary().status.practiceCancelled }}</p>
+		<h2 class="session-card__title">{{ dictionary().cancel.heading }}</h2>
+		<p class="session-card__copy">{{ dictionary().cancel.subtitle }}</p>
+		<div class="session-actions session-actions--stacked">
+			<button class="session-button" type="button" (click)="state.closeCancelConfirm()">{{ dictionary().cancel.keepPractising }}</button>
+			<button class="session-button session-button--ghost" type="button" (click)="state.cancelAndSavePractice()">{{ dictionary().cancel.finishAndSave }}</button>
+		</div>
+	</div>
+</section>

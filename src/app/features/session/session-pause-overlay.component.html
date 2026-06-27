@@ -1,0 +1,12 @@
+<section class="session-overlay" role="dialog" aria-modal="true" [attr.aria-label]="dictionary().pause.heading" data-testid="session-pause-overlay">
+	<div class="session-overlay__backdrop"></div>
+	<div class="session-card">
+		<p class="session-card__kicker">{{ dictionary().status.practicePaused }}</p>
+		<h2 class="session-card__title">{{ dictionary().pause.heading }}</h2>
+		<p class="session-card__copy">{{ dictionary().pause.subtitle }}</p>
+		<div class="session-actions session-actions--stacked">
+			<button class="session-button" type="button" (click)="state.resumeSession()">{{ dictionary().pause.continueButton }}</button>
+			<button class="session-button session-button--ghost" type="button" (click)="state.cancelAndSavePractice()">{{ dictionary().pause.finishButton }}</button>
+		</div>
+	</div>
+</section>

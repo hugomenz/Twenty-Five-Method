@@ -18,9 +18,10 @@ export class SessionStartDialogComponent {
 
 	protected start(): void {
 		const askBpm = this.state.settings().askBpmBeforeStart;
+		const bpmText = this.bpm().trim();
 		const parsedBpm = this.parseBpm(this.bpm());
 
-		if (askBpm && parsedBpm === null) {
+		if (askBpm && bpmText !== '' && parsedBpm === null) {
 			this.bpmError.set(this.dictionary().start.bpmHint);
 			return;
 		}
