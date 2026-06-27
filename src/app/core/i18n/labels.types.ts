@@ -55,6 +55,10 @@ export interface LabelDictionary {
 		rhythmHeading: string;
 		routineHeading: string;
 		finalCount: string;
+		result: string;
+		duration: string;
+		minimum: string;
+		exercise: string;
 		celebration: string;
 	};
 	actions: {

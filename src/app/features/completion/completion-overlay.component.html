@@ -14,8 +14,18 @@
 				<p class="completion-subtitle">{{ completed.rhythmName }}</p>
 				<p class="completion-meta">{{ rhythmPosition() }}</p>
 			}
-			<p class="completion-count-label">{{ dictionary().completion.finalCount }}</p>
+			<p class="completion-count-label">{{ countLabel() }}</p>
 			<p class="completion-count">{{ countText() }}</p>
+			@if (showSummary()) {
+				<dl class="completion-summary">
+					@for (entry of summaryRows(); track entry.label) {
+						<div class="completion-summary__row">
+							<dt>{{ entry.label }}</dt>
+							<dd>{{ entry.value }}</dd>
+						</div>
+					}
+				</dl>
+			}
 
 			<div class="completion-actions">
 				@if (completed.kind === 'm25') {

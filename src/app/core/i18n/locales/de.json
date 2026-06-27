@@ -53,6 +53,10 @@
 		"rhythmHeading": "Rhythmus abgeschlossen",
 		"routineHeading": "Routine abgeschlossen",
 		"finalCount": "Endstand",
+		"result": "Ergebnis",
+		"duration": "Dauer",
+		"minimum": "Minimum",
+		"exercise": "Übung",
 		"celebration": "Gut gespielt"
 	},
 	"actions": {
