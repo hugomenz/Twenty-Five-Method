@@ -17,6 +17,9 @@
 	--accent: #d4dbe6;
 	--accent-soft: rgb(212 219 230 / 0.14);
 	--danger: #d2d8df;
+	--notation-surface: #eef3f8;
+	--notation-ink: #16202a;
+	--notation-border: rgb(22 32 42 / 0.16);
 	--button-radius: 2rem;
 	--button-fill: linear-gradient(180deg, var(--surface-strong) 0%, var(--surface) 100%);
 	--button-fill-plus: linear-gradient(180deg, #2a3544 0%, #1f2835 100%);
@@ -54,6 +57,9 @@
 	--accent: #223141;
 	--accent-soft: rgb(34 49 65 / 0.08);
 	--danger: #24303d;
+	--notation-surface: #ffffff;
+	--notation-ink: #101922;
+	--notation-border: rgb(16 25 34 / 0.12);
 	background:
 		radial-gradient(circle at top, rgb(83 98 115 / 0.14), transparent 30%),
 		linear-gradient(180deg, #f7f9fc 0%, var(--bg) 50%, var(--bg-deep) 100%);
