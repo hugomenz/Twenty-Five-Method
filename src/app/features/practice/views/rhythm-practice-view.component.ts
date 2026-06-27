@@ -15,6 +15,14 @@ export class RhythmPracticeViewComponent {
 	protected readonly labels = inject(M25LabelsService);
 	protected readonly dictionary = this.labels.dictionary;
 	protected readonly currentItem = this.state.currentRhythmItem;
+	protected readonly countLabel = computed(() => {
+		const item = this.currentItem();
+		if (!item) {
+			return '';
+		}
+
+		return `${this.labels.formatCount(item.count)} / ${item.repetitions}`;
+	});
 	protected readonly actionLabel = computed(() => {
 		switch (this.state.rhythmActionKind()) {
 			case 'resume':

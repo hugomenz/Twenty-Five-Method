@@ -1,6 +1,5 @@
 <div class="practice-view">
-	<p class="mode-pill">{{ dictionary().modes.m25 }}</p>
-	<output class="counter-value" aria-live="polite" data-testid="m25-count">{{ state.m25Count() }}</output>
+	<output class="counter-value" aria-live="polite" data-testid="m25-count">{{ countLabel() }}</output>
 	<p class="detail-text">{{ targetLabel() }}</p>
 	@if (state.m25Completed()) {
 		<p class="status-message" aria-live="polite">{{ dictionary().status.passageCompleted }}</p>

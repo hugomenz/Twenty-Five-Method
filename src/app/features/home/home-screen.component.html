@@ -1,26 +1,15 @@
 <section class="home-screen">
-	<div class="hero-panel">
-		<p class="hero-eyebrow">{{ dictionary().home.eyebrow }}</p>
-		<h1 class="hero-title">{{ dictionary().home.title }}</h1>
-		<p class="hero-copy">{{ dictionary().home.subtitle }}</p>
-	</div>
-
 	<div class="mode-grid">
 		<button class="mode-card mode-card--m25" type="button" (click)="state.openPractice('m25')">
 			<p class="mode-card__label">{{ dictionary().modes.m25 }}</p>
-			<p class="mode-card__copy">{{ dictionary().home.m25Description }}</p>
-			<span class="mode-card__action">{{ dictionary().actions.openM25 }}</span>
 		</button>
 
 		<button class="mode-card mode-card--rhythms" type="button" (click)="state.openPractice('rhythms')">
 			<p class="mode-card__label">{{ dictionary().modes.rhythms }}</p>
-			<p class="mode-card__copy">{{ dictionary().home.rhythmsDescription }}</p>
-			<span class="mode-card__action">{{ dictionary().actions.openRhythms }}</span>
 		</button>
 	</div>
 
 	<div class="studio-panel">
-		<p class="studio-panel__copy">{{ dictionary().home.studioHint }}</p>
 		<div class="studio-panel__actions">
 			<button class="studio-link" type="button" (click)="state.openRoutineStudio()">
 				{{ dictionary().actions.prepareRoutine }}

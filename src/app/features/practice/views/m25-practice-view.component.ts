@@ -12,5 +12,6 @@ export class M25PracticeViewComponent {
 	protected readonly state = inject(M25StateService);
 	protected readonly labels = inject(M25LabelsService);
 	protected readonly dictionary = this.labels.dictionary;
+	protected readonly countLabel = computed(() => this.labels.formatCount(this.state.m25Count()));
 	protected readonly targetLabel = computed(() => this.labels.targetValue(this.state.settings().target));
 }

@@ -10,24 +10,12 @@
 	text-align: center;
 }
 
-.mode-pill {
-	margin: 0;
-	padding: 0.35rem 0.8rem;
-	border-radius: 999px;
-	background: rgb(255 255 255 / 0.06);
-	color: var(--muted);
-	font-size: 0.82rem;
-	font-weight: 700;
-	letter-spacing: 0.18em;
-	text-transform: uppercase;
-}
-
 .counter-value {
 	display: block;
 	margin: 0;
 	font-size: clamp(5.8rem, 26vmin, 12rem);
 	font-weight: 800;
-	line-height: 0.88;
+	line-height: 0.92;
 	letter-spacing: -0.08em;
 	font-variant-numeric: tabular-nums;
 }

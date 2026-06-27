@@ -1,7 +1,6 @@
 @if (state.activeRhythmSession(); as session) {
 	@if (currentItem(); as item) {
 		<div class="practice-view">
-			<p class="mode-pill">{{ dictionary().modes.rhythms }}</p>
 			<p class="routine-name">{{ routineName() }}</p>
 			<p class="pattern-name">{{ patternName() }}</p>
 			@defer (on immediate) {
@@ -13,9 +12,7 @@
 			} @placeholder {
 				<div class="pattern-notation notation-skeleton" aria-hidden="true"></div>
 			}
-			<output class="counter-value counter-value--compact" aria-live="polite" data-testid="rhythm-count">
-				{{ item.count }} / {{ item.repetitions }}
-			</output>
+			<output class="counter-value counter-value--compact" aria-live="polite" data-testid="rhythm-count">{{ countLabel() }}</output>
 			<p class="detail-text">{{ rhythmPosition() }}</p>
 			@if (statusMessage()) {
 				<p class="status-message" aria-live="polite">{{ statusMessage() }}</p>
@@ -29,7 +26,6 @@
 	}
 } @else {
 	<div class="practice-view">
-		<p class="mode-pill">{{ dictionary().modes.rhythms }}</p>
 		<p class="empty-title">{{ dictionary().status.noActivePractice }}</p>
 		<p class="detail-text detail-text--multiline">{{ dictionary().status.noActivePracticeHelp }}</p>
 		<p class="status-spacer" aria-hidden="true"></p>
