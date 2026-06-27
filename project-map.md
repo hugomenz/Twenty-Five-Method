@@ -47,8 +47,23 @@ Use this file before broad repo exploration. It is the fast path for locating th
   - Use this instead of hardcoding visible text.
 - `src/app/core/services/m25-storage.service.ts`
   - LocalStorage access wrapper.
+- `src/app/core/services/m25-feedback.service.ts`
+  - Transient toast/snackbar message store. Notify after an operation completes.
 - `src/app/core/services/m25-wake-lock.service.ts`
   - Screen wake lock lifecycle only.
+
+### Rhythm notation (VexFlow)
+
+- `src/app/core/notation/rhythm-notation.model.ts`
+  - Atom-level notation types (durations, tuplets, beam groups). VexFlow-free.
+- `src/app/core/notation/rhythm-transform.ts`
+  - Pure transform from authoring `BlockKind[]` to atoms + beam groups.
+  - Triplet blocks expand to three eighth atoms; beams grouped by quarter-note beat.
+- `src/app/core/notation/render-rhythm.ts`
+  - The only module that imports VexFlow. Renders atoms to a responsive SVG with real beams and tuplets.
+- `src/app/features/notation/rhythm-notation.component.ts`
+  - Standalone presentational component. ResizeObserver redraw, cleanup on destroy.
+  - Loaded lazily via `@defer` so VexFlow stays out of the initial bundle.
 
 ### Localization Assets
 
@@ -79,7 +94,8 @@ All visible labels should come from these files through `M25LabelsService`.
 ### Settings UI
 
 - `src/app/features/settings/settings-sheet.component.*`
-  - Dialog container for general and mode-specific settings only.
+  - Native modal `<dialog>` (top-layer, Escape/focus handled by the platform, jsdom fallback).
+  - Contains general settings plus mode-specific settings only.
 - `src/app/features/settings/sections/appearance-settings-section.component.*`
   - General settings: language, theme, button tone, button shape.
 - `src/app/features/settings/sections/m25-settings-section.component.*`
@@ -92,6 +108,11 @@ All visible labels should come from these files through `M25LabelsService`.
   - Shared rhythm builder used by the pattern studio.
 - `src/app/features/settings/sections/settings-section.shared.scss`
   - Shared section-level settings styling.
+
+### Feedback
+
+- `src/app/features/feedback/feedback-toasts.component.*`
+  - Accessible live-region toasts mounted in the practice shell.
 
 ### Shared Utilities
 
@@ -106,6 +127,16 @@ All visible labels should come from these files through `M25LabelsService`.
   - Main logic coverage: persistence, targets, negatives, routines, active rhythm progress.
 - `src/app/core/services/m25-labels.service.spec.ts`
   - Translation and label switching coverage.
+- `src/app/core/notation/rhythm-transform.spec.ts`
+  - Beam grouping, triplet expansion, mixed groups (pure, no DOM).
+- `src/app/core/notation/render-rhythm.spec.ts`
+  - VexFlow render orchestration: single SVG, redraw replaces, tuplets/beams per group.
+- `src/app/core/services/m25-feedback.service.spec.ts`
+  - Feedback store behavior.
+- `src/app/features/settings/settings-sheet.component.spec.ts`
+  - Dialog open, visible content, close, keyboard.
+- `e2e/` (Playwright)
+  - End-to-end flows across desktop, mobile portrait, and mobile landscape.
 
 If behavior changes, prefer adding or updating tests in the service spec first.
 
@@ -122,6 +153,8 @@ If behavior changes, prefer adding or updating tests in the service spec first.
 
 - Tests: `npm test -- --watch=false`
 - Production build: `npm run build`
+- End-to-end: `npm run e2e` (auto-starts the dev server on port 4327)
+- E2E UI / report: `npm run e2e:ui`, `npm run e2e:report`
 
 ## Deployment Notes
 
