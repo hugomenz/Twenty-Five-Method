@@ -6,6 +6,9 @@ import { HomeScreenComponent } from '../home/home-screen.component';
 import { FeedbackToastsComponent } from '../feedback/feedback-toasts.component';
 import { M25PracticeViewComponent } from './views/m25-practice-view.component';
 import { RhythmPracticeViewComponent } from './views/rhythm-practice-view.component';
+import { SessionCancelDialogComponent } from '../session/session-cancel-dialog.component';
+import { SessionPauseOverlayComponent } from '../session/session-pause-overlay.component';
+import { SessionStartDialogComponent } from '../session/session-start-dialog.component';
 import { PatternStudioComponent } from '../studio/pattern-studio.component';
 import { RoutineStudioComponent } from '../studio/routine-studio.component';
 import { SettingsSheetComponent } from '../settings/settings-sheet.component';
@@ -18,6 +21,9 @@ import { SettingsSheetComponent } from '../settings/settings-sheet.component';
 		HomeScreenComponent,
 		M25PracticeViewComponent,
 		RhythmPracticeViewComponent,
+		SessionCancelDialogComponent,
+		SessionPauseOverlayComponent,
+		SessionStartDialogComponent,
 		PatternStudioComponent,
 		RoutineStudioComponent,
 		SettingsSheetComponent,
@@ -35,6 +41,11 @@ export class PracticeShellComponent {
 	protected readonly isPracticeScreen = computed(() => this.state.currentScreen() === 'practice');
 	protected readonly showBackButton = computed(() => this.state.currentScreen() !== 'home');
  	protected readonly hasCompletionOverlay = computed(() => this.state.completionOverlay() !== null);
+	protected readonly showStartDialog = computed(() => this.state.currentScreen() === 'practice' && this.state.activeSessionStatus() === 'ready');
+	protected readonly showPauseOverlay = computed(() => this.state.currentScreen() === 'practice' && this.state.activeSessionStatus() === 'paused');
+	protected readonly showCancelDialog = computed(() => this.state.currentScreen() === 'practice' && this.state.cancelConfirmOpen());
+	protected readonly showPauseAction = computed(() => this.state.currentScreen() === 'practice' && this.state.activeSessionStatus() === 'running');
+	protected readonly showCancelAction = computed(() => this.state.currentScreen() === 'practice' && (this.state.activeSessionStatus() === 'ready' || this.state.activeSessionStatus() === 'running' || this.state.activeSessionStatus() === 'paused'));
 
 	protected onBackClick(): void {
 		this.state.goBack();

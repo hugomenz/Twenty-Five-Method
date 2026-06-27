@@ -1,6 +1,6 @@
 <section class="home-screen">
 	<div class="mode-grid">
-		<button class="mode-card mode-card--m25" type="button" (click)="state.openPractice('m25')">
+		<button class="mode-card mode-card--m25" type="button" (click)="state.prepareSession('m25'); state.openPractice('m25')">
 			<p class="mode-card__label">{{ dictionary().modes.m25 }}</p>
 		</button>
 

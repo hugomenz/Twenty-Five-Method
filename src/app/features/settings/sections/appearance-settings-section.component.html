@@ -32,4 +32,20 @@
 			}
 		</select>
 	</label>
+	<label class="field field--toggle">
+		<span>{{ dictionary().fields.askTitleBeforeStart }}</span>
+		<input type="checkbox" [checked]="state.settings().askTitleBeforeStart" (change)="onAskTitleChange($event)" />
+	</label>
+	<label class="field field--toggle">
+		<span>{{ dictionary().fields.askBpmBeforeStart }}</span>
+		<input type="checkbox" [checked]="state.settings().askBpmBeforeStart" (change)="onAskBpmChange($event)" />
+	</label>
+	<label class="field">
+		<span>{{ dictionary().fields.practiceTitle }}</span>
+		<input type="text" [value]="state.settings().defaultPracticeTitle" (input)="onDefaultTitleInput($event)" />
+	</label>
+	<label class="field">
+		<span>{{ dictionary().fields.practiceBpm }}</span>
+		<input type="number" min="1" [value]="state.settings().defaultBpm ?? ''" (input)="onDefaultBpmInput($event)" />
+	</label>
 </section>

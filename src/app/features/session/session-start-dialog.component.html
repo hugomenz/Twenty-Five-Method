@@ -1,0 +1,29 @@
+<section class="session-overlay" role="dialog" aria-modal="true" [attr.aria-label]="dictionary().start.heading" data-testid="session-start-dialog">
+	<div class="session-overlay__backdrop"></div>
+	<div class="session-card">
+		<p class="session-card__kicker">{{ dictionary().status.practiceReady }}</p>
+		<h2 class="session-card__title">{{ dictionary().start.heading }}</h2>
+		<p class="session-card__copy">{{ dictionary().start.subtitle }}</p>
+
+		@if (state.settings().askTitleBeforeStart) {
+			<label class="session-field">
+				<span>{{ dictionary().fields.practiceTitle }}</span>
+				<input type="text" [value]="title()" (input)="title.set($any($event.target).value)" />
+			</label>
+		}
++
+		@if (state.settings().askBpmBeforeStart) {
+			<label class="session-field">
+				<span>{{ dictionary().fields.practiceBpm }}</span>
+				<input type="number" min="1" [value]="bpm()" (input)="bpm.set($any($event.target).value)" />
+				@if (bpmError()) {
+					<span class="session-field__error">{{ bpmError() }}</span>
+				}
+			</label>
+		}
++
+		<div class="session-actions">
+			<button class="session-button" type="button" (click)="start()">{{ dictionary().start.startButton }}</button>
+		</div>
+	</div>
+</section>

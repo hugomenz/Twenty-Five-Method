@@ -27,8 +27,28 @@ export interface LabelDictionary {
 		rhythmCompleted: string;
 		practiceCompleted: string;
 		practicePaused: string;
+		practiceReady: string;
+		practiceCancelled: string;
 		noActivePractice: string;
 		noActivePracticeHelp: string;
+	};
+	start: {
+		heading: string;
+		subtitle: string;
+		startButton: string;
+		bpmHint: string;
+	};
+	pause: {
+		heading: string;
+		subtitle: string;
+		continueButton: string;
+		finishButton: string;
+	};
+	cancel: {
+		heading: string;
+		subtitle: string;
+		keepPractising: string;
+		finishAndSave: string;
 	};
 	completion: {
 		m25Heading: string;
@@ -85,6 +105,10 @@ export interface LabelDictionary {
 	fields: {
 		target: string;
 		allowNegative: string;
+		askTitleBeforeStart: string;
+		askBpmBeforeStart: string;
+		practiceTitle: string;
+		practiceBpm: string;
 		minusAction: string;
 		language: string;
 		theme: string;

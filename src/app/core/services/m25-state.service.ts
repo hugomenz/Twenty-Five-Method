@@ -44,6 +44,7 @@ export class M25StateService {
 	private readonly initialState = this.loadPersistedState();
 
 	readonly activeSession = signal<PracticeSession | null>(this.initialState.activeSession);
+	readonly cancelConfirmOpen = signal(false);
 	readonly completionOverlay = signal<CompletionOverlayState | null>(null);
 	readonly currentScreen = signal<AppScreen>(this.resolveInitialScreen(this.initialState));
 	readonly screenHistory = signal<AppScreen[]>([]);
@@ -82,6 +83,10 @@ export class M25StateService {
 			return false;
 		}
 
+		if (this.activeSessionStatus() !== 'running') {
+			return false;
+		}
+
 		if (this.currentMode() === 'm25') {
 			return this.m25Count() < this.settings().target;
 		}
@@ -92,6 +97,10 @@ export class M25StateService {
 	});
 	readonly canUseMinus = computed(() => {
 		if (this.completionOverlay()) {
+			return false;
+		}
+
+		if (this.activeSessionStatus() !== 'running') {
 			return false;
 		}
 
@@ -114,13 +123,13 @@ export class M25StateService {
 		return this.activeRhythmSession() !== null;
 	});
 	readonly rhythmActionKind = computed<'open-settings' | 'resume' | 'advance' | 'pause'>(() => {
+		if (this.activeSessionStatus() === 'paused') {
+			return 'resume';
+		}
+
 		const session = this.activeRhythmSession();
 		if (!session || session.status === 'complete') {
 			return 'open-settings';
-		}
-
-		if (session.status === 'paused') {
-			return 'resume';
 		}
 
 		if (this.rhythmCompleted()) {
@@ -130,6 +139,10 @@ export class M25StateService {
 		return 'pause';
 	});
 	readonly rhythmStatusKind = computed<'none' | 'paused' | 'rhythm-complete' | 'practice-complete'>(() => {
+		if (this.activeSessionStatus() === 'paused') {
+			return 'paused';
+		}
+
 		const session = this.activeRhythmSession();
 		if (!session) {
 			return 'none';
@@ -141,10 +154,6 @@ export class M25StateService {
 
 		if (this.rhythmCompleted()) {
 			return 'rhythm-complete';
-		}
-
-		if (session.status === 'paused') {
-			return 'paused';
 		}
 
 		return 'none';
@@ -194,6 +203,18 @@ export class M25StateService {
 
 	openPatternStudio(): void {
 		this.navigateTo('pattern-studio');
+	}
+
+	openCancelConfirm(): void {
+		if (!this.activeSession()) {
+			return;
+		}
+
+		this.cancelConfirmOpen.set(true);
+	}
+
+	closeCancelConfirm(): void {
+		this.cancelConfirmOpen.set(false);
 	}
 
 	toggleSettings(): void {
@@ -309,6 +330,12 @@ export class M25StateService {
 			pausedAtMs: null,
 			finishedAtMs: null,
 		});
+
+		if (this.currentMode() === 'rhythms') {
+			this.updateRhythmSession((session) => ({ ...session, status: 'running' }));
+		}
+
+		this.feedback.notify('success', 'practiceStarted');
 	}
 
 	pauseSession(): void {
@@ -368,10 +395,15 @@ export class M25StateService {
 			pausedAtMs: null,
 			finishedAtMs: now,
 		});
+		this.cancelConfirmOpen.set(false);
 	}
 
 	increment(): void {
 		if (this.completionOverlay()) {
+			return;
+		}
+
+		if (this.activeSessionStatus() !== 'running') {
 			return;
 		}
 
@@ -386,7 +418,7 @@ export class M25StateService {
 			return;
 		}
 
-		let overlay: CompletionOverlayState | null = null;
+		const overlayRef: { value: CompletionOverlayState | null } = { value: null };
 		this.updateRhythmSession((session) => {
 			if (session.status !== 'running') {
 				return session;
@@ -407,7 +439,7 @@ export class M25StateService {
 				&& nextItems[session.currentIndex].count >= nextItems[session.currentIndex].repetitions;
 
 			if (completedCurrentItem) {
-				overlay = {
+				overlayRef.value = {
 					kind: completedLastItem ? 'rhythm-final' : 'rhythm-intermediate',
 					finalCount: nextItems[session.currentIndex].count,
 					repetitions: nextItems[session.currentIndex].repetitions,
@@ -425,13 +457,21 @@ export class M25StateService {
 			};
 		});
 
-		if (overlay) {
-			this.completionOverlay.set(overlay);
+		const completedOverlay = overlayRef.value;
+		if (completedOverlay !== null) {
+			if (completedOverlay.kind === 'rhythm-final') {
+				this.finishSession('completed');
+			}
+			this.completionOverlay.set(completedOverlay);
 		}
 	}
 
 	decrement(): void {
 		if (this.completionOverlay()) {
+			return;
+		}
+
+		if (this.activeSessionStatus() !== 'running') {
 			return;
 		}
 
@@ -467,13 +507,13 @@ export class M25StateService {
 	handleRhythmAction(): void {
 		switch (this.rhythmActionKind()) {
 			case 'resume':
-				this.continueRhythmPractice();
+				this.resumeSession();
 				return;
 			case 'advance':
 				this.advanceRhythm();
 				return;
 			case 'pause':
-				this.pauseRhythmPractice();
+				this.pauseSession();
 				return;
 			default:
 				this.openSettings();
@@ -507,6 +547,7 @@ export class M25StateService {
 
 	resetCurrentPractice(): void {
 		this.closeCompletionOverlay();
+		this.closeCancelConfirm();
 		if (this.currentMode() === 'm25') {
 			this.resetM25Practice();
 			this.feedback.notify('info', 'practiceReset');
@@ -523,6 +564,7 @@ export class M25StateService {
 
 	resetRhythmPractice(): void {
 		this.closeCompletionOverlay();
+		this.closeCancelConfirm();
 		this.activeRhythmSession.set(null);
 		if (this.currentMode() === 'rhythms' && this.currentScreen() === 'practice') {
 			this.navigateTo('practice', true);
@@ -560,12 +602,12 @@ export class M25StateService {
 			routineName: this.routineDraftName().trim(),
 			items,
 			currentIndex: 0,
-			status: 'running',
+			status: 'paused',
 		});
 		this.recentMode.set('rhythms');
+		this.prepareSession('rhythms', this.routineDraftName().trim(), this.settings().defaultBpm);
 		this.navigateTo('practice', true);
 		this.closeSettings();
-		this.feedback.notify('success', 'practiceStarted');
 	}
 
 	closeCompletionOverlay(): void {
@@ -584,6 +626,7 @@ export class M25StateService {
 	}
 
 	finishPractice(): void {
+		this.finishSession('completed');
 		if (this.currentMode() === 'm25') {
 			this.m25Count.set(0);
 		} else {
@@ -591,6 +634,20 @@ export class M25StateService {
 		}
 
 		this.closeCompletionOverlay();
+		this.goHome();
+	}
+
+	cancelAndSavePractice(): void {
+		this.finishSession('cancelled');
+		this.closeCompletionOverlay();
+		this.closeCancelConfirm();
+
+		if (this.currentMode() === 'm25') {
+			this.m25Count.set(0);
+		} else {
+			this.activeRhythmSession.set(null);
+		}
+
 		this.goHome();
 	}
 
@@ -998,6 +1055,10 @@ export class M25StateService {
 	}
 
 	private resolveInitialScreen(state: PersistedState): AppScreen {
+		if (state.activeSession && (state.activeSession.status === 'ready' || state.activeSession.status === 'running' || state.activeSession.status === 'paused')) {
+			return 'practice';
+		}
+
 		if (state.activeRhythmSession || state.m25Count !== 0) {
 			return 'practice';
 		}
@@ -1033,6 +1094,8 @@ export class M25StateService {
 		if (this.completionOverlay()) {
 			return;
 		}
+
+		this.finishSession('completed');
 
 		this.completionOverlay.set({
 			kind: 'm25',

@@ -25,8 +25,28 @@
 		"rhythmCompleted": "Rhythm completed",
 		"practiceCompleted": "Practice completed",
 		"practicePaused": "Practice paused",
+		"practiceReady": "Ready to start",
+		"practiceCancelled": "Practice ended early",
 		"noActivePractice": "No active practice",
 		"noActivePracticeHelp": "Open settings to build a routine, save patterns, or start practice."
+	},
+	"start": {
+		"heading": "Start practice",
+		"subtitle": "Confirm the session before the timer begins.",
+		"startButton": "Start",
+		"bpmHint": "Use any reasonable positive BPM."
+	},
+	"pause": {
+		"heading": "Practice paused",
+		"subtitle": "Timing is paused until you continue.",
+		"continueButton": "Continue",
+		"finishButton": "Finish practice"
+	},
+	"cancel": {
+		"heading": "Finish practice?",
+		"subtitle": "You can continue, or finish and keep the session record.",
+		"keepPractising": "Keep practising",
+		"finishAndSave": "Finish and save"
 	},
 	"completion": {
 		"m25Heading": "Practice completed",
@@ -83,6 +103,10 @@
 	"fields": {
 		"target": "Target",
 		"allowNegative": "Allow negative values",
+		"askTitleBeforeStart": "Ask for a title before starting",
+		"askBpmBeforeStart": "Ask for BPM before starting",
+		"practiceTitle": "Practice title",
+		"practiceBpm": "BPM",
 		"minusAction": "Minus action",
 		"language": "Language",
 		"theme": "Theme",

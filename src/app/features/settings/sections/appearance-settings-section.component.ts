@@ -11,7 +11,7 @@ import {
 } from '../../../core/models/practice.models';
 import { M25LabelsService } from '../../../core/services/m25-labels.service';
 import { M25StateService } from '../../../core/services/m25-state.service';
-import { readSelectValue } from '../../../shared/utils/dom-event.utils';
+import { readCheckedValue, readInputValue, readSelectValue } from '../../../shared/utils/dom-event.utils';
 
 @Component({
 	selector: 'm25-appearance-settings-section',
@@ -54,5 +54,37 @@ export class AppearanceSettingsSectionComponent {
 		if (value && isButtonShape(value)) {
 			this.state.setButtonShape(value);
 		}
+	}
+
+	protected onAskTitleChange(event: Event): void {
+		const checked = readCheckedValue(event);
+		if (checked !== null) {
+			this.state.setAskTitleBeforeStart(checked);
+		}
+	}
+
+	protected onAskBpmChange(event: Event): void {
+		const checked = readCheckedValue(event);
+		if (checked !== null) {
+			this.state.setAskBpmBeforeStart(checked);
+		}
+	}
+
+	protected onDefaultTitleInput(event: Event): void {
+		const value = readInputValue(event);
+		if (value !== null) {
+			this.state.setDefaultPracticeTitle(value);
+		}
+	}
+
+	protected onDefaultBpmInput(event: Event): void {
+		const value = readInputValue(event);
+		if (value === null || value.trim() === '') {
+			this.state.setDefaultBpm(null);
+			return;
+		}
+
+		const bpm = Number(value);
+		this.state.setDefaultBpm(Number.isFinite(bpm) ? bpm : null);
 	}
 }

@@ -15,14 +15,22 @@
 
 		<p class="corner-mark">{{ dictionary().app.name }}</p>
 
-		<button
-			class="settings-button"
-			type="button"
-			(click)="state.toggleSettings()"
-			[attr.aria-label]="dictionary().aria.openSettings"
-		>
-			⚙
-		</button>
+		<div class="utility-actions">
+			@if (showPauseAction()) {
+				<button class="utility-button" type="button" (click)="state.pauseSession()" aria-label="{{ dictionary().pause.heading }}">Ⅱ</button>
+			}
+			@if (showCancelAction()) {
+				<button class="utility-button utility-button--danger" type="button" (click)="state.openCancelConfirm()" aria-label="{{ dictionary().cancel.heading }}">×</button>
+			}
+			<button
+				class="settings-button"
+				type="button"
+				(click)="state.toggleSettings()"
+				[attr.aria-label]="dictionary().aria.openSettings"
+			>
+				⚙
+			</button>
+		</div>
 	</div>
 
 	<div class="screen-area" [class.screen-area--practice]="isPracticeScreen()">
@@ -64,6 +72,18 @@
 			</section>
 		}
 	</div>
+
+	@if (showStartDialog()) {
+		<m25-session-start-dialog />
+	}
+
+	@if (showPauseOverlay()) {
+		<m25-session-pause-overlay />
+	}
+
+	@if (showCancelDialog()) {
+		<m25-session-cancel-dialog />
+	}
 
 	@if (hasCompletionOverlay()) {
 		<m25-completion-overlay />
