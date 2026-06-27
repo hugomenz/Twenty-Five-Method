@@ -55,6 +55,15 @@ export class M25LabelsService {
 		return blocks.map((block) => this.blockOption(block).symbol).join(' ');
 	}
 
+	/** Human-readable rhythm description for accessible labels (no music glyphs). */
+	patternDescription(blocks: readonly BlockKind[]): string {
+		if (blocks.length === 0) {
+			return this.dictionary().patterns.builderHint;
+		}
+
+		return blocks.map((block) => this.blockOption(block).label).join(', ');
+	}
+
 	targetValue(target: number): string {
 		return this.interpolate(this.dictionary().patterns.targetValue, { target });
 	}

@@ -47,12 +47,16 @@
 	line-height: 1.1;
 }
 
-.pattern-symbols {
-	color: var(--accent);
-	font-size: clamp(1.2rem, 2.8vw, 1.65rem);
-	font-weight: 700;
-	letter-spacing: 0.1em;
-	line-height: 1.35;
+.pattern-notation {
+	display: block;
+	width: min(100%, 32rem);
+	height: clamp(5.5rem, 22dvh, 9rem);
+	min-width: 0;
+}
+
+.notation-skeleton {
+	border-radius: 0.75rem;
+	background: rgb(255 255 255 / 0.04);
 }
 
 .counter-value {

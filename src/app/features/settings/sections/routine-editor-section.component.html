@@ -16,9 +16,17 @@
 		<div class="stack-list">
 			@for (item of routineDraftItems(); track item.patternId + '-' + $index) {
 				<div class="stack-card">
-					<div>
+					<div class="stack-card__body">
 						<p class="stack-card__title">{{ item.name }}</p>
-						<p class="stack-card__meta">{{ item.symbols }}</p>
+						@defer (on viewport) {
+							<m25-rhythm-notation
+								class="card-notation"
+								[blocks]="item.blocks"
+								[accessibleLabel]="item.description"
+							/>
+						} @placeholder {
+							<div class="card-notation notation-skeleton" aria-hidden="true"></div>
+						}
 					</div>
 					<label class="stack-card__field">
 						<span>{{ dictionary().fields.repetitions }}</span>

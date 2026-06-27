@@ -2,10 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { M25LabelsService } from '../../../core/services/m25-labels.service';
 import { M25StateService } from '../../../core/services/m25-state.service';
 import { readInputValue } from '../../../shared/utils/dom-event.utils';
+import { RhythmNotationComponent } from '../../notation/rhythm-notation.component';
 
 @Component({
 	selector: 'm25-rhythm-builder-section',
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	imports: [RhythmNotationComponent],
 	templateUrl: './rhythm-builder-section.component.html',
 	styleUrl: './settings-section.shared.scss',
 })
@@ -14,11 +16,13 @@ export class RhythmBuilderSectionComponent {
 	protected readonly labels = inject(M25LabelsService);
 	protected readonly dictionary = this.labels.dictionary;
 	protected readonly blockOptions = this.labels.blockOptions;
-	protected readonly preview = computed(() => this.labels.patternSymbols(this.state.patternDraftBlocks()));
+	protected readonly draftBlocks = computed(() => this.state.patternDraftBlocks());
+	protected readonly draftDescription = computed(() => this.labels.patternDescription(this.draftBlocks()));
 	protected readonly customPatterns = computed(() => this.state.customPatterns().map((pattern) => ({
 		id: pattern.id,
 		name: this.labels.patternName(pattern),
-		symbols: this.labels.patternSymbols(pattern.blocks),
+		blocks: pattern.blocks,
+		description: this.labels.patternDescription(pattern.blocks),
 	})));
 
 	protected onPatternNameInput(event: Event): void {

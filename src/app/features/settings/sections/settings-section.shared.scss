@@ -156,6 +156,35 @@
 	gap: 0.5rem;
 }
 
+.stack-card__body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	min-width: 0;
+}
+
+.builder-preview {
+	display: block;
+	width: 100%;
+	height: clamp(4.5rem, 16dvh, 7rem);
+	min-width: 0;
+	color: var(--text);
+}
+
+.card-notation {
+	display: block;
+	width: 100%;
+	max-width: 16rem;
+	height: 3.4rem;
+	min-width: 0;
+	color: var(--text);
+}
+
+.notation-skeleton {
+	border-radius: 0.6rem;
+	background: rgb(255 255 255 / 0.04);
+}
+
 .preview-text,
 .helper-text {
 	margin: 0;

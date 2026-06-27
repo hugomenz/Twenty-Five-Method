@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { M25LabelsService } from '../../../core/services/m25-labels.service';
 import { M25StateService } from '../../../core/services/m25-state.service';
+import { RhythmNotationComponent } from '../../notation/rhythm-notation.component';
 
 @Component({
 	selector: 'm25-rhythm-practice-view',
 	changeDetection: ChangeDetectionStrategy.OnPush,
+	imports: [RhythmNotationComponent],
 	templateUrl: './rhythm-practice-view.component.html',
 	styleUrl: './rhythm-practice-view.component.scss',
 })
@@ -39,7 +41,8 @@ export class RhythmPracticeViewComponent {
 	});
 	protected readonly routineName = computed(() => this.labels.routineName(this.state.activeRhythmSession()?.routineName ?? ''));
 	protected readonly patternName = computed(() => this.labels.patternName(this.currentItem()));
-	protected readonly patternSymbols = computed(() => this.labels.patternSymbols(this.currentItem()?.blocks ?? []));
+	protected readonly currentBlocks = computed(() => this.currentItem()?.blocks ?? []);
+	protected readonly patternDescription = computed(() => this.labels.patternDescription(this.currentBlocks()));
 	protected readonly rhythmPosition = computed(() => {
 		const session = this.state.activeRhythmSession();
 		if (!session) {

@@ -7,16 +7,24 @@
 	<div class="chip-list chip-list--builder">
 		@for (block of blockOptions(); track block.kind) {
 			<button class="chip chip--builder" type="button" (click)="state.addPatternBlock(block.kind)">
-				{{ block.label }} · {{ block.symbol }}
+				{{ block.label }}
 			</button>
 		}
 	</div>
 	@if (state.patternDraftBlocks().length > 0) {
-		<p class="preview-text">{{ preview() }}</p>
+		@defer (on immediate) {
+			<m25-rhythm-notation
+				class="builder-preview"
+				[blocks]="draftBlocks()"
+				[accessibleLabel]="draftDescription()"
+			/>
+		} @placeholder {
+			<div class="builder-preview notation-skeleton" aria-hidden="true"></div>
+		}
 		<div class="stack-list stack-list--compact">
 			@for (block of state.patternDraftBlocks(); track block + '-' + $index) {
 				<div class="stack-card stack-card--compact">
-					<p class="stack-card__title">{{ labels.blockOption(block).label }} · {{ labels.blockOption(block).symbol }}</p>
+					<p class="stack-card__title">{{ labels.blockOption(block).label }}</p>
 					<div class="stack-card__actions">
 						<button type="button" (click)="state.movePatternBlock($index, -1)" [attr.aria-label]="dictionary().aria.moveLeft">←</button>
 						<button type="button" (click)="state.movePatternBlock($index, 1)" [attr.aria-label]="dictionary().aria.moveRight">→</button>
@@ -42,9 +50,17 @@
 		<div class="stack-list">
 			@for (pattern of customPatterns(); track pattern.id) {
 				<div class="stack-card stack-card--saved">
-					<div>
+					<div class="stack-card__body">
 						<p class="stack-card__title">{{ pattern.name }}</p>
-						<p class="stack-card__meta">{{ pattern.symbols }}</p>
+						@defer (on viewport) {
+							<m25-rhythm-notation
+								class="card-notation"
+								[blocks]="pattern.blocks"
+								[accessibleLabel]="pattern.description"
+							/>
+						} @placeholder {
+							<div class="card-notation notation-skeleton" aria-hidden="true"></div>
+						}
 					</div>
 					<div class="stack-card__actions">
 						<button type="button" (click)="state.loadPatternDraft(pattern.id)">{{ dictionary().actions.load }}</button>

@@ -4,7 +4,15 @@
 			<p class="mode-pill">{{ dictionary().modes.rhythms }}</p>
 			<p class="routine-name">{{ routineName() }}</p>
 			<p class="pattern-name">{{ patternName() }}</p>
-			<p class="pattern-symbols">{{ patternSymbols() }}</p>
+			@defer (on immediate) {
+				<m25-rhythm-notation
+					class="pattern-notation"
+					[blocks]="currentBlocks()"
+					[accessibleLabel]="patternDescription()"
+				/>
+			} @placeholder {
+				<div class="pattern-notation notation-skeleton" aria-hidden="true"></div>
+			}
 			<output class="counter-value counter-value--compact" aria-live="polite">
 				{{ item.count }} / {{ item.repetitions }}
 			</output>
