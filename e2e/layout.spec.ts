@@ -73,6 +73,74 @@ test.describe('Layout, heights, and overflow', () => {
 		await expectNoGlobalScroll(page, testInfo);
 	});
 
+	test('back button returns to the main view from direct M25 practice', async ({ page }, testInfo) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: /Open M25/i }).click();
+		await expect(page.getByTestId('m25-count')).toBeVisible();
+
+		await page.getByRole('button', { name: 'Go back' }).click();
+
+		await expect(page.locator('.home-screen')).toBeVisible();
+		await expectNoGlobalScroll(page, testInfo);
+	});
+
+	test('back button returns to the main view from direct rhythms practice', async ({ page }, testInfo) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: /Open rhythms/i }).click();
+		await expect(page.getByText('No active practice')).toBeVisible();
+
+		await page.getByRole('button', { name: 'Go back' }).click();
+
+		await expect(page.locator('.home-screen')).toBeVisible();
+		await expectNoGlobalScroll(page, testInfo);
+	});
+
+	test('back button returns to the main view from routine studio opened directly', async ({ page }, testInfo) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: 'Prepare routine' }).click();
+		await expect(page.getByText('Routine studio')).toBeVisible();
+
+		await page.getByRole('button', { name: 'Go back' }).click();
+
+		await expect(page.locator('.home-screen')).toBeVisible();
+		await expectNoGlobalScroll(page, testInfo);
+	});
+
+	test('back button returns to the main view from pattern studio opened directly', async ({ page }, testInfo) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: 'Build rhythm' }).click();
+		await expect(page.getByText('Rhythm workshop')).toBeVisible();
+
+		await page.getByRole('button', { name: 'Go back' }).click();
+
+		await expect(page.locator('.home-screen')).toBeVisible();
+		await expectNoGlobalScroll(page, testInfo);
+	});
+
+	test('back button returns to the empty rhythms screen from routine studio opened inside rhythms', async ({ page }, testInfo) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: /Open rhythms/i }).click();
+		await page.getByRole('button', { name: 'Prepare routine' }).click();
+		await expect(page.getByText('Routine studio')).toBeVisible();
+
+		await page.getByRole('button', { name: 'Go back' }).click();
+
+		await expect(page.getByText('No active practice')).toBeVisible();
+		await expectNoGlobalScroll(page, testInfo);
+	});
+
+	test('back button returns to the empty rhythms screen from pattern studio opened inside rhythms', async ({ page }, testInfo) => {
+		await gotoClean(page);
+		await page.getByRole('button', { name: /Open rhythms/i }).click();
+		await page.getByRole('button', { name: 'Build rhythm' }).click();
+		await expect(page.getByText('Rhythm workshop')).toBeVisible();
+
+		await page.getByRole('button', { name: 'Go back' }).click();
+
+		await expect(page.getByText('No active practice')).toBeVisible();
+		await expectNoGlobalScroll(page, testInfo);
+	});
+
 	test('long custom names do not cause horizontal overflow', async ({ page }, testInfo) => {
 		await gotoClean(page);
 		await page.getByRole('button', { name: 'Prepare routine' }).click();
