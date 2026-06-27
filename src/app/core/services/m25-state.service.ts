@@ -19,11 +19,15 @@ import {
 	isPracticeSessionStatus,
 	isThemeMode,
 	LanguageCode,
+	MAX_PRACTICE_RECORDS,
 	moveArrayItem,
 	normalizePositiveInteger,
 	PersistedState,
+	PracticeHistorySnapshot,
+	PracticeRecord,
 	PracticeSession,
 	PracticeSessionStatus,
+	PRACTICE_HISTORY_VERSION,
 	RhythmPattern,
 	RhythmSession,
 	RhythmSessionItem,
@@ -41,6 +45,7 @@ import { M25FeedbackService } from './m25-feedback.service';
 export class M25StateService {
 	private readonly storage = inject(M25StorageService);
 	private readonly feedback = inject(M25FeedbackService);
+	private readonly initialHistory = this.loadPracticeHistory();
 	private readonly initialState = this.loadPersistedState();
 
 	readonly activeSession = signal<PracticeSession | null>(this.initialState.activeSession);
@@ -55,6 +60,7 @@ export class M25StateService {
 	readonly activeRhythmSession = signal<RhythmSession | null>(this.initialState.activeRhythmSession);
 	readonly routines = signal<Routine[]>(this.initialState.routines);
 	readonly customPatterns = signal<RhythmPattern[]>(this.initialState.customPatterns);
+	readonly practiceHistory = signal<PracticeRecord[]>(this.initialHistory);
 	readonly routineDraftName = signal('');
 	readonly routineDraftItems = signal<RoutineItem[]>([]);
 	readonly editingRoutineId = signal<string | null>(null);
@@ -983,6 +989,70 @@ export class M25StateService {
 			finishedAtMs: typeof session.finishedAtMs === 'number' ? session.finishedAtMs : null,
 			activeElapsedMs: typeof session.activeElapsedMs === 'number' ? session.activeElapsedMs : 0,
 			pausedElapsedMs: typeof session.pausedElapsedMs === 'number' ? session.pausedElapsedMs : 0,
+		};
+	}
+
+	private loadPracticeHistory(): PracticeRecord[] {
+		const rawHistory = this.storage.readPracticeHistorySnapshot();
+		if (!rawHistory) {
+			return [];
+		}
+
+		try {
+			const parsed = JSON.parse(rawHistory) as Partial<PracticeHistorySnapshot>;
+			if (parsed.version !== PRACTICE_HISTORY_VERSION || !Array.isArray(parsed.records)) {
+				return [];
+			}
+
+			return parsed.records
+				.map((record) => this.parsePracticeRecord(record))
+				.filter((record): record is PracticeRecord => record !== null)
+				.sort((left, right) => right.finishedAtMs - left.finishedAtMs)
+				.slice(0, MAX_PRACTICE_RECORDS);
+		} catch {
+			return [];
+		}
+	}
+
+	private parsePracticeRecord(record: Partial<PracticeRecord> | undefined): PracticeRecord | null {
+		if (!record || typeof record.id !== 'string') {
+			return null;
+		}
+
+		if (record.mode !== 'm25' && record.mode !== 'rhythm') {
+			return null;
+		}
+
+		if (record.status !== 'completed' && record.status !== 'cancelled') {
+			return null;
+		}
+
+		if (typeof record.startedAtMs !== 'number' || typeof record.finishedAtMs !== 'number') {
+			return null;
+		}
+
+		const target = normalizePositiveInteger(Number(record.target), 25);
+		const activeDurationMs = clampToZero(Math.trunc(Number(record.activeDurationMs) || 0));
+		const pausedDurationMs = clampToZero(Math.trunc(Number(record.pausedDurationMs) || 0));
+		const errorCount = clampToZero(Math.trunc(Number(record.errorCount) || 0));
+		const positivePressCount = clampToZero(Math.trunc(Number(record.positivePressCount) || 0));
+
+		return {
+			id: record.id,
+			mode: record.mode,
+			title: typeof record.title === 'string' ? record.title : '',
+			bpm: typeof record.bpm === 'number' ? record.bpm : null,
+			startedAtMs: record.startedAtMs,
+			finishedAtMs: record.finishedAtMs,
+			activeDurationMs,
+			pausedDurationMs,
+			status: record.status,
+			target,
+			finalValue: Math.trunc(Number(record.finalValue) || 0),
+			minimumValue: Math.trunc(Number(record.minimumValue) || 0),
+			errorCount,
+			positivePressCount,
+			exerciseName: typeof record.exerciseName === 'string' ? record.exerciseName : '',
 		};
 	}
 

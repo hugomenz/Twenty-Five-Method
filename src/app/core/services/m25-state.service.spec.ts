@@ -70,6 +70,35 @@ describe('M25StateService', () => {
 		expect(service.settings().theme).toBe('light');
 	});
 
+	it('should restore versioned practice history capped to the 200 most recent records', () => {
+		localStorage.setItem('m25.history', JSON.stringify({
+			version: 1,
+			records: Array.from({ length: 205 }, (_, index) => ({
+				id: `record-${index}`,
+				mode: index % 2 === 0 ? 'm25' : 'rhythm',
+				title: `Practice ${index}`,
+				bpm: 60 + index,
+				startedAtMs: 1_000 + index,
+				finishedAtMs: 2_000 + index,
+				activeDurationMs: 3_000 + index,
+				pausedDurationMs: index,
+				status: index % 3 === 0 ? 'cancelled' : 'completed',
+				target: 25,
+				finalValue: index,
+				minimumValue: -index,
+				errorCount: index % 5,
+				positivePressCount: index + 1,
+				exerciseName: `Exercise ${index}`,
+			})),
+		}));
+
+		const service = createService();
+
+		expect(service.practiceHistory()).toHaveLength(200);
+		expect(service.practiceHistory()[0]?.id).toBe('record-204');
+		expect(service.practiceHistory().at(-1)?.id).toBe('record-5');
+	});
+
 	it('should allow negative values in m25 and stop at zero when negatives are disabled', () => {
 		const service = createService();
 		startM25Session(service);

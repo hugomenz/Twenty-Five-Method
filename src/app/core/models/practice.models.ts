@@ -4,6 +4,8 @@ export type ErrorBehavior = 'decrement' | 'reset' | 'ignore';
 export type BlockKind = 'quarter' | 'eighth' | 'sixteenth' | 'triplet';
 export type RhythmSessionStatus = 'running' | 'paused' | 'complete';
 export type PracticeSessionStatus = 'ready' | 'running' | 'paused' | 'completed' | 'cancelled';
+export type PracticeRecordMode = 'm25' | 'rhythm';
+export type PracticeRecordStatus = 'completed' | 'cancelled';
 export type CompletionKind = 'm25' | 'rhythm-intermediate' | 'rhythm-final';
 export type LanguageCode = 'en' | 'es' | 'de';
 export type ThemeMode = 'dark' | 'light';
@@ -37,6 +39,29 @@ export interface PracticeSession {
 	finishedAtMs: number | null;
 	activeElapsedMs: number;
 	pausedElapsedMs: number;
+}
+
+export interface PracticeRecord {
+	id: string;
+	mode: PracticeRecordMode;
+	title: string;
+	bpm: number | null;
+	startedAtMs: number;
+	finishedAtMs: number;
+	activeDurationMs: number;
+	pausedDurationMs: number;
+	status: PracticeRecordStatus;
+	target: number;
+	finalValue: number;
+	minimumValue: number;
+	errorCount: number;
+	positivePressCount: number;
+	exerciseName: string;
+}
+
+export interface PracticeHistorySnapshot {
+	version: number;
+	records: PracticeRecord[];
 }
 
 export interface RhythmPattern {
@@ -110,8 +135,11 @@ export interface PatternSummary {
 }
 
 export const STORAGE_KEY = 'm25.state';
+export const PRACTICE_HISTORY_KEY = 'm25.history';
+export const PRACTICE_HISTORY_VERSION = 1;
 export const LEGACY_COUNT_KEY = 'twenty-five-method.count';
 export const DEFAULT_REPETITIONS = 15;
+export const MAX_PRACTICE_RECORDS = 200;
 
 export const LANGUAGE_CODES = ['en', 'es', 'de'] as const;
 export const THEME_MODES = ['dark', 'light'] as const;

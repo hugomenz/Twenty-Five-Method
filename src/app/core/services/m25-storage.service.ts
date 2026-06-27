@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { LEGACY_COUNT_KEY, STORAGE_KEY } from '../models/practice.models';
+import { LEGACY_COUNT_KEY, PRACTICE_HISTORY_KEY, STORAGE_KEY } from '../models/practice.models';
 
 @Injectable({ providedIn: 'root' })
 export class M25StorageService {
@@ -11,9 +11,17 @@ export class M25StorageService {
 		return this.window?.localStorage.getItem(STORAGE_KEY) ?? null;
 	}
 
+	readPracticeHistorySnapshot(): string | null {
+		return this.window?.localStorage.getItem(PRACTICE_HISTORY_KEY) ?? null;
+	}
+
 	writeSnapshot(snapshot: string): void {
 		this.window?.localStorage.setItem(STORAGE_KEY, snapshot);
 		this.window?.localStorage.removeItem(LEGACY_COUNT_KEY);
+	}
+
+	writePracticeHistorySnapshot(snapshot: string): void {
+		this.window?.localStorage.setItem(PRACTICE_HISTORY_KEY, snapshot);
 	}
 
 	readLegacyCount(): number {
