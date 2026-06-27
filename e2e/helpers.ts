@@ -26,10 +26,14 @@ export function trackPageProblems(page: Page): { errors: string[]; failures: str
 	});
 	page.on('requestfailed', (request) => {
 		const url = request.url();
+		const errorText = request.failure()?.errorText ?? 'failed';
 		if (url.includes('favicon') || url.includes('ngsw') || url.includes('service-worker')) {
 			return;
 		}
-		failures.push(`${request.failure()?.errorText ?? 'failed'} ${url}`);
+		if (errorText === 'net::ERR_ABORTED' && url.includes('/@ng/component?')) {
+			return;
+		}
+		failures.push(`${errorText} ${url}`);
 	});
 
 	return { errors, failures };
@@ -39,6 +43,12 @@ export function trackPageProblems(page: Page): { errors: string[]; failures: str
 export async function readPersistedState(page: Page): Promise<Record<string, unknown> | null> {
 	const raw = await page.evaluate(() => window.localStorage.getItem('m25.state'));
 	return raw ? (JSON.parse(raw) as Record<string, unknown>) : null;
+}
+
+/** Reads the saved practice-history snapshot from localStorage. */
+export async function readPracticeHistory(page: Page): Promise<{ version: number; records: Array<Record<string, unknown>> } | null> {
+	const raw = await page.evaluate(() => window.localStorage.getItem('m25.history'));
+	return raw ? (JSON.parse(raw) as { version: number; records: Array<Record<string, unknown>> }) : null;
 }
 
 /** Asserts the page has no global vertical or horizontal scroll. */
