@@ -13,7 +13,7 @@
 			} @placeholder {
 				<div class="pattern-notation notation-skeleton" aria-hidden="true"></div>
 			}
-			<output class="counter-value counter-value--compact" aria-live="polite">
+			<output class="counter-value counter-value--compact" aria-live="polite" data-testid="rhythm-count">
 				{{ item.count }} / {{ item.repetitions }}
 			</output>
 			<p class="detail-text">{{ rhythmPosition() }}</p>
