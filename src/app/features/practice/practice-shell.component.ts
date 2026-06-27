@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { getProgressThemeColors } from '../../core/theme/progress-theme';
 import { M25LabelsService } from '../../core/services/m25-labels.service';
 import { M25StateService } from '../../core/services/m25-state.service';
 import { CompletionOverlayComponent } from '../completion/completion-overlay.component';
@@ -46,6 +47,16 @@ export class PracticeShellComponent {
 	protected readonly isHomeScreen = computed(() => this.state.currentScreen() === 'home');
 	protected readonly isPracticeScreen = computed(() => this.state.currentScreen() === 'practice');
 	protected readonly showBackButton = computed(() => this.state.currentScreen() !== 'home');
+	protected readonly progressTheme = computed(() => {
+		const value = this.isM25Mode()
+			? this.state.m25Count()
+			: this.state.currentRhythmItem()?.count ?? 0;
+		const target = this.isM25Mode()
+			? this.state.settings().target
+			: this.state.currentRhythmItem()?.repetitions ?? 1;
+
+		return getProgressThemeColors(value, target, this.state.settings().theme);
+	});
  	protected readonly hasCompletionOverlay = computed(() => this.state.completionOverlay() !== null);
 	protected readonly showStartDialog = computed(() => this.state.currentScreen() === 'practice' && this.state.activeSessionStatus() === 'ready');
 	protected readonly showPauseOverlay = computed(() => this.state.currentScreen() === 'practice' && this.state.activeSessionStatus() === 'paused');

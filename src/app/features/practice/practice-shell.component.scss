@@ -17,6 +17,10 @@
 	--accent: #d4dbe6;
 	--accent-soft: rgb(212 219 230 / 0.14);
 	--danger: #d2d8df;
+	--score-top: #121821;
+	--score-mid: #0d1219;
+	--score-bottom: #080b10;
+	--score-glow: rgb(155 168 184 / 0.11);
 	--notation-surface: #eef3f8;
 	--notation-ink: #16202a;
 	--notation-border: rgb(22 32 42 / 0.16);
@@ -34,8 +38,8 @@
 	padding: calc(env(safe-area-inset-top) + 0.85rem) calc(env(safe-area-inset-right) + 0.85rem)
 		calc(env(safe-area-inset-bottom) + 0.85rem) calc(env(safe-area-inset-left) + 0.85rem);
 	background:
-		radial-gradient(circle at top, rgb(155 168 184 / 0.11), transparent 34%),
-		linear-gradient(180deg, #121821 0%, var(--bg) 48%, var(--bg-deep) 100%);
+		radial-gradient(circle at top, var(--score-glow), transparent 34%),
+		linear-gradient(180deg, var(--score-top) 0%, var(--score-mid) 48%, var(--score-bottom) 100%);
 	color: var(--text);
 	touch-action: manipulation;
 	user-select: none;
@@ -57,12 +61,29 @@
 	--accent: #223141;
 	--accent-soft: rgb(34 49 65 / 0.08);
 	--danger: #24303d;
+	--score-top: #f7f9fc;
+	--score-mid: #edf2f7;
+	--score-bottom: #dde5ef;
+	--score-glow: rgb(83 98 115 / 0.14);
 	--notation-surface: #ffffff;
 	--notation-ink: #101922;
 	--notation-border: rgb(16 25 34 / 0.12);
 	background:
-		radial-gradient(circle at top, rgb(83 98 115 / 0.14), transparent 30%),
-		linear-gradient(180deg, #f7f9fc 0%, var(--bg) 50%, var(--bg-deep) 100%);
+		radial-gradient(circle at top, var(--score-glow), transparent 30%),
+		linear-gradient(180deg, var(--score-top) 0%, var(--score-mid) 50%, var(--score-bottom) 100%);
+}
+
+.practice-shell--score-contrast {
+	transition: background 220ms linear;
+}
+
+.practice-shell--score-contrast .top-chrome,
+.practice-shell--score-contrast .center-panel {
+	filter: drop-shadow(0 0.35rem 0.8rem rgb(0 0 0 / 0.16));
+}
+
+.control-button--contrast {
+	backdrop-filter: blur(10px);
 }
 
 .practice-shell[data-button-tone='solid'] {
@@ -280,3 +301,9 @@
 		font-size: clamp(4.1rem, 14vw, 7rem);
 	}
 	}
+
+@media (prefers-reduced-motion: reduce) {
+	.practice-shell--score-contrast {
+		transition: none;
+	}
+}

@@ -1,8 +1,13 @@
 <main
 	class="practice-shell"
+	[class.practice-shell--score-contrast]="progressTheme().requiresContrast"
 	[attr.data-theme]="state.settings().theme"
 	[attr.data-button-tone]="state.settings().buttonTone"
 	[attr.data-button-shape]="state.settings().buttonShape"
+	[style.--score-top]="progressTheme().top"
+	[style.--score-mid]="progressTheme().mid"
+	[style.--score-bottom]="progressTheme().bottom"
+	[style.--score-glow]="progressTheme().glow"
 >
 	<div class="top-chrome">
 		@if (showBackButton()) {
@@ -47,7 +52,7 @@
 		} @else {
 			<section class="practice-stage">
 				<button
-					class="control-button control-button--minus"
+					class="control-button control-button--minus control-button--contrast"
 					type="button"
 					(click)="state.decrement()"
 					[disabled]="!state.canUseMinus()"
@@ -65,7 +70,7 @@
 				</section>
 
 				<button
-					class="control-button control-button--plus"
+					class="control-button control-button--plus control-button--contrast"
 					type="button"
 					(click)="state.increment()"
 					[disabled]="!state.canUsePlus()"

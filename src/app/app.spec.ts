@@ -68,4 +68,19 @@ describe('App', () => {
 
 		expect(root.querySelector('.studio-screen')).toBeTruthy();
 	});
+
+	it('should keep the score-based contrast classes on the shell and controls', () => {
+		const fixture = TestBed.createComponent(App);
+		fixture.detectChanges();
+
+		const root = fixture.nativeElement as HTMLElement;
+		(root.querySelector('.mode-card--m25') as HTMLButtonElement).click();
+		fixture.detectChanges();
+
+		const shell = root.querySelector('.practice-shell') as HTMLElement;
+		const controls = Array.from(root.querySelectorAll('.control-button')) as HTMLButtonElement[];
+
+		expect(shell.classList.contains('practice-shell--score-contrast')).toBe(true);
+		expect(controls.every((button) => button.classList.contains('control-button--contrast'))).toBe(true);
+	});
 });
